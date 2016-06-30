@@ -43,12 +43,18 @@ bool PictureModel::setModelRoot(const QString &root)
 //    QDir::setCurrent(currentDir.path());
 
     nftw(root.toLatin1().data(), handleDirNode, 1000, FTW_PHYS);
+    qDebug() << "Finished flattening";
     return true;
 }
 
 int PictureModel::rowCount(const QModelIndex &parent) const
 {
     return paths.length();
+}
+
+QString PictureModel::randomPicture() const
+{
+    return paths.at(qrand()%paths.size());
 }
 
 QVariant PictureModel::data(const QModelIndex &index, int role) const

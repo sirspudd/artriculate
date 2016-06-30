@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>ArtDelegate.qml</file>
+        <file>ImageBoxBody.qml</file>
+        <file>RectangleBoxBody.qml</file>
     </qresource>
 </RCC>

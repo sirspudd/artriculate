@@ -25,6 +25,7 @@ public:
     bool setModelRoot(const QString &root);
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
+    Q_INVOKABLE QString randomPicture() const;
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
     bool addPath(const QString &path);

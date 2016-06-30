@@ -9,12 +9,13 @@ class PictureThreadWrapper : public QObject {
 public:
     PictureThreadWrapper(QObject *parent = 0) : QObject (parent) {
         PictureModel::instance()->addSupportedExtension("jpg");
-        PictureModel::instance()->setModelRoot("/blackhole/media/art");
+        PictureModel::instance()->setModelRoot("/blackhole/media/art/Banksy");
     }
 };
 
 int main(int argc, char *argv[])
 {
+    qsrand(time(NULL));
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
