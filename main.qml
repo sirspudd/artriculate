@@ -1,5 +1,6 @@
 import QtQuick 2.5
 import QtQuick.Window 2.2
+import Qt.labs.settings 1.0
 import Box2D 2.0
 
 Window {
@@ -9,8 +10,14 @@ Window {
     width: 1024
     height: 768
 
-    property int columnCount: 4
-    property int interval: 5
+    Settings {
+        id: settings
+        property int columnCount: 4
+        property int interval: 30
+    }
+
+    signal pause
+    signal next
 
     Component {
         id: pictureComponent
@@ -28,6 +35,7 @@ Window {
             bodyType: Body.Dynamic
             source: "file://" + imageModel.randomPicture()
             //restitution: 0.0
+            onXChanged: x = 0
             SequentialAnimation {
                 id: destroyAnimation
                 ScriptAction { script: { picture.destroy(); } }
@@ -41,7 +49,7 @@ Window {
         Item {
             id: column
             x: width * index
-            width: parent.width/columnCount
+            width: parent.width/settings.columnCount
 
             anchors { top: parent.top; bottom: parent.bottom }
 
@@ -66,13 +74,19 @@ Window {
                 id: feedTimer
                 running: true
                 repeat: true
-                interval: 1000*(root.interval > 60 ? 60*(root.interval-60) : root.interval)
+                interval: 1000*(settings.interval > 60 ? 60*(settings.interval-60) : settings.interval)*(Math.random()+1)
                 onTriggered: {
                     pictureArray.push(pictureComponent.createObject(column, { y: -2000 }))
-                    if (pictureArray.length > root.columnCount) {
+                    if (pictureArray.length > settings.columnCount) {
                         pictureArray.shift().detonate()
                     }
                 }
+            }
+
+            Connections {
+                target: root
+                onPause: feedTimer.running = !feedTimer.running
+                onNext: feedTimer.triggered()
             }
 
             Timer {
@@ -80,7 +94,7 @@ Window {
 
                 property int runCount: 0
                 interval: 500
-                running: runCount < root.columnCount
+                running: runCount < settings.columnCount
                 repeat: true
                 onTriggered: {
                     runCount = runCount + 1;
@@ -91,11 +105,17 @@ Window {
     }
 
     Rectangle {
+        focus: true
         color: "black"
         anchors.fill: parent
         Repeater {
-            model: columnCount
+            model: settings.columnCount
             delegate: columnComponent
         }
+        Keys.onLeftPressed: settings.columnCount = Math.max(settings.columnCount-1,1)
+        Keys.onRightPressed: settings.columnCount++
+        Keys.onUpPressed: root.pause()
+        Keys.onDownPressed: root.next()
     }
+
 }
