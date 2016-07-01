@@ -17,7 +17,8 @@ Window {
         ImageBoxBody {
             id: picture
             function detonate() { destroyAnimation.start() }
-            fillMode: Image.PreserveAspectFit
+            //I thought this accepted forcing either width/height
+            //fillMode: Image.PreserveAspectFit
             height: implicitHeight/implicitWidth*width
             width: parent.width
             density: 0.01
