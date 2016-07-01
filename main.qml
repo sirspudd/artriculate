@@ -20,12 +20,13 @@ Window {
             fillMode: Image.PreserveAspectFit
             height: implicitHeight/implicitWidth*width
             width: parent.width
-            density: 0
+            density: 0.01
+            friction: 1.0
             fixedRotation: true
             world: parent.physicsWorld
             bodyType: Body.Dynamic
             source: "file://" + imageModel.randomPicture()
-            restitution: 0.0
+            //restitution: 0.0
             SequentialAnimation {
                 id: destroyAnimation
                 ScriptAction { script: { picture.destroy(); } }
@@ -45,7 +46,7 @@ Window {
 
             property var pictureArray: []
             property var physicsWorld: World {
-                timeStep: 0.1
+                timeStep: 6.0/60.0
             }
 
             RectangleBoxBody {
@@ -66,7 +67,7 @@ Window {
                 repeat: true
                 interval: 1000*(root.interval > 60 ? 60*(root.interval-60) : root.interval)
                 onTriggered: {
-                    pictureArray.push(pictureComponent.createObject(column, { y: -500 }))
+                    pictureArray.push(pictureComponent.createObject(column, { y: -2000 }))
                     if (pictureArray.length > root.columnCount) {
                         pictureArray.shift().detonate()
                     }
