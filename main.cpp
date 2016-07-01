@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
     format.setRedBufferSize(8);
     format.setGreenBufferSize(8);
     format.setBlueBufferSize(8);
+    format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
     QSurfaceFormat::setDefaultFormat(format);
 
     QGuiApplication app(argc, argv);
