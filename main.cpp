@@ -3,6 +3,7 @@
 #include <QQmlContext>
 #include <QThread>
 #include <QSettings>
+#include <QSurfaceFormat>
 
 #include <picturemodel.h>
 
@@ -20,6 +21,14 @@ public:
 int main(int argc, char *argv[])
 {
     qsrand(time(NULL));
+
+    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+    format.setAlphaBufferSize(8);
+    format.setRedBufferSize(8);
+    format.setGreenBufferSize(8);
+    format.setBlueBufferSize(8);
+    QSurfaceFormat::setDefaultFormat(format);
+
     QGuiApplication app(argc, argv);
 
     app.setOrganizationName("Chaos Reins");
