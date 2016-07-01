@@ -2,14 +2,18 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QThread>
+#include <QSettings>
 
 #include <picturemodel.h>
 
 class PictureThreadWrapper : public QObject {
 public:
     PictureThreadWrapper(QObject *parent = 0) : QObject (parent) {
+        QSettings settings;
+        const QString &artPath = settings.value("artPath","/blackhole/media/art/Banksy").toString();
         PictureModel::instance()->addSupportedExtension("jpg");
-        PictureModel::instance()->setModelRoot("/blackhole/media/art/Banksy");
+        PictureModel::instance()->setModelRoot(artPath);
+        settings.setValue("artPath", artPath);
     }
 };
 
@@ -17,6 +21,9 @@ int main(int argc, char *argv[])
 {
     qsrand(time(NULL));
     QGuiApplication app(argc, argv);
+
+    app.setOrganizationName("Chaos Reins");
+    app.setApplicationName("Articulate");
 
     QQmlApplicationEngine engine;
 
