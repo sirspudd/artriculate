@@ -38,6 +38,7 @@ Window {
             onXChanged: x = 0
             SequentialAnimation {
                 id: destroyAnimation
+                NumberAnimation { target: picture; property: "height"; to: 0; duration: 1000 }
                 ScriptAction { script: { picture.destroy(); } }
             }
         }
