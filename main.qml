@@ -14,34 +14,23 @@ Window {
         id: settings
         property int columnCount: 4
         property int interval: 30
+        property bool animateDeath: false
+        property bool fitByHeight: true
+        property double pace: 6.0
     }
 
-    signal pause
+    signal togglePause
+    signal toggleChaos
     signal next
 
-    Component {
-        id: pictureComponent
-        ImageBoxBody {
-            id: picture
-            function detonate() { destroyAnimation.start() }
-            //I thought this accepted forcing either width/height
-            //fillMode: Image.PreserveAspectFit
-            height: implicitHeight/implicitWidth*width
-            width: parent.width
-            density: 0.01
-            friction: 1.0
-            fixedRotation: true
-            world: parent.physicsWorld
-            bodyType: Body.Dynamic
-            source: "file://" + imageModel.randomPicture()
-            //restitution: 0.0
-            onXChanged: x = 0
-            SequentialAnimation {
-                id: destroyAnimation
-                NumberAnimation { target: picture; property: "height"; to: 0; duration: 1000 }
-                ScriptAction { script: { picture.destroy(); } }
-            }
-        }
+    property bool globalWorld: settings.fitByHeight
+    property var worldArray: []
+    property var pictureDelegate: Qt.createComponent(settings.fitByHeight ? "VerticalArtDelegate.qml" : "HorizontalArtDelegate.qml")
+
+    World {
+        // Global world at odds with relative positions!
+        id: commonWorld
+        timeStep: settings.pace/60.0
     }
 
     Component {
@@ -49,14 +38,22 @@ Window {
 
         Item {
             id: column
-            x: width * index
+            x: xOffset - effectiveXOffset
             width: parent.width/settings.columnCount
 
             anchors { top: parent.top; bottom: parent.bottom }
 
             property var pictureArray: []
-            property var physicsWorld: World {
-                timeStep: 6.0/60.0
+            property var physicsWorld: settings.globalWorld ? commonWorld : columnWorld
+            property bool fixedRotation: true
+            property int xOffset: width * index
+            property int effectiveXOffset: settings.globalWorld ? xOffset : 0
+
+            World {
+                id: columnWorld
+
+                timeStep: settings.pace/60.0
+                Component.onCompleted: worldArray.push(columnWorld)
             }
 
             RectangleBoxBody {
@@ -77,7 +74,7 @@ Window {
                 repeat: true
                 interval: 1000*(settings.interval > 60 ? 60*(settings.interval-60) : settings.interval)*(Math.random()+1)
                 onTriggered: {
-                    pictureArray.push(pictureComponent.createObject(column, { y: -2000 }))
+                    pictureArray.push(pictureDelegate.createObject(column, { y: -2000 }))
                     if (pictureArray.length > settings.columnCount) {
                         pictureArray.shift().detonate()
                     }
@@ -86,8 +83,9 @@ Window {
 
             Connections {
                 target: root
-                onPause: feedTimer.running = !feedTimer.running
+                onTogglePause: feedTimer.running = !feedTimer.running
                 onNext: feedTimer.triggered()
+                onToggleChaos: fixedRotation = !fixedRotation
             }
 
             Timer {
@@ -106,17 +104,56 @@ Window {
     }
 
     Rectangle {
+        id: scene
         focus: true
         color: "black"
         anchors.fill: parent
+
+        RectangleBoxBody {
+            world: commonWorld
+            height: 1
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.bottom
+            }
+            friction: 1
+            density: 1
+        }
+
         Repeater {
             model: settings.columnCount
             delegate: columnComponent
         }
+
         Keys.onLeftPressed: settings.columnCount = Math.max(settings.columnCount-1,1)
         Keys.onRightPressed: settings.columnCount++
-        Keys.onUpPressed: root.pause()
-        Keys.onDownPressed: root.next()
-    }
+        Keys.onUpPressed: root.togglePause()
+        Keys.onDownPressed: root.toggleChaos() //root.next()
 
+        // TODO: The boot (Monty Python foot) of death to be applied to the stacks
+        RectangleBoxBody {
+            id: rect
+            enabled: false
+            visible: false
+            friction: 1.0
+            density: 1000
+            color: "red"
+            width: 50; height: 50
+            bullet: true
+            SequentialAnimation {
+                id: murderAnimation
+                //loops: Animation.Infinite
+                //running: true
+                ScriptAction { script: { root.togglePause() } }
+                ScriptAction { script: { rect.world = worldArray.pop() } }
+                PropertyAction { target: rect; property: "x"; value: -rect.width }
+                PropertyAction { target: rect; property: "y"; value: scene.height }
+                ParallelAnimation {
+                    NumberAnimation { target: rect; property: "x"; to: 2560; duration: 1000 }
+                    NumberAnimation { target: rect; property: "y"; to: 0; duration: 1000 }
+                }
+            }
+        }
+    }
 }
