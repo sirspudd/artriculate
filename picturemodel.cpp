@@ -1,79 +1,91 @@
 #include "picturemodel.h"
 
-#include <ftw.h>
-#include <stdio.h>
-
 #include <QDir>
 
 #include <QDebug>
 
-PictureModel* PictureModel::model = 0;
+struct FSNode {
+  FSNode(const QString& rname, const FSNode *pparent = nullptr)
+      : name(rname),
+        parent(pparent) { /**/ }
 
-int handleDirNode(const char *fpath, const struct stat *sb, int type, struct FTW *ftwbuf) {
-    if (type == FTW_F) {
-      PictureModel::instance()->addPath(fpath);
-    }
-    return 0;
-}
+  const QString name;
+  const FSNode *parent;
+};
 
 PictureModel::PictureModel(QObject *parent)
+    : QAbstractListModel(parent)
 { /**/ }
 
-PictureModel *PictureModel::instance()
+PictureModel::~PictureModel()
 {
-    if (!model) {
-        model = new PictureModel();
-    }
-    return model;
+    // TODO: Destroy model
 }
 
-bool PictureModel::setModelRoot(const QString &root)
+void PictureModel::addModelNode(const FSNode* parentNode)
 {
-    qDebug() << "Flattening" << root;
+    // TODO: Check for symlink recursion
+    QDir parentDir(qualifyNode(parentNode));
 
+    foreach(const QString &currentDir, parentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+        const FSNode *dir = new FSNode(currentDir, parentNode);
+        addModelNode(dir);
+    }
+
+    foreach(const QString &currentFile, parentDir.entryList(QDir::Files)) {
+        if (!extensions.isEmpty()) {
+            QString extension = currentFile.mid(currentFile.length() - 3);
+            if (!extensions.contains(extension))
+                continue;
+        }
+        const FSNode *file = new FSNode(currentFile, parentNode);
+        files << file;
+    }
+}
+
+void PictureModel::setModelRoot(const QString &root)
+{
     QDir currentDir(root);
     if (!currentDir.exists()) {
         qDebug() << "Being told to watch a non existent directory";
-        return false;
     }
+    addModelNode(new FSNode(root));
 
-//    QString dirName = currentDir.dirName();
-//    qDebug() << dirName;
-//    currentDir.cdUp();
-//    QDir::setCurrent(currentDir.path());
-
-    nftw(root.toLatin1().data(), handleDirNode, 1000, FTW_PHYS);
-    qDebug() << "Finished flattening";
-    return true;
+//    foreach(FSNode *node, files) {
+//        qDebug() << "Contains:" << qualifyNode(node);
+//    }
 }
 
 int PictureModel::rowCount(const QModelIndex &parent) const
 {
-    return paths.length();
+    return files.length();
 }
 
 QString PictureModel::randomPicture() const
 {
-    return paths.at(qrand()%paths.size());
+    return qualifyNode(files.at(qrand()%files.size()));
 }
 
 QVariant PictureModel::data(const QModelIndex &index, int role) const
 {
-    if (index.row() < 0 || index.row() >= paths.length())
+    if (index.row() < 0 || index.row() >= files.length())
         return QVariant();
 
-    return paths.at(index.row());
+    const FSNode *node = files.at(index.row());
+
+    return qualifyNode(node);
 }
 
-bool PictureModel::addPath(const QString &path)
-{
-    if (!extensions.isEmpty()) {
-        QString extension = path.mid(path.length() - 3);
-        if (!extensions.contains(extension))
-            return false;
+QString PictureModel::qualifyNode(const FSNode *node) const {
+    QString qualifiedPath;
+
+    while(node->parent != nullptr) {
+        qualifiedPath = "/" + node->name + qualifiedPath;
+        node = node->parent;
     }
-    paths << path;
-    return true;
+    qualifiedPath = node->name + qualifiedPath;
+
+    return qualifiedPath;
 }
 
 void PictureModel::addSupportedExtension(const QString &extension)

@@ -4,19 +4,9 @@
 #include <QThread>
 #include <QSettings>
 #include <QSurfaceFormat>
+#include <QTimer>
 
 #include <picturemodel.h>
-
-class PictureThreadWrapper : public QObject {
-public:
-    PictureThreadWrapper(QObject *parent = 0) : QObject (parent) {
-        QSettings settings;
-        const QString &artPath = settings.value("artPath","/blackhole/media/art/Banksy").toString();
-        PictureModel::instance()->addSupportedExtension("jpg");
-        PictureModel::instance()->setModelRoot(artPath);
-        settings.setValue("artPath", artPath);
-    }
-};
 
 int main(int argc, char *argv[])
 {
@@ -41,14 +31,18 @@ int main(int argc, char *argv[])
     }
 
     QQmlApplicationEngine engine;
-
     QThread scanningThread;
-    PictureThreadWrapper *wrapper = new PictureThreadWrapper();
-    wrapper->moveToThread(&scanningThread);
+    PictureModel *model = new PictureModel();
+    const QString &artPath = settings.value("artPath","/blackhole/media/art").toString();
+
+    model->addSupportedExtension("jpg");
+    model->moveToThread(&scanningThread);
     scanningThread.start();
+    //QTimer::singleShot(0, model, [model,artPath]() { model->setModelRoot(artPath); });
+    QMetaObject::invokeMethod(model, "setModelRoot", Qt::QueuedConnection, Q_ARG(QString,artPath));
+    settings.setValue("artPath", artPath);
 
-    engine.rootContext()->setContextProperty("imageModel", PictureModel::instance());
-
+    engine.rootContext()->setContextProperty("imageModel", model);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     return app.exec();
