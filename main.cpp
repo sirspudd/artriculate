@@ -22,18 +22,23 @@ int main(int argc, char *argv[])
 {
     qsrand(time(NULL));
 
-    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
-    format.setAlphaBufferSize(8);
-    format.setRedBufferSize(8);
-    format.setGreenBufferSize(8);
-    format.setBlueBufferSize(8);
-    format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
-    QSurfaceFormat::setDefaultFormat(format);
-
     QGuiApplication app(argc, argv);
 
     app.setOrganizationName("Chaos Reins");
     app.setApplicationName("Articulate");
+
+    QSettings settings;
+
+    if (settings.value("force32bpp", false).toBool()) {
+        QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+        format.setAlphaBufferSize(8);
+        format.setRedBufferSize(8);
+        format.setGreenBufferSize(8);
+        format.setBlueBufferSize(8);
+        if (settings.value("forceSingleBuffer", false).toBool())
+          format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
+        QSurfaceFormat::setDefaultFormat(format);
+    }
 
     QQmlApplicationEngine engine;
 
