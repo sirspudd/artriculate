@@ -1,0 +1,8 @@
+Requires:
+
+qml-box2d to be installed in the associated Qt install
+
+(Arch users install qml-box2d from AUR)
+
+qmake
+make
