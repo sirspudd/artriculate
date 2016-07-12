@@ -6,5 +6,6 @@
         <file>RectangleBoxBody.qml</file>
         <file>VerticalArtDelegate.qml</file>
         <file>HorizontalArtDelegate.qml</file>
+        <file>Gravity.qml</file>
     </qresource>
 </RCC>
