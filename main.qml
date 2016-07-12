@@ -18,7 +18,21 @@ Window {
         property double pace: 6.0
     }
 
-    Gravity {
+    Rectangle {
+        focus: true
+        color: "black"
         anchors.fill: parent
+        Keys.forwardTo: [punk, toplevelhandler]
+        Gravity {
+            // TODO: generalize all this
+            id: punk
+        }
+    }
+
+    Rectangle {
+        id: toplevelhandler
+        focus: true
+        Keys.onLeftPressed: settings.columnCount = Math.max(settings.columnCount-1,1)
+        Keys.onRightPressed: settings.columnCount++
     }
 }

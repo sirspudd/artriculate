@@ -7,5 +7,6 @@
         <file>VerticalArtDelegate.qml</file>
         <file>HorizontalArtDelegate.qml</file>
         <file>Gravity.qml</file>
+        <file>Ticker.qml</file>
     </qresource>
 </RCC>

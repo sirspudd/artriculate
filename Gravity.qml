@@ -3,6 +3,7 @@ import Box2D 2.0
 
 Item {
     id: root
+
     signal togglePause
     signal toggleChaos
     signal next
@@ -10,6 +11,8 @@ Item {
     property bool globalWorld: settings.fitByHeight
     property var worldArray: []
     property var pictureDelegate: Qt.createComponent(settings.fitByHeight ? "VerticalArtDelegate.qml" : "HorizontalArtDelegate.qml")
+
+    anchors.fill: parent
 
     World {
         // Global world at odds with relative positions!
@@ -87,57 +90,50 @@ Item {
         }
     }
 
-    Rectangle {
-        id: scene
-        focus: true
-        color: "black"
-        anchors.fill: parent
-
-        RectangleBoxBody {
-            world: commonWorld
-            height: 1
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: parent.bottom
-            }
-            friction: 1
-            density: 1
+    // floor
+    RectangleBoxBody {
+        world: commonWorld
+        height: 1
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.bottom
         }
+        friction: 1
+        density: 1
+    }
 
-        Repeater {
-            model: settings.columnCount
-            delegate: columnComponent
-        }
+    Repeater {
+        model: settings.columnCount
+        delegate: columnComponent
+    }
 
-        Keys.onLeftPressed: settings.columnCount = Math.max(settings.columnCount-1,1)
-        Keys.onRightPressed: settings.columnCount++
-        Keys.onUpPressed: root.togglePause()
-        Keys.onDownPressed: root.toggleChaos() //root.next()
 
-        // TODO: The boot (Monty Python foot) of death to be applied to the stacks
-        RectangleBoxBody {
-            id: rect
-            enabled: false
-            visible: false
-            friction: 1.0
-            density: 1000
-            color: "red"
-            width: 50; height: 50
-            bullet: true
-            SequentialAnimation {
-                id: murderAnimation
-                //loops: Animation.Infinite
-                //running: true
-                ScriptAction { script: { root.togglePause() } }
-                ScriptAction { script: { rect.world = worldArray.pop() } }
-                PropertyAction { target: rect; property: "x"; value: -rect.width }
-                PropertyAction { target: rect; property: "y"; value: scene.height }
-                ParallelAnimation {
-                    NumberAnimation { target: rect; property: "x"; to: 2560; duration: 1000 }
-                    NumberAnimation { target: rect; property: "y"; to: 0; duration: 1000 }
-                }
+    // TODO: The boot (Monty Python foot) of death to be applied to the stacks
+    RectangleBoxBody {
+        id: rect
+        enabled: false
+        visible: false
+        friction: 1.0
+        density: 1000
+        color: "red"
+        width: 50; height: 50
+        bullet: true
+        SequentialAnimation {
+            id: murderAnimation
+            //loops: Animation.Infinite
+            //running: true
+            ScriptAction { script: { root.togglePause() } }
+            ScriptAction { script: { rect.world = worldArray.pop() } }
+            PropertyAction { target: rect; property: "x"; value: -rect.width }
+            PropertyAction { target: rect; property: "y"; value: root.height }
+            ParallelAnimation {
+                NumberAnimation { target: rect; property: "x"; to: 2560; duration: 1000 }
+                NumberAnimation { target: rect; property: "y"; to: 0; duration: 1000 }
             }
         }
     }
+
+    Keys.onUpPressed: root.togglePause()
+    Keys.onDownPressed: root.toggleChaos() //root.next()
 }
