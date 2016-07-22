@@ -14,10 +14,16 @@ Item {
 
     anchors.fill: parent
 
+    QtObject {
+        id: d
+        property double pace: settings.pace/60.0
+        property int itemCount: 0
+    }
+
     World {
         // Global world at odds with relative positions!
         id: commonWorld
-        timeStep: settings.pace/60.0
+        timeStep: d.pace
     }
 
     Component {
@@ -39,7 +45,7 @@ Item {
             World {
                 id: columnWorld
 
-                timeStep: settings.pace/60.0
+                timeStep: d.pace
                 Component.onCompleted: worldArray.push(columnWorld)
             }
 
@@ -61,9 +67,11 @@ Item {
                 repeat: true
                 interval: 1000*(settings.interval > 60 ? 60*(settings.interval-60) : settings.interval)*(Math.random()+1)
                 onTriggered: {
+                    d.itemCount++
                     pictureArray.push(pictureDelegate.createObject(column, { y: -2000 }))
                     if (pictureArray.length > settings.columnCount) {
                         pictureArray.shift().detonate()
+                        d.itemCount--
                     }
                 }
             }
@@ -131,6 +139,20 @@ Item {
                 NumberAnimation { target: rect; property: "x"; to: 2560; duration: 1000 }
                 NumberAnimation { target: rect; property: "y"; to: 0; duration: 1000 }
             }
+        }
+    }
+
+    Rectangle {
+        z: 1
+        color: "black"
+        anchors { right: parent.right; top: parent.top }
+        width: itemCountLabel.width
+        height: itemCountLabel.height
+        Text {
+            id: itemCountLabel
+            font.pixelSize: 100
+            text: d.itemCount
+            color: "white"
         }
     }
 
