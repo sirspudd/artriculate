@@ -34,6 +34,9 @@ Image {
     signal beginContact(Fixture other)
     signal endContact(Fixture other)
 
+    sourceSize.height: height
+    sourceSize.width: width
+
     Body {
         id: boxBody
 
