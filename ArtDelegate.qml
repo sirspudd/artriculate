@@ -5,14 +5,9 @@ import Qt.labs.settings 1.0
 ImageBoxBody {
     id: picture
 
-    signal leftViewport
+    property bool freefall: false
 
-    function detonate() {
-        leftViewport()
-        picture.destroy()
-    }
-
-    onYChanged: y <= floor.y || detonate()
+    onYChanged: freefall && ((y <= floor.y) || picture.destroy())
 
     density: 0.01
     friction: 1.0

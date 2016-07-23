@@ -42,7 +42,6 @@ Item {
 
                 if (colHeight < 1.5*root.height) {
                     var item = pictureDelegate.createObject(column)
-                    item.leftViewport.connect(function() { d.itemCount--; })
                     item.y = -colHeight - item.height
                     d.itemCount++
                     pictureArray.push(item)
@@ -97,7 +96,10 @@ Item {
                 interval: 1000*(settings.interval > 60 ? 60*(settings.interval-60) : settings.interval)*(Math.random()+1)
                 onTriggered: {
                     if (pictureArray.length > 0) {
-                        pictureArray.shift().world = bullshitWorld
+                        var image = pictureArray.shift()
+                        image.world = bullshitWorld
+                        image.freefall = true
+                        d.itemCount--
                     }
                 }
             }
@@ -137,6 +139,11 @@ Item {
     Repeater {
         model: settings.columnCount
         delegate: columnComponent
+    }
+
+    Connections {
+        target: settings
+        onColumnCountChanged: d.itemCount = 0
     }
 
     // TODO: The boot (Monty Python foot) of death to be applied to the stacks
