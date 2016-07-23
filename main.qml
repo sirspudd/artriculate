@@ -12,7 +12,7 @@ Window {
 
     Settings {
         id: settings
-        property int columnCount: 4
+        property int columnCount: 30
         property int interval: 30
         property bool fitByHeight: false
         property double pace: 1.0
