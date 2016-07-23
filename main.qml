@@ -14,8 +14,7 @@ Window {
         id: settings
         property int columnCount: 4
         property int interval: 30
-        property bool animateDeath: false
-        property bool fitByHeight: true
+        property bool fitByHeight: false
         property double pace: 1.0
         property double columnBufferFactor: 1.2
     }
