@@ -76,8 +76,7 @@ Item {
                         pictureArray.shift().world = bullshitWorld
                     }
 
-                    var colHeight = 0
-                    pictureArray.forEach(function (picture) { colHeight += picture.height; })
+                    var colHeight = pictureArray.reduce(function (height, image) { return height + image.height; }, 0)
 
                     do {
                         var item = pictureDelegate.createObject(column)
