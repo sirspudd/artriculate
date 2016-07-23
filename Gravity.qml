@@ -40,7 +40,7 @@ Item {
             function addImage() {
                 var colHeight = pictureArray.reduce(function (height, image) { return height + image.height; }, 0)
 
-                if (colHeight < 1.5*root.height) {
+                if (colHeight < settings.columnBufferFactor*root.height) {
                     var item = pictureDelegate.createObject(column)
                     item.y = -colHeight - item.height
                     d.itemCount++

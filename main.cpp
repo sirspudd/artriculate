@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
     const QString &artPath = settings.value("artPath","/blackhole/media/art").toString();
 
     model->addSupportedExtension("jpg");
+    model->addSupportedExtension("png");
     model->moveToThread(&scanningThread);
     scanningThread.start();
     //QTimer::singleShot(0, model, [model,artPath]() { model->setModelRoot(artPath); });

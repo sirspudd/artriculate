@@ -16,7 +16,8 @@ Window {
         property int interval: 30
         property bool animateDeath: false
         property bool fitByHeight: true
-        property double pace: 6.0
+        property double pace: 1.0
+        property double columnBufferFactor: 1.2
     }
 
     Rectangle {
