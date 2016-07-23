@@ -1,8 +1,8 @@
 #include "picturemodel.h"
 
 #include <QDir>
-
 #include <QDebug>
+#include <QCoreApplication>
 
 struct FSNode {
   FSNode(const QString& rname, const FSNode *pparent = nullptr)
@@ -24,6 +24,8 @@ PictureModel::~PictureModel()
 
 void PictureModel::addModelNode(const FSNode* parentNode)
 {
+    QCoreApplication::processEvents();
+
     // TODO: Check for symlink recursion
     QDir parentDir(qualifyNode(parentNode));
 
@@ -58,6 +60,7 @@ void PictureModel::setModelRoot(const QString &root)
 
 int PictureModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent)
     return files.length();
 }
 
@@ -68,6 +71,7 @@ QString PictureModel::randomPicture() const
 
 QVariant PictureModel::data(const QModelIndex &index, int role) const
 {
+    Q_UNUSED(role)
     if (index.row() < 0 || index.row() >= files.length())
         return QVariant();
 

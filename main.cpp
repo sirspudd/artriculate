@@ -45,5 +45,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("imageModel", model);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
+    QObject::connect(&app, &QGuiApplication::lastWindowClosed, &scanningThread, &QThread::quit);
+
     return app.exec();
 }
