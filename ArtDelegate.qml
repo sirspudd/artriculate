@@ -5,7 +5,11 @@ import Qt.labs.settings 1.0
 ImageBoxBody {
     id: picture
 
-    function detonate() { settings.animateDeath ? destroyAnimation.start() : picture.destroy() }
+    function detonate() {
+        picture.world = bullshitWorld
+    }
+
+    onYChanged: y <= floor.y || picture.destroy()
 
     density: 0.01
     friction: 1.0
@@ -14,10 +18,4 @@ ImageBoxBody {
     bodyType: Body.Dynamic
 
     source: "file://" + imageModel.randomPicture()
-
-    SequentialAnimation {
-        id: destroyAnimation
-        NumberAnimation { target: picture; property: "height"; to: 0; duration: 1000 }
-        ScriptAction { script: { picture.destroy(); } }
-    }
 }

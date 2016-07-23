@@ -21,6 +21,11 @@ Item {
     }
 
     World {
+        id: bullshitWorld
+        timeStep: d.pace
+    }
+
+    World {
         // Global world at odds with relative positions!
         id: commonWorld
         timeStep: d.pace
@@ -67,12 +72,21 @@ Item {
                 repeat: true
                 interval: 1000*(settings.interval > 60 ? 60*(settings.interval-60) : settings.interval)*(Math.random()+1)
                 onTriggered: {
-                    d.itemCount++
-                    pictureArray.push(pictureDelegate.createObject(column, { y: -2000 }))
-                    if (pictureArray.length > settings.columnCount) {
+                    if (pictureArray.length > 0) {
                         pictureArray.shift().detonate()
                         d.itemCount--
                     }
+
+                    var colHeight = 0
+                    pictureArray.forEach(function (picture) { colHeight += picture.height; })
+
+                    do {
+                        var item = pictureDelegate.createObject(column)
+                        item.y = -colHeight - item.height
+                        d.itemCount++
+                        pictureArray.push(item)
+                        colHeight += item.height
+                    } while (colHeight < root.height)
                 }
             }
 
@@ -84,22 +98,19 @@ Item {
             }
 
             Timer {
-                id: initialPopulation
-
-                property int runCount: 0
+                id: settleTimer
+                running: false
                 interval: 500
-                running: runCount < settings.columnCount
-                repeat: true
-                onTriggered: {
-                    runCount = runCount + 1;
-                    feedTimer.triggered()
-                }
+                onTriggered: feedTimer.triggered()
             }
+
+            Component.onCompleted: settleTimer.start()
         }
     }
 
     // floor
     RectangleBoxBody {
+        id: floor
         world: commonWorld
         height: 1
         anchors {
@@ -116,6 +127,10 @@ Item {
         delegate: columnComponent
     }
 
+    Connections {
+        target: settings
+        onColumnCountChanged: d.itemCount = 0
+    }
 
     // TODO: The boot (Monty Python foot) of death to be applied to the stacks
     RectangleBoxBody {
