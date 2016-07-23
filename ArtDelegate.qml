@@ -5,11 +5,14 @@ import Qt.labs.settings 1.0
 ImageBoxBody {
     id: picture
 
+    signal leftViewport
+
     function detonate() {
-        picture.world = bullshitWorld
+        leftViewport()
+        picture.destroy()
     }
 
-    onYChanged: y <= floor.y || picture.destroy()
+    onYChanged: y <= floor.y || detonate()
 
     density: 0.01
     friction: 1.0

@@ -73,8 +73,7 @@ Item {
                 interval: 1000*(settings.interval > 60 ? 60*(settings.interval-60) : settings.interval)*(Math.random()+1)
                 onTriggered: {
                     if (pictureArray.length > 0) {
-                        pictureArray.shift().detonate()
-                        d.itemCount--
+                        pictureArray.shift().world = bullshitWorld
                     }
 
                     var colHeight = 0
@@ -82,11 +81,12 @@ Item {
 
                     do {
                         var item = pictureDelegate.createObject(column)
+                        item.leftViewport.connect(function() { d.itemCount--; })
                         item.y = -colHeight - item.height
                         d.itemCount++
                         pictureArray.push(item)
                         colHeight += item.height
-                    } while (colHeight < root.height)
+                    } while (colHeight < 1.5*root.height)
                 }
             }
 
@@ -100,7 +100,7 @@ Item {
             Timer {
                 id: settleTimer
                 running: false
-                interval: 500
+                interval: 200
                 onTriggered: feedTimer.triggered()
             }
 

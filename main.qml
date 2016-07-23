@@ -4,7 +4,8 @@ import Qt.labs.settings 1.0
 
 Window {
     id: appWindow
-    visibility: Window.FullScreen
+    //visibility: Window.FullScreen
+    visible: true
 
     width: 1024
     height: 768
@@ -35,4 +36,6 @@ Window {
         Keys.onLeftPressed: settings.columnCount = Math.max(settings.columnCount-1,1)
         Keys.onRightPressed: settings.columnCount++
     }
+
+    Component.onCompleted: showFullScreen()
 }
