@@ -172,6 +172,7 @@ Item {
     }
 
     Rectangle {
+        visible: settings.viewItemCount
         z: 1
         color: "black"
         anchors { right: parent.right; top: parent.top }

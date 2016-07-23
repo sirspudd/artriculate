@@ -17,6 +17,7 @@ Window {
         property bool fitByHeight: false
         property double pace: 1.0
         property double columnBufferFactor: 1.2
+        property bool viewItemCount: false
     }
 
     Rectangle {
