@@ -36,6 +36,19 @@ Item {
 
         Item {
             id: column
+
+            function addImage() {
+                var colHeight = pictureArray.reduce(function (height, image) { return height + image.height; }, 0)
+
+                if (colHeight < 1.5*root.height) {
+                    var item = pictureDelegate.createObject(column)
+                    item.leftViewport.connect(function() { d.itemCount--; })
+                    item.y = -colHeight - item.height
+                    d.itemCount++
+                    pictureArray.push(item)
+                }
+            }
+
             x: xOffset - effectiveXOffset
             width: parent.width/settings.columnCount
 
@@ -67,7 +80,18 @@ Item {
             }
 
             Timer {
-                id: feedTimer
+                id: pumpTimer
+                interval: Math.random()*500
+                repeat: true
+                running: true
+                onTriggered: {
+                    column.addImage()
+                    interval = Math.random()*500 + 500
+                }
+            }
+
+            Timer {
+                id: deathTimer
                 running: true
                 repeat: true
                 interval: 1000*(settings.interval > 60 ? 60*(settings.interval-60) : settings.interval)*(Math.random()+1)
@@ -75,24 +99,13 @@ Item {
                     if (pictureArray.length > 0) {
                         pictureArray.shift().world = bullshitWorld
                     }
-
-                    var colHeight = pictureArray.reduce(function (height, image) { return height + image.height; }, 0)
-
-                    do {
-                        var item = pictureDelegate.createObject(column)
-                        item.leftViewport.connect(function() { d.itemCount--; })
-                        item.y = -colHeight - item.height
-                        d.itemCount++
-                        pictureArray.push(item)
-                        colHeight += item.height
-                    } while (colHeight < 1.5*root.height)
                 }
             }
 
             Connections {
                 target: root
-                onTogglePause: feedTimer.running = !feedTimer.running
-                onNext: feedTimer.triggered()
+                onTogglePause: deathTimer.running = !deathTimer.running
+                onNext: deathTimer.triggered()
                 onToggleChaos: fixedRotation = !fixedRotation
             }
 
@@ -100,7 +113,7 @@ Item {
                 id: settleTimer
                 running: false
                 interval: 200
-                onTriggered: feedTimer.triggered()
+                onTriggered: deathTimer.triggered()
             }
 
             Component.onCompleted: settleTimer.start()
@@ -124,11 +137,6 @@ Item {
     Repeater {
         model: settings.columnCount
         delegate: columnComponent
-    }
-
-    Connections {
-        target: settings
-        onColumnCountChanged: d.itemCount = 0
     }
 
     // TODO: The boot (Monty Python foot) of death to be applied to the stacks
