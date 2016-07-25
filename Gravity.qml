@@ -39,7 +39,7 @@ Item {
             property int columnHeight: 0
 
             function addImage() {
-                if (columnHeight < settings.columnBufferFactor*root.height) {
+                if (columnHeight < (1.1+1/settings.columnCount)*root.height) {
                     var item = pictureDelegate.createObject(column)
                     columnHeight += item.height
                     item.y = (floor.y - 1) - columnHeight
