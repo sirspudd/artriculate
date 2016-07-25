@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     model->addSupportedExtension("png");
     model->moveToThread(&scanningThread);
     scanningThread.start();
-    //QTimer::singleShot(0, model, [model,artPath]() { model->setModelRoot(artPath); });
+
     QMetaObject::invokeMethod(model, "setModelRoot", Qt::QueuedConnection, Q_ARG(QString,artPath));
     settings.setValue("artPath", artPath);
 

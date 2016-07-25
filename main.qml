@@ -37,5 +37,18 @@ Window {
         Keys.onRightPressed: settings.columnCount++
     }
 
+    Rectangle {
+        visible: imageModel.rowCount() == 0
+        color: "red"
+        width: childrenRect.width
+        height: childrenRect.height
+
+        anchors { bottom: parent.bottom; horizontalCenter: parent.horizontalCenter }
+        Text {
+            font.pointSize: 40
+            text: "No images found/provided"
+        }
+    }
+
     Component.onCompleted: showFullScreen()
 }

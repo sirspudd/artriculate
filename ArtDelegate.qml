@@ -15,5 +15,5 @@ ImageBoxBody {
     world: parent.physicsWorld
     bodyType: Body.Dynamic
 
-    source: "file://" + imageModel.randomPicture()
+    source: imageModel.randomPicture()
 }

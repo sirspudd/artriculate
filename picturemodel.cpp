@@ -66,7 +66,10 @@ int PictureModel::rowCount(const QModelIndex &parent) const
 
 QString PictureModel::randomPicture() const
 {
-    return qualifyNode(files.at(qrand()%files.size()));
+    if (files.size() <= 0)
+        return QString("qrc:///qt_logo_green_rgb.png");
+
+    return QString("file://").append(qualifyNode(files.at(qrand()%files.size())));
 }
 
 QVariant PictureModel::data(const QModelIndex &index, int role) const

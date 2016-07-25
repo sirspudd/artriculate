@@ -8,5 +8,6 @@
         <file>HorizontalArtDelegate.qml</file>
         <file>Gravity.qml</file>
         <file>Ticker.qml</file>
+        <file>qt_logo_green_rgb.png</file>
     </qresource>
 </RCC>

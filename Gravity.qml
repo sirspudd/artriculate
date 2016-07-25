@@ -42,7 +42,7 @@ Item {
                 if (columnHeight < (1.1+1/settings.columnCount)*root.height) {
                     var item = pictureDelegate.createObject(column)
                     columnHeight += item.height
-                    item.y = (floor.y - 1) - columnHeight
+                    item.y = floor.y - columnHeight
                     d.itemCount++
                     pictureArray.push(item)
                 }
