@@ -6,7 +6,7 @@
 #include <QSurfaceFormat>
 #include <QTimer>
 
-#include <picturemodel.h>
+#include "picturemodel.h"
 
 int main(int argc, char *argv[])
 {

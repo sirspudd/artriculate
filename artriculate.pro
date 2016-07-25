@@ -3,10 +3,10 @@ TEMPLATE = app
 QT += qml quick
 CONFIG += c++11
 
-SOURCES += main.cpp \
-    picturemodel.cpp
+SOURCES += src/main.cpp \
+    src/picturemodel.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += qml/qml.qrc resources/resources.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -15,4 +15,4 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    picturemodel.h
+    src/picturemodel.h
