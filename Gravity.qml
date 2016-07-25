@@ -36,13 +36,13 @@ Item {
 
         Item {
             id: column
+            property int columnHeight: 0
 
             function addImage() {
-                var colHeight = pictureArray.reduce(function (height, image) { return height + image.height; }, 0)
-
-                if (colHeight < settings.columnBufferFactor*root.height) {
+                if (columnHeight < settings.columnBufferFactor*root.height) {
                     var item = pictureDelegate.createObject(column)
-                    item.y = -colHeight - item.height
+                    columnHeight += item.height
+                    item.y = (floor.y - 1) - columnHeight
                     d.itemCount++
                     pictureArray.push(item)
                 }
@@ -80,18 +80,17 @@ Item {
 
             Timer {
                 id: pumpTimer
-                interval: Math.random()*500
+                interval: Math.random()*500 + 500
                 repeat: true
                 running: true
                 onTriggered: {
                     column.addImage()
-                    interval = Math.random()*500 + 500
                 }
             }
 
             Timer {
                 id: deathTimer
-                running: true
+                running: columnHeight > root.height
                 repeat: true
                 interval: 1000*(settings.interval > 60 ? 60*(settings.interval-60) : settings.interval)*(Math.random()+1)
                 onTriggered: {
@@ -100,6 +99,7 @@ Item {
                         image.world = bullshitWorld
                         image.freefall = true
                         d.itemCount--
+                        columnHeight -= image.height
                     }
                 }
             }
