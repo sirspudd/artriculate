@@ -12,6 +12,7 @@ Window {
 
     Settings {
         id: settings
+        property int itemTravel: 2
         property int columnCount: 30
         property int interval: 2
         property bool fitByHeight: false
@@ -39,7 +40,7 @@ Window {
     }
 
     Rectangle {
-        visible: imageModel.rowCount() == 0
+        visible: imageModel.rowCount() === 0
         color: "red"
         width: childrenRect.width
         height: childrenRect.height

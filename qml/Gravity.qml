@@ -16,6 +16,7 @@ Item {
         id: d
         property double pace: settings.pace/60.0
         property int itemCount: 0
+        property int itemTravel: settings.itemTravel
         property int primedColumns: 0
         property int columnCount: settings.columnCount
         property bool running: primedColumns >= columnCount
@@ -35,7 +36,6 @@ Item {
     }
 
     World {
-        // Global world at odds with relative positions!
         id: commonWorld
         timeStep: d.pace
         running: d.running
@@ -60,8 +60,8 @@ Item {
             function addImage() {
                 if (columnHeight < (1.1+1/d.columnCount)*root.height) {
                     var item = pictureDelegate.createObject(column)
-                    columnHeight += item.height
-                    item.y = (floor.y - 1) - columnHeight
+                    columnHeight += (item.height + d.itemTravel)
+                    item.y = floor.y - columnHeight
                     d.itemCount++
                     pictureArray.push(item)
                 }
@@ -116,7 +116,7 @@ Item {
                         image.world = bullshitWorld
                         image.freefall = true
                         d.itemCount--
-                        columnHeight -= image.height
+                        columnHeight -= (image.height + d.itemTravel)
                     }
                 }
             }
