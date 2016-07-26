@@ -13,10 +13,11 @@ Window {
     Settings {
         id: settings
         property int columnCount: 30
-        property int interval: 30
+        property int interval: 2
         property bool fitByHeight: false
         property double pace: 1.0
         property bool viewItemCount: false
+        property bool globalWorld: false
     }
 
     Rectangle {

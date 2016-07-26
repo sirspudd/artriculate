@@ -8,8 +8,6 @@ Item {
     signal toggleChaos
     signal next
 
-    property bool globalWorld: settings.fitByHeight
-    property var worldArray: []
     property var pictureDelegate: Qt.createComponent(settings.fitByHeight ? "VerticalArtDelegate.qml" : "HorizontalArtDelegate.qml")
 
     anchors.fill: parent
@@ -18,17 +16,29 @@ Item {
         id: d
         property double pace: settings.pace/60.0
         property int itemCount: 0
+        property int primedColumns: 0
+        property int columnCount: settings.columnCount
+        property bool running: primedColumns >= columnCount
+
+        function reset() {
+            itemCount = 0
+            primedColumns = 0
+        }
+
+        onColumnCountChanged: reset()
     }
 
     World {
         id: bullshitWorld
         timeStep: d.pace
+        running: d.running
     }
 
     World {
         // Global world at odds with relative positions!
         id: commonWorld
         timeStep: d.pace
+        running: d.running
     }
 
     Component {
@@ -36,34 +46,41 @@ Item {
 
         Item {
             id: column
+
             property int columnHeight: 0
+            property bool full: false
+
+            onColumnHeightChanged: {
+                if (!column.full && (columnHeight > root.height)) {
+                    d.primedColumns += 1
+                    column.full = true
+                }
+            }
 
             function addImage() {
-                if (columnHeight < (1.1+1/settings.columnCount)*root.height) {
+                if (columnHeight < (1.1+1/d.columnCount)*root.height) {
                     var item = pictureDelegate.createObject(column)
                     columnHeight += item.height
-                    item.y = floor.y - columnHeight
+                    item.y = (floor.y - 1) - columnHeight
                     d.itemCount++
                     pictureArray.push(item)
                 }
             }
 
-            x: xOffset - effectiveXOffset
-            width: parent.width/settings.columnCount
+            x: width * index
+            width: parent.width/d.columnCount
 
             anchors { top: parent.top; bottom: parent.bottom }
 
             property var pictureArray: []
             property var physicsWorld: settings.globalWorld ? commonWorld : columnWorld
             property bool fixedRotation: true
-            property int xOffset: width * index
-            property int effectiveXOffset: settings.globalWorld ? xOffset : 0
 
             World {
                 id: columnWorld
 
                 timeStep: d.pace
-                Component.onCompleted: worldArray.push(columnWorld)
+                running: d.running
             }
 
             RectangleBoxBody {
@@ -90,7 +107,7 @@ Item {
 
             Timer {
                 id: deathTimer
-                running: columnHeight > root.height
+                running: d.running
                 repeat: true
                 interval: 1000*(settings.interval > 60 ? 60*(settings.interval-60) : settings.interval)*(Math.random()+1)
                 onTriggered: {
@@ -117,8 +134,6 @@ Item {
                 interval: 200
                 onTriggered: deathTimer.triggered()
             }
-
-            Component.onCompleted: settleTimer.start()
         }
     }
 
@@ -137,13 +152,8 @@ Item {
     }
 
     Repeater {
-        model: settings.columnCount
+        model: d.columnCount
         delegate: columnComponent
-    }
-
-    Connections {
-        target: settings
-        onColumnCountChanged: d.itemCount = 0
     }
 
     // TODO: The boot (Monty Python foot) of death to be applied to the stacks
