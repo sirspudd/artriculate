@@ -134,6 +134,15 @@ Item {
                 interval: 200
                 onTriggered: deathTimer.triggered()
             }
+
+            DebugDraw {
+                id: debugDraw
+                z: 1
+                world: physicsWorld
+                anchors.fill: parent
+                opacity: 0.75
+                visible: true
+            }
         }
     }
 
