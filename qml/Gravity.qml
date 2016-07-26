@@ -115,7 +115,6 @@ Item {
                     if (pictureArray.length > 0) {
                         var image = pictureArray.shift()
                         image.world = bullshitWorld
-                        image.freefall = true
                         d.itemCount--
                         columnHeight -= (image.height + d.itemTravel)
                     }
