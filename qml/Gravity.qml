@@ -80,6 +80,7 @@ Item {
                 id: columnWorld
 
                 timeStep: d.pace
+                // There is less item fall through when this runs perpetually
                 running: d.running
             }
 

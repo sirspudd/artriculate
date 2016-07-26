@@ -12,7 +12,7 @@ Window {
 
     Settings {
         id: settings
-        property int itemTravel: 2
+        property int itemTravel: 1
         property int columnCount: 30
         property int interval: 2
         property bool fitByHeight: false
