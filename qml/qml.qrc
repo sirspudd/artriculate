@@ -4,7 +4,6 @@
         <file>ArtDelegate.qml</file>
         <file>ImageBoxBody.qml</file>
         <file>RectangleBoxBody.qml</file>
-        <file>VerticalArtDelegate.qml</file>
         <file>HorizontalArtDelegate.qml</file>
         <file>Gravity.qml</file>
         <file>Ticker.qml</file>

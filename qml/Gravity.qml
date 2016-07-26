@@ -8,7 +8,7 @@ Item {
     signal toggleChaos
     signal next
 
-    property var pictureDelegate: Qt.createComponent(settings.fitByHeight ? "VerticalArtDelegate.qml" : "HorizontalArtDelegate.qml")
+    property var pictureDelegate: Qt.createComponent("HorizontalArtDelegate.qml")
 
     anchors.fill: parent
 
