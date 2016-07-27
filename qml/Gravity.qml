@@ -33,7 +33,7 @@ Item {
     World {
         id: bullshitWorld
         timeStep: d.pace
-        running: d.globalWorld && d.running
+        running: d.running
     }
 
     World {
