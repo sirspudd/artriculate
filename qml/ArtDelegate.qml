@@ -8,15 +8,14 @@ ImageBoxBody {
     signal beyondThePale(var item)
 
     onYChanged:
-        if (y > floor.y)
+        if (y > globalFloor.y)
             beyondThePale(this)
 
-    density: 10
+    density: 1.0
     friction: 0
-    restitution: 0.2
+    restitution: 0.1
 
     fixedRotation: parent.fixedRotation
-    world: parent.physicsWorld
     bodyType: Body.Dynamic
 
     source: imageModel.randomPicture()

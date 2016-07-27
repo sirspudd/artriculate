@@ -17,6 +17,7 @@ Window {
         property int interval: 2
         property double pace: 1.0
         property bool viewItemCount: false
+        property bool globalWorld: false
     }
 
     Rectangle {

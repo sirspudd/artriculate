@@ -20,6 +20,7 @@ Item {
         property int primedColumns: 0
         property int columnCount: settings.columnCount
         property bool running: primedColumns >= columnCount
+        property bool globalWorld: settings.globalWorld
 
         function reset() {
             itemCount = 0
@@ -32,13 +33,13 @@ Item {
     World {
         id: bullshitWorld
         timeStep: d.pace
-        running: d.running
+        running: d.globalWorld && d.running
     }
 
     World {
         id: commonWorld
         timeStep: d.pace
-        running: d.running
+        running: d.globalWorld && d.running
     }
 
     Component {
@@ -49,6 +50,7 @@ Item {
 
             property int stackHeight: 0
             property bool full: false
+            property int xOffset: width * index
 
             onStackHeightChanged: {
                 if (!column.full && (stackHeight > root.height)) {
@@ -57,11 +59,18 @@ Item {
                 }
             }
 
+            function considerImage() {
+                if (stackHeight < (1.3 + 1/d.columnCount)*root.height) {
+                    addImage()
+                }
+            }
+
             function addImage() {
                 var item = pictureDelegate.createObject(column, { x: -1000, y: -1000 })
                 item.beyondThePale.connect(removeImage)
                 stackHeight += (item.height + d.itemTravel)
-                item.x = width * index
+                item.world = d.globalWorld ? commonWorld : columnWorld
+                item.x = xOffset
                 item.y = floor.y - stackHeight
                 d.itemCount++
                 pictureArray.push(item)
@@ -78,17 +87,32 @@ Item {
             anchors { top: parent.top; bottom: parent.bottom }
 
             property var pictureArray: []
-            property var physicsWorld: commonWorld
             property bool fixedRotation: true
+
+            World {
+                id: columnWorld
+                timeStep: d.pace
+                running: !d.globalWorld && d.running
+            }
+
+            RectangleBoxBody {
+                id: floor
+                world: columnWorld
+                height: 0
+                width: parent.width
+                x: xOffset
+                anchors {
+                    top: parent.bottom
+                }
+                friction: 1
+            }
 
             Timer {
                 id: pumpTimer
                 interval: Math.random()*500 + 500
                 repeat: true
-                running: !full
-                onTriggered: {
-                    addImage()
-                }
+                running: true
+                onTriggered: considerImage()
             }
 
             Timer {
@@ -123,7 +147,7 @@ Item {
 
     // floor
     RectangleBoxBody {
-        id: floor
+        id: globalFloor
         world: commonWorld
         height: 0
         anchors {
@@ -132,7 +156,6 @@ Item {
             top: parent.bottom
         }
         friction: 1
-        density: 1
     }
 
     DebugDraw {
