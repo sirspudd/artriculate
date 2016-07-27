@@ -8,7 +8,6 @@ class FSNode;
 class PictureModel : public QAbstractListModel
 {
     Q_OBJECT
-
 public:
     enum PictureRoles {
         PathRole = Qt::UserRole + 1

@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>qt_logo_green_rgb.png</file>
+        <file>shaders/billboard.fsh</file>
+        <file>shaders/emboss.fsh</file>
+        <file>shaders/gaussianblur_h.fsh</file>
+        <file>shaders/gaussianblur_v.fsh</file>
     </qresource>
 </RCC>

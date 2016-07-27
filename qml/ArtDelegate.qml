@@ -6,6 +6,7 @@ ImageBoxBody {
     id: picture
 
     signal beyondThePale(var item)
+    property var effect
 
     onYChanged:
         if (y > globalFloor.y)

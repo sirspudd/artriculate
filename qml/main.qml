@@ -20,6 +20,7 @@ Window {
         property bool globalWorld: false
         // Very computationally heavy: 40% vs 20% for 0.1 vs 0
         property double restitution: 0.1
+        property bool embossEffect: false
     }
 
     Rectangle {
@@ -27,6 +28,7 @@ Window {
         color: "black"
         anchors.fill: parent
         Keys.forwardTo: [punk, toplevelhandler]
+
         Gravity {
             // TODO: generalize all this
             id: punk

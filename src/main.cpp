@@ -1,3 +1,5 @@
+#include "picturemodel.h"
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -6,7 +8,28 @@
 #include <QSurfaceFormat>
 #include <QTimer>
 
-#include "picturemodel.h"
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QTextStream>
+
+#include <QDebug>
+
+class FileReader : public QObject {
+    Q_OBJECT
+public:
+    FileReader(QObject *p) : QObject(p) { /**/ }
+    Q_INVOKABLE static QString readFile(const QString &fileName)
+    {
+        QString content;
+        QFile file(fileName);
+        if (file.open(QIODevice::ReadOnly)) {
+            QTextStream stream(&file);
+            content = stream.readAll();
+        }
+        return content;
+    }
+};
 
 int main(int argc, char *argv[])
 {
@@ -44,9 +67,12 @@ int main(int argc, char *argv[])
     settings.setValue("artPath", artPath);
 
     engine.rootContext()->setContextProperty("imageModel", model);
+    engine.rootContext()->setContextProperty("fileReader", new FileReader(&app));
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     QObject::connect(&app, &QGuiApplication::lastWindowClosed, &scanningThread, &QThread::quit);
 
     return app.exec();
 }
+
+#include "main.moc"

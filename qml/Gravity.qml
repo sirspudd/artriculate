@@ -9,6 +9,7 @@ Item {
     signal next
 
     property var pictureDelegate: Qt.createComponent("HorizontalArtDelegate.qml")
+    property var effectDelegate: Qt.createComponent("VisualEffect.qml")
 
     anchors.fill: parent
 
@@ -21,6 +22,7 @@ Item {
         property int columnCount: settings.columnCount
         property bool running: primedColumns >= columnCount
         property bool globalWorld: settings.globalWorld
+        property bool embossEffect: settings.embossEffect
 
         function reset() {
             itemCount = 0
@@ -66,17 +68,26 @@ Item {
             }
 
             function addImage() {
-                var item = pictureDelegate.createObject(column, { x: -1000, y: -1000 })
-                item.beyondThePale.connect(removeImage)
-                stackHeight += (item.height + d.itemTravel)
-                item.world = d.globalWorld ? commonWorld : columnWorld
-                item.x = xOffset
-                item.y = floor.y - stackHeight
+                var image = pictureDelegate.createObject(column, { x: -1000, y: -1000 })
+
+                if (d.embossEffect) {
+                  image.effect = effectDelegate.createObject(column)
+                  image.effect.target = image
+                }
+                image.beyondThePale.connect(removeImage)
+                image.world = d.globalWorld ? commonWorld : columnWorld
+                image.x = xOffset
+                stackHeight += (image.height + d.itemTravel)
+                image.y = floor.y - stackHeight
+
+                pictureArray.push(image)
                 d.itemCount++
-                pictureArray.push(item)
             }
 
             function removeImage(image) {
+                if (image.effect) {
+                    image.effect.destroy()
+                }
                 stackHeight -= (image.height + d.itemTravel)
                 image.destroy()
                 d.itemCount--
