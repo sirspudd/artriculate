@@ -18,6 +18,8 @@ Window {
         property double pace: 1.0
         property bool viewItemCount: false
         property bool globalWorld: false
+        // Very computationally heavy: 40% vs 20% for 0.1 vs 0
+        property double restitution: 0.1
     }
 
     Rectangle {
