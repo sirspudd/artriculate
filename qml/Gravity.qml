@@ -15,7 +15,7 @@ Item {
 
     QtObject {
         id: d
-        property double pace: settings.pace/60.0
+        property real pace: settings.pace/60.0
         property int itemCount: 0
         property int itemTravel: settings.itemTravel
         property int primedColumns: 0

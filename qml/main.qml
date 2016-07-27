@@ -15,11 +15,11 @@ Window {
         property int itemTravel: 1
         property int columnCount: 30
         property int interval: 2
-        property double pace: 1.0
+        property real pace: 1.0
         property bool viewItemCount: false
         property bool globalWorld: false
         // Very computationally heavy: 40% vs 20% for 0.1 vs 0
-        property double restitution: 0.1
+        property real restitution: 0.1
         property bool embossEffect: false
     }
 
