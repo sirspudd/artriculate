@@ -47,62 +47,47 @@ Item {
         Item {
             id: column
 
-            property int columnHeight: 0
+            property int stackHeight: 0
             property bool full: false
 
-            onColumnHeightChanged: {
-                if (!column.full && (columnHeight > root.height)) {
+            onStackHeightChanged: {
+                if (!column.full && (stackHeight > root.height)) {
                     d.primedColumns += 1
                     column.full = true
                 }
             }
 
             function addImage() {
-                if (columnHeight < (1.1+1/d.columnCount)*root.height) {
-                    var item = pictureDelegate.createObject(column)
-                    columnHeight += (item.height + d.itemTravel)
-                    item.y = floor.y - columnHeight
-                    d.itemCount++
-                    pictureArray.push(item)
-                }
+                var item = pictureDelegate.createObject(column, { x: -1000, y: -1000 })
+                item.beyondThePale.connect(removeImage)
+                stackHeight += (item.height + d.itemTravel)
+                item.x = width * index
+                item.y = floor.y - stackHeight
+                d.itemCount++
+                pictureArray.push(item)
             }
 
-            x: width * index
+            function removeImage(image) {
+                stackHeight -= (image.height + d.itemTravel)
+                image.destroy()
+                d.itemCount--
+            }
+
             width: parent.width/d.columnCount
 
             anchors { top: parent.top; bottom: parent.bottom }
 
             property var pictureArray: []
-            property var physicsWorld: settings.globalWorld ? commonWorld : columnWorld
+            property var physicsWorld: commonWorld
             property bool fixedRotation: true
-
-            World {
-                id: columnWorld
-
-                timeStep: d.pace
-                // There is less item fall through when this runs perpetually
-                running: d.running
-            }
-
-            RectangleBoxBody {
-                world: physicsWorld
-                height: 1
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                    top: parent.bottom
-                }
-                friction: 1
-                density: 1
-            }
 
             Timer {
                 id: pumpTimer
                 interval: Math.random()*500 + 500
                 repeat: true
-                running: true
+                running: !full
                 onTriggered: {
-                    column.addImage()
+                    addImage()
                 }
             }
 
@@ -115,8 +100,7 @@ Item {
                     if (pictureArray.length > 0) {
                         var image = pictureArray.shift()
                         image.world = bullshitWorld
-                        d.itemCount--
-                        columnHeight -= (image.height + d.itemTravel)
+                        addImage()
                     }
                 }
             }
@@ -134,15 +118,6 @@ Item {
                 interval: 200
                 onTriggered: deathTimer.triggered()
             }
-
-            DebugDraw {
-                id: debugDraw
-                z: 1
-                world: physicsWorld
-                anchors.fill: parent
-                opacity: 0.75
-                visible: true
-            }
         }
     }
 
@@ -150,7 +125,7 @@ Item {
     RectangleBoxBody {
         id: floor
         world: commonWorld
-        height: 1
+        height: 0
         anchors {
             left: parent.left
             right: parent.right
@@ -158,6 +133,16 @@ Item {
         }
         friction: 1
         density: 1
+    }
+
+    DebugDraw {
+        id: debugDraw
+        enabled: false
+        z: 1
+        world: commonWorld
+        anchors.fill: parent
+        opacity: 0.75
+        visible: enabled
     }
 
     Repeater {

@@ -5,10 +5,16 @@ import Qt.labs.settings 1.0
 ImageBoxBody {
     id: picture
 
-    onYChanged: y > floor.y && picture.destroy()
+    signal beyondThePale(var item)
 
-    density: 1.0
-    friction: 0.0
+    onYChanged:
+        if (y > floor.y)
+            beyondThePale(this)
+
+    density: 10
+    friction: 0
+    restitution: 0.2
+
     fixedRotation: parent.fixedRotation
     world: parent.physicsWorld
     bodyType: Body.Dynamic
