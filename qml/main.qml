@@ -13,7 +13,7 @@ Window {
     Settings {
         id: settings
         property int itemTravel: 1
-        property int columnCount: 30
+        property int columnCount: 10
         property int interval: 2
         property real pace: 1.0
         property bool viewItemCount: false
