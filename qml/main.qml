@@ -4,8 +4,6 @@ import Qt.labs.settings 1.0
 
 Window {
     id: appWindow
-    //visibility: Window.FullScreen
-    visible: true
 
     width: 1024
     height: 768
