@@ -12,14 +12,14 @@ Window {
 
     Settings {
         id: settings
-        property int itemTravel: 1
-        property int columnCount: 10
-        property int interval: 2
-        property real pace: 1.0
+        property int itemTravel: 0
+        property int columnCount: 5
+        property int interval: 5
+        property real pace: 1
         property bool viewItemCount: false
         property bool globalWorld: false
         // Very computationally heavy: 40% vs 20% for 0.1 vs 0
-        property real restitution: 0.1
+        property real restitution: 0
         property bool embossEffect: false
     }
 
