@@ -2,6 +2,7 @@
 #define PICTUREMODEL_H
 
 #include <QAbstractListModel>
+#include <QUrl>
 
 class FSNode;
 
@@ -18,7 +19,7 @@ public:
 
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
-    Q_INVOKABLE QString randomPicture() const;
+    Q_INVOKABLE QUrl randomPicture() const;
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
     Q_INVOKABLE void setModelRoot(const QString &root);
