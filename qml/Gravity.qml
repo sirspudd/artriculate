@@ -33,15 +33,13 @@ Item {
     }
 
     World {
-        id: bullshitWorld
-        timeStep: d.pace
-        running: d.running
-    }
-
-    World {
-        id: commonWorld
+        id: world
         timeStep: d.pace
         running: d.globalWorld && d.running
+        property var limbo: World {
+            timeStep: world.timeStep
+            running: world.running
+        }
     }
 
     Component {
@@ -75,7 +73,7 @@ Item {
                   image.effect.target = image
                 }
                 image.beyondThePale.connect(removeImage)
-                image.world = d.globalWorld ? commonWorld : columnWorld
+                image.world = d.globalWorld ? world : isolatedWorld
                 image.x = xOffset
                 stackHeight += (image.height + d.itemTravel)
                 image.y = floor.y - stackHeight
@@ -93,6 +91,14 @@ Item {
                 d.itemCount--
             }
 
+            function shiftImageToLimbo() {
+                if (pictureArray.length > 0) {
+                    var image = pictureArray.shift()
+                    image.world = image.world.limbo
+                    addImage()
+                }
+            }
+
             width: parent.width/d.columnCount
 
             anchors { top: parent.top; bottom: parent.bottom }
@@ -101,14 +107,18 @@ Item {
             property bool fixedRotation: true
 
             World {
-                id: columnWorld
+                id: isolatedWorld
                 timeStep: d.pace
                 running: !d.globalWorld && d.running
+                property var limbo: World {
+                    timeStep: isolatedWorld.timeStep
+                    running: isolatedWorld.running
+                }
             }
 
             RectangleBoxBody {
                 id: floor
-                world: columnWorld
+                world: isolatedWorld
                 height: 0
                 width: parent.width
                 x: xOffset
@@ -131,13 +141,7 @@ Item {
                 running: d.running
                 repeat: true
                 interval: 1000*(settings.interval > 60 ? 60*(settings.interval-60) : settings.interval)*(Math.random()+1)
-                onTriggered: {
-                    if (pictureArray.length > 0) {
-                        var image = pictureArray.shift()
-                        image.world = bullshitWorld
-                        addImage()
-                    }
-                }
+                onTriggered: shiftImageToLimbo()
             }
 
             Connections {
@@ -159,7 +163,7 @@ Item {
     // floor
     RectangleBoxBody {
         id: globalFloor
-        world: commonWorld
+        world: world
         height: 0
         anchors {
             left: parent.left
@@ -173,7 +177,7 @@ Item {
         id: debugDraw
         enabled: false
         z: 1
-        world: commonWorld
+        world: world
         anchors.fill: parent
         opacity: 0.75
         visible: enabled
