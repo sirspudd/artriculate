@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 
     QSettings settings;
 
-    if (settings.value("force32bpp", false).toBool()) {
+    if (settings.value("force32bpp", true).toBool()) {
         QSurfaceFormat format = QSurfaceFormat::defaultFormat();
         format.setAlphaBufferSize(8);
         format.setRedBufferSize(8);
