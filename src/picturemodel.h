@@ -9,6 +9,7 @@ class FSNode;
 class PictureModel : public QAbstractListModel
 {
     Q_OBJECT
+    Q_PROPERTY (int count READ rowCount NOTIFY countChanged)
 public:
     enum PictureRoles {
         PathRole = Qt::UserRole + 1
@@ -23,9 +24,14 @@ public:
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
     Q_INVOKABLE void setModelRoot(const QString &root);
+
+    void setSupportedExtensions(QStringList extensions);
     void addSupportedExtension(const QString &extension);
     void addModelNode(const FSNode *parent);
     QString qualifyNode(const FSNode *node) const;
+
+signals:
+    void countChanged();
 
 protected:
     QHash<int, QByteArray> roleNames() const;

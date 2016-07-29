@@ -42,6 +42,7 @@ void PictureModel::addModelNode(const FSNode* parentNode)
         }
         const FSNode *file = new FSNode(currentFile, parentNode);
         files << file;
+        emit countChanged();
     }
 }
 
@@ -55,7 +56,11 @@ void PictureModel::setModelRoot(const QString &root)
 
 //    foreach(FSNode *node, files) {
 //        qDebug() << "Contains:" << qualifyNode(node);
-//    }
+    //    }
+}
+
+void PictureModel::setSupportedExtensions(QStringList extensions) {
+    this->extensions = extensions;
 }
 
 int PictureModel::rowCount(const QModelIndex &parent) const
