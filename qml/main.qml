@@ -14,11 +14,12 @@ Window {
         property int columnCount: 5
         property int interval: 5
         property real pace: 1
+        property bool smoothedEffects: false
         property bool viewItemCount: false
         property bool globalWorld: false
         // Very computationally heavy: 40% vs 20% for 0.1 vs 0
         property real restitution: 0
-        property bool embossEffect: false
+        property string effect: ""
     }
 
     Rectangle {

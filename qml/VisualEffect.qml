@@ -1,21 +1,23 @@
 import QtQuick 2.5
-import "effects" as Effects
+import "effects"
 
 Item {
-    property alias target: source.sourceItem
+    id: root
+    property alias target: effectSource.sourceItem
+
+    property string effect: "Random"
+    property var effectObject
 
     anchors.fill: target
+
     ShaderEffectSource {
-        id: source
-        smooth: true
+        id: effectSource
+        smooth: settings.smoothedEffects
         hideSource: true
         sourceItem: target
     }
 
-    Effects.Emboss {
-        source: source
-        anchors.fill: parent
-        targetWidth: parent.width
-        targetHeight: parent.height
+    Component.onCompleted: {
+        effectObject = Effects.getComponent(effect).createObject(root, { "source": effectSource, "anchors.fill": root, "targetWidth": root.width, "targetHeight": root.height })
     }
 }

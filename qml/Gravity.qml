@@ -1,5 +1,6 @@
 import QtQuick 2.5
 import Box2D 2.0
+import "effects"
 
 Item {
     id: root
@@ -22,7 +23,7 @@ Item {
         property int columnCount: settings.columnCount
         property bool running: primedColumns >= columnCount
         property bool globalWorld: settings.globalWorld
-        property bool embossEffect: settings.embossEffect
+        property string effect: settings.effect
 
         function reset() {
             itemCount = 0
@@ -68,10 +69,10 @@ Item {
             function addImage() {
                 var image = pictureDelegate.createObject(column, { x: -1000, y: -1000 })
 
-                if (d.embossEffect) {
-                  image.effect = effectDelegate.createObject(column)
-                  image.effect.target = image
+                if (d.effect !== "" && Effects.validate(d.effect)) {
+                    image.effect = effectDelegate.createObject(column, { target: image, effect: d.effect })
                 }
+
                 image.beyondThePale.connect(removeImage)
                 image.world = d.globalWorld ? world : isolatedWorld
                 image.x = xOffset
@@ -230,4 +231,9 @@ Item {
 
     Keys.onUpPressed: root.togglePause()
     Keys.onDownPressed: root.toggleChaos() //root.next()
+
+    Component.onCompleted: {
+        pictureDelegate.status !== Component.Ready && console.log('Component failed with:' + pictureDelegate.errorString())
+        effectDelegate.status !== Component.Ready && console.log('Component failed with:' + effectDelegate.errorString())
+    }
 }

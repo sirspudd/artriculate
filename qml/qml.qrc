@@ -12,5 +12,7 @@
         <file>effects/Emboss.qml</file>
         <file>effects/GaussianBlur.qml</file>
         <file>VisualEffect.qml</file>
+        <file>effects/Effects.qml</file>
+        <file>effects/qmldir</file>
     </qresource>
 </RCC>
