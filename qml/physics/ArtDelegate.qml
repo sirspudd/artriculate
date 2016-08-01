@@ -14,7 +14,7 @@ ImageBoxBody {
 
     density: 1.0
     friction: 0
-    restitution: settings.restitution
+    restitution: physicsSettings.restitution
 
     fixedRotation: parent.fixedRotation
     bodyType: Body.Dynamic

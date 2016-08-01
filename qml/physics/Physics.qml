@@ -1,6 +1,8 @@
 import QtQuick 2.5
 import Box2D 2.0
-import "effects"
+import Qt.labs.settings 1.0
+
+import "../effects"
 
 Item {
     id: root
@@ -10,20 +12,31 @@ Item {
     signal next
 
     property var pictureDelegate: Qt.createComponent("HorizontalArtDelegate.qml")
-    property var effectDelegate: Qt.createComponent("VisualEffect.qml")
+    property var effectDelegate: Qt.createComponent("../VisualEffect.qml")
 
     anchors.fill: parent
 
+    Settings {
+        id: physicsSettings
+        category: "Physics"
+
+        property int itemTravel: 0
+        property real pace: 1
+        property bool globalWorld: false
+        // Very computationally heavy: 40% vs 20% for 0.1 vs 0
+        property real restitution: 0
+    }
+
     QtObject {
         id: d
-        property real pace: settings.pace/60.0
+        property real pace: physicsSettings.pace/60.0
         property int itemCount: 0
-        property int itemTravel: settings.itemTravel
+        property int itemTravel: physicsSettings.itemTravel
         property int primedColumns: 0
-        property int columnCount: settings.columnCount
+        property int columnCount: generalSettings.columnCount
         property bool running: primedColumns >= columnCount
-        property bool globalWorld: settings.globalWorld
-        property string effect: settings.effect
+        property bool globalWorld: physicsSettings.globalWorld
+        property string effect: generalSettings.effect
 
         function reset() {
             itemCount = 0
@@ -141,7 +154,7 @@ Item {
                 id: deathTimer
                 running: d.running
                 repeat: true
-                interval: 1000*(settings.interval > 60 ? 60*(settings.interval-60) : settings.interval)*(Math.random()+1)
+                interval: 1000*(generalSettings.interval > 60 ? 60*(generalSettings.interval-60) : generalSettings.interval)*(Math.random()+1)
                 onTriggered: shiftImageToLimbo()
             }
 
@@ -215,7 +228,7 @@ Item {
     }
 
     Rectangle {
-        visible: settings.viewItemCount
+        visible: generalSettings.viewItemCount
         z: 1
         color: "black"
         anchors { right: parent.right; top: parent.top }

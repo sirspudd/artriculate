@@ -2,6 +2,8 @@ import QtQuick 2.5
 import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
 
+import "physics"
+
 Window {
     id: appWindow
 
@@ -9,15 +11,10 @@ Window {
     height: 768
 
     Settings {
-        id: settings
-        property int itemTravel: 0
+        id: generalSettings
         property int columnCount: 5
         property int interval: 5
-        property real pace: 1
         property bool viewItemCount: false
-        property bool globalWorld: false
-        // Very computationally heavy: 40% vs 20% for 0.1 vs 0
-        property real restitution: 0
         property string effect: ""
     }
 
@@ -27,7 +24,7 @@ Window {
         anchors.fill: parent
         Keys.forwardTo: [punk, toplevelhandler]
 
-        Gravity {
+        Physics {
             // TODO: generalize all this
             id: punk
         }
@@ -36,8 +33,8 @@ Window {
     Rectangle {
         id: toplevelhandler
         focus: true
-        Keys.onLeftPressed: settings.columnCount = Math.max(settings.columnCount-1,1)
-        Keys.onRightPressed: settings.columnCount++
+        Keys.onLeftPressed: generalSettings.columnCount = Math.max(generalSettings.columnCount-1,1)
+        Keys.onRightPressed: generalSettings.columnCount++
     }
 
     Rectangle {

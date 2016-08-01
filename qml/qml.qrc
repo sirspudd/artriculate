@@ -1,17 +1,16 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>ArtDelegate.qml</file>
-        <file>ImageBoxBody.qml</file>
-        <file>RectangleBoxBody.qml</file>
-        <file>HorizontalArtDelegate.qml</file>
-        <file>Gravity.qml</file>
-        <file>Ticker.qml</file>
+        <file>VisualEffect.qml</file>
+        <file>physics/ArtDelegate.qml</file>
+        <file>physics/ImageBoxBody.qml</file>
+        <file>physics/RectangleBoxBody.qml</file>
+        <file>physics/HorizontalArtDelegate.qml</file>
+        <file>physics/Physics.qml</file>
         <file>effects/Effect.qml</file>
         <file>effects/Billboard.qml</file>
         <file>effects/Emboss.qml</file>
         <file>effects/GaussianBlur.qml</file>
-        <file>VisualEffect.qml</file>
         <file>effects/Effects.qml</file>
         <file>effects/qmldir</file>
     </qresource>
