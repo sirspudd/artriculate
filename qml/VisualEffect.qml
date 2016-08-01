@@ -12,7 +12,7 @@ Item {
 
     ShaderEffectSource {
         id: effectSource
-        smooth: settings.smoothedEffects
+        smooth: true
         hideSource: true
         sourceItem: target
     }
