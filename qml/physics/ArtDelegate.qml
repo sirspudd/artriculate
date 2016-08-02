@@ -8,9 +8,11 @@ ImageBoxBody {
     signal beyondThePale(var item)
     property var effect
 
-    onYChanged:
-        if (y > globalFloor.y)
+    onYChanged: {
+        if (y > globalFloor.y) {
             beyondThePale(this)
+        }
+    }
 
     density: 1.0
     friction: 0

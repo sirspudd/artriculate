@@ -9,9 +9,24 @@ struct FSNode {
       : name(rname),
         parent(pparent) { /**/ }
 
+  static QString qualifyNode(const FSNode *node);
+
   const QString name;
   const FSNode *parent;
 };
+
+QString FSNode::qualifyNode(const FSNode *node) {
+    QString qualifiedPath;
+
+    while(node->parent != nullptr) {
+        qualifiedPath = "/" + node->name + qualifiedPath;
+        node = node->parent;
+    }
+    qualifiedPath = node->name + qualifiedPath;
+
+    return qualifiedPath;
+}
+
 
 PictureModel::PictureModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -27,14 +42,14 @@ void PictureModel::addModelNode(const FSNode* parentNode)
     QCoreApplication::processEvents();
 
     // TODO: Check for symlink recursion
-    QDir parentDir(qualifyNode(parentNode));
+    QDir parentDir(FSNode::qualifyNode(parentNode));
 
-    foreach(const QString &currentDir, parentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+    for(const QString &currentDir : parentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
         const FSNode *dir = new FSNode(currentDir, parentNode);
         addModelNode(dir);
     }
 
-    foreach(const QString &currentFile, parentDir.entryList(QDir::Files)) {
+    for(const QString &currentFile : parentDir.entryList(QDir::Files)) {
         if (!extensions.isEmpty()) {
             QString extension = currentFile.mid(currentFile.length() - 3);
             if (!extensions.contains(extension))
@@ -53,10 +68,6 @@ void PictureModel::setModelRoot(const QString &root)
         qDebug() << "Being told to watch a non existent directory";
     }
     addModelNode(new FSNode(root));
-
-//    foreach(FSNode *node, files) {
-//        qDebug() << "Contains:" << qualifyNode(node);
-    //    }
 }
 
 void PictureModel::setSupportedExtensions(QStringList extensions) {
@@ -74,7 +85,7 @@ QUrl PictureModel::randomPicture() const
     if (files.size() <= 0)
         return QString("qrc:///qt_logo_green_rgb.png");
 
-    return QUrl::fromLocalFile(qualifyNode(files.at(qrand()%files.size())));
+    return QUrl::fromLocalFile(FSNode::qualifyNode(files.at(qrand()%files.size())));
 }
 
 QVariant PictureModel::data(const QModelIndex &index, int role) const
@@ -85,19 +96,7 @@ QVariant PictureModel::data(const QModelIndex &index, int role) const
 
     const FSNode *node = files.at(index.row());
 
-    return qualifyNode(node);
-}
-
-QString PictureModel::qualifyNode(const FSNode *node) const {
-    QString qualifiedPath;
-
-    while(node->parent != nullptr) {
-        qualifiedPath = "/" + node->name + qualifiedPath;
-        node = node->parent;
-    }
-    qualifiedPath = node->name + qualifiedPath;
-
-    return qualifiedPath;
+    return FSNode::qualifyNode(node);
 }
 
 void PictureModel::addSupportedExtension(const QString &extension)

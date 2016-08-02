@@ -28,7 +28,6 @@ public:
     void setSupportedExtensions(QStringList extensions);
     void addSupportedExtension(const QString &extension);
     void addModelNode(const FSNode *parent);
-    QString qualifyNode(const FSNode *node) const;
 
 signals:
     void countChanged();
