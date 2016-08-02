@@ -30,7 +30,6 @@ Item {
     QtObject {
         id: d
         property real pace: physicsSettings.pace/60.0
-        property int itemCount: 0
         property int itemTravel: physicsSettings.itemTravel
         property int primedColumns: 0
         property int columnCount: generalSettings.columnCount
@@ -39,7 +38,6 @@ Item {
         property string effect: generalSettings.effect
 
         function reset() {
-            itemCount = 0
             primedColumns = 0
         }
 
@@ -65,13 +63,8 @@ Item {
             property int stackHeight: 0
             property bool full: false
             property int xOffset: width * index
-
-            onStackHeightChanged: {
-                if (!column.full && (stackHeight > root.height)) {
-                    d.primedColumns += 1
-                    column.full = true
-                }
-            }
+            property var pictureArray: []
+            property bool fixedRotation: true
 
             function considerImage() {
                 if (stackHeight < (1.3 + 1/d.columnCount)*root.height) {
@@ -93,7 +86,7 @@ Item {
                 image.y = floor.y - stackHeight
 
                 pictureArray.push(image)
-                d.itemCount++
+                itemCount++
             }
 
             function removeImage(image) {
@@ -102,7 +95,7 @@ Item {
                 }
                 stackHeight -= (image.height + d.itemTravel)
                 image.destroy()
-                d.itemCount--
+                itemCount--
             }
 
             function shiftImageToLimbo() {
@@ -113,12 +106,15 @@ Item {
                 }
             }
 
+            onStackHeightChanged: {
+                if (!column.full && (stackHeight > root.height)) {
+                    d.primedColumns += 1
+                    column.full = true
+                }
+            }
+
             width: parent.width/d.columnCount
-
             anchors { top: parent.top; bottom: parent.bottom }
-
-            property var pictureArray: []
-            property bool fixedRotation: true
 
             World {
                 id: isolatedWorld
@@ -154,7 +150,7 @@ Item {
                 id: deathTimer
                 running: d.running
                 repeat: true
-                interval: 1000*(generalSettings.interval > 60 ? 60*(generalSettings.interval-60) : generalSettings.interval)*(Math.random()+1)
+                interval: globalVars.adjustedInterval
                 onTriggered: shiftImageToLimbo()
             }
 
@@ -224,21 +220,6 @@ Item {
                 NumberAnimation { target: rect; property: "x"; to: 2560; duration: 1000 }
                 NumberAnimation { target: rect; property: "y"; to: 0; duration: 1000 }
             }
-        }
-    }
-
-    Rectangle {
-        visible: generalSettings.viewItemCount
-        z: 1
-        color: "black"
-        anchors { right: parent.right; top: parent.top }
-        width: itemCountLabel.width
-        height: itemCountLabel.height
-        Text {
-            id: itemCountLabel
-            font.pixelSize: 100
-            text: d.itemCount
-            color: "white"
         }
     }
 
