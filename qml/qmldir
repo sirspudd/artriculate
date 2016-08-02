@@ -1,0 +1,3 @@
+singleton Effects 1.0 effects/Effects.qml
+ArtImage 1.0 common/ArtImage.qml
+VisualEffect 1.0 common/VisualEffect.qml

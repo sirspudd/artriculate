@@ -1,7 +1,9 @@
 import QtQuick 2.0
 import Box2D 2.0
 
-Image {
+import ".."
+
+ArtImage {
     id: image
 
     property alias body: boxBody
@@ -33,9 +35,6 @@ Image {
 
     signal beginContact(Fixture other)
     signal endContact(Fixture other)
-
-    sourceSize.height: height
-    sourceSize.width: width
 
     Body {
         id: boxBody

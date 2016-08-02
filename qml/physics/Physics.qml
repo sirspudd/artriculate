@@ -2,7 +2,7 @@ import QtQuick 2.5
 import Box2D 2.0
 import Qt.labs.settings 1.0
 
-import "../effects"
+import ".."
 
 Item {
     id: root
@@ -11,8 +11,13 @@ Item {
     signal toggleChaos
     signal next
 
-    property var pictureDelegate: Qt.createComponent("HorizontalArtDelegate.qml")
-    property var effectDelegate: Qt.createComponent("../VisualEffect.qml")
+    property var pictureDelegate: Component {
+        ArtDelegate {}
+    }
+
+    property var effectDelegate: Component {
+        VisualEffect {}
+    }
 
     anchors.fill: parent
 
@@ -86,7 +91,7 @@ Item {
                 image.y = floor.y - stackHeight
 
                 pictureArray.push(image)
-                itemCount++
+                globalVars.itemCount++
             }
 
             function removeImage(image) {
@@ -95,7 +100,7 @@ Item {
                 }
                 stackHeight -= (image.height + d.itemTravel)
                 image.destroy()
-                itemCount--
+                globalVars.itemCount--
             }
 
             function shiftImageToLimbo() {

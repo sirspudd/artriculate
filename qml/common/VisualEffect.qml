@@ -1,5 +1,5 @@
 import QtQuick 2.5
-import "effects"
+import ".."
 
 Item {
     id: root

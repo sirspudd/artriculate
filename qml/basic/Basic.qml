@@ -2,7 +2,7 @@ import QtQuick 2.5
 import Box2D 2.0
 import Qt.labs.settings 1.0
 
-import "../effects"
+import ".."
 
 Item {
     id: root
@@ -11,21 +11,12 @@ Item {
     signal next
 
     property var pictureDelegate: Component {
-        Image {
-            property var effect
-
-            fillMode: Image.PreserveAspectFit
-            source: imageModel.randomPicture()
-            width: parent.width
-            mirror: generalSettings.randomlyMirrorArt && (Math.random() < 0.5)
-            smooth: generalSettings.smoothArt
-
-            sourceSize.height: height
-            sourceSize.width: width
-        }
+        ArtImage {}
     }
 
-    property var effectDelegate: Qt.createComponent("../VisualEffect.qml")
+    property var effectDelegate: Component {
+        VisualEffect {}
+    }
 
     anchors.fill: parent
 
@@ -71,7 +62,7 @@ Item {
                     image.y = root.height - compoundArtworkHeight
 
                     pictureArray.push(image)
-                    itemCount++
+                    globalVars.itemCount++
                 }
 
                 function removeImage(image) {
@@ -79,7 +70,7 @@ Item {
                         image.effect.destroy()
                     }
                     image.destroy()
-                    itemCount--
+                    globalVars.itemCount--
                 }
 
                 function shift() {

@@ -2,23 +2,24 @@ import QtQuick 2.5
 import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
 
-import "basic"
-
 Window {
     id: appWindow
 
     width: 1024
     height: 768
 
-    property int itemCount
 
-    function reset() {
-        itemCount = 0
+    QtObject {
+        id: d
+        function reset() {
+            globalVars.itemCount = 0
+        }
     }
 
     QtObject {
         id: globalVars
         property int adjustedInterval: 1000*(generalSettings.interval > 60 ? 60*(generalSettings.interval-60) : generalSettings.interval)*(Math.random()+1)
+        property int itemCount
     }
 
     Settings {
@@ -27,20 +28,28 @@ Window {
         property int interval: 5
         property bool viewItemCount: false
         property string effect: ""
+        property string view: "Basic"
         property bool smoothArt: false
         property bool randomlyMirrorArt: true
-        onColumnCountChanged: reset()
+
+        onViewChanged: {
+            loader.source = generalSettings.view.toLowerCase() + "/" + generalSettings.view + ".qml"
+            d.reset()
+        }
+
+        onColumnCountChanged: d.reset()
     }
 
     Rectangle {
         focus: true
         color: "black"
         anchors.fill: parent
-        Keys.forwardTo: [punk, toplevelhandler]
+        Keys.forwardTo: [loader.item, toplevelhandler]
 
-        Basic {
-            // TODO: generalize all this
-            id: punk
+        Loader {
+            id: loader
+            anchors.fill: parent
+            source: "basic/Basic.qml"
         }
     }
 
@@ -85,7 +94,7 @@ Window {
         Text {
             id: itemCountLabel
             font.pixelSize: 100
-            text: itemCount
+            text: globalVars.itemCount
             color: "white"
         }
     }
