@@ -19,7 +19,7 @@ Item {
 
     Timer {
         id: globalDeathTimer
-        running: generalSettings.commonFeed && globalUtil.primed
+        running: globalSettings.commonFeed && globalUtil.primed
         repeat: true
         interval: globalUtil.adjustedInterval
         onTriggered: columnArray[globalUtil.columnSelection()].shift()

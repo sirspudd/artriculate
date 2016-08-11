@@ -6,8 +6,8 @@ Image {
     fillMode: Image.PreserveAspectCrop
     source: imageModel.randomPicture()
     width: parent.width
-    mirror: generalSettings.randomlyMirrorArt && (Math.random() < 0.5)
-    smooth: generalSettings.smoothArt
+    mirror: globalSettings.randomlyMirrorArt && (Math.random() < 0.5)
+    smooth: globalSettings.smoothArt
 
     sourceSize.height: height
     sourceSize.width: width

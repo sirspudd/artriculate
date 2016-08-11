@@ -19,9 +19,9 @@ Window {
         property int currentColumn: 0
         property bool primed: d.primedColumns === columnCount
 
-        property bool commonFeedRoundRobin: generalSettings.commonFeedRoundRobin
-        property int columnCount: generalSettings.columnCount
-        property int adjustedInterval: 1000*(generalSettings.interval > 60 ? 60*(generalSettings.interval-60) : Math.max(generalSettings.interval, 1))
+        property bool commonFeedRoundRobin: globalSettings.commonFeedRoundRobin
+        property int columnCount: globalSettings.columnCount
+        property int adjustedInterval: 1000*(globalSettings.interval > 60 ? 60*(globalSettings.interval-60) : Math.max(globalSettings.interval, 1))
 
         function registerColumnPrimed() {
             d.primedColumns++
@@ -44,7 +44,7 @@ Window {
     }
 
     Settings {
-        id: generalSettings
+        id: globalSettings
         property int columnCount: 5
         property int interval: 5
         property bool viewItemCount: false
@@ -57,7 +57,7 @@ Window {
         property bool commonFeedRoundRobin: true
 
         onColumnCountChanged: globalUtil.reset()
-        Component.onCompleted: loader.source = generalSettings.view.toLowerCase() + "/" + generalSettings.view + ".qml"
+        Component.onCompleted: loader.source = globalSettings.view.toLowerCase() + "/" + globalSettings.view + ".qml"
     }
 
     Rectangle {
@@ -76,8 +76,8 @@ Window {
     Rectangle {
         id: toplevelhandler
         focus: true
-        Keys.onLeftPressed: generalSettings.columnCount = Math.max(generalSettings.columnCount-1,1)
-        Keys.onRightPressed: generalSettings.columnCount++
+        Keys.onLeftPressed: globalSettings.columnCount = Math.max(globalSettings.columnCount-1,1)
+        Keys.onRightPressed: globalSettings.columnCount++
     }
 
     Rectangle {
@@ -98,7 +98,7 @@ Window {
     Rectangle {
         z: 1
         opacity: 0.5
-        visible: generalSettings.viewItemCount
+        visible: globalSettings.viewItemCount
         color: "black"
 
         anchors { right: parent.right; top: parent.top }

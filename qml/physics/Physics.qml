@@ -63,8 +63,8 @@ View {
             function addImage() {
                 var image = pictureDelegate.createObject(column, { x: -1000, y: -1000 })
 
-                if (generalSettings.effect !== "" && Effects.validate(generalSettings.effect)) {
-                    image.effect = effectDelegate.createObject(column, { target: image, effect: generalSettings.effect })
+                if (globalSettings.effect !== "" && Effects.validate(globalSettings.effect)) {
+                    image.effect = effectDelegate.createObject(column, { target: image, effect: globalSettings.effect })
                 }
 
                 image.beyondThePale.connect(removeImage)
@@ -105,7 +105,7 @@ View {
                 }
             }
 
-            width: parent.width/generalSettings.columnCount
+            width: parent.width/globalSettings.columnCount
             anchors { top: parent.top; bottom: parent.bottom }
 
             World {
@@ -140,7 +140,7 @@ View {
 
             Timer {
                 id: deathTimer
-                running: !generalSettings.commonFeed && globalUtil.primed && d.paused
+                running: !globalSettings.commonFeed && globalUtil.primed && d.paused
                 repeat: true
                 interval: globalUtil.adjustedInterval
                 onTriggered: shift()

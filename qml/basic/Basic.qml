@@ -22,7 +22,7 @@ View {
 
             x: width * index
             height: parent.height
-            width: parent.width/generalSettings.columnCount
+            width: parent.width/globalSettings.columnCount
 
             Item {
                 id: artworkStack
@@ -51,8 +51,8 @@ View {
                 function addImage() {
                     var image = pictureDelegate.createObject(artworkStack)
 
-                    if (generalSettings.effect !== "" && Effects.validate(generalSettings.effect)) {
-                        image.effect = effectDelegate.createObject(artworkStack, { target: image, effect: generalSettings.effect })
+                    if (globalSettings.effect !== "" && Effects.validate(globalSettings.effect)) {
+                        image.effect = effectDelegate.createObject(artworkStack, { target: image, effect: globalSettings.effect })
                     }
 
                     artworkHeight += image.height
@@ -95,7 +95,7 @@ View {
 
                 Timer {
                     id: deathTimer
-                    running: !generalSettings.commonFeed && artworkStack.initialized
+                    running: !globalSettings.commonFeed && artworkStack.initialized
                     repeat: true
                     interval: globalUtil.adjustedInterval
                     onTriggered: artworkStack.shift()
@@ -112,6 +112,6 @@ View {
         }
     }
 
-    Keys.onUpPressed: generalSettings.interval++
-    Keys.onDownPressed: generalSettings.interval = Math.max(1, generalSettings.interval - 1)
+    Keys.onUpPressed: globalSettings.interval++
+    Keys.onDownPressed: globalSettings.interval = Math.max(1, globalSettings.interval - 1)
 }
