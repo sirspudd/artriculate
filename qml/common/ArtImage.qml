@@ -3,7 +3,7 @@ import QtQuick 2.5
 Image {
     property var effect
 
-    fillMode: Image.PreserveAspectFit
+    fillMode: Image.PreserveAspectCrop
     source: imageModel.randomPicture()
     width: parent.width
     mirror: generalSettings.randomlyMirrorArt && (Math.random() < 0.5)
