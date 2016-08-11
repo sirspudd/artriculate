@@ -26,7 +26,7 @@ Item {
     }
 
     Repeater {
-        model: globalUtil.columnCount
+        model: globalSettings.columnCount
         delegate: columnComponent
     }
 }

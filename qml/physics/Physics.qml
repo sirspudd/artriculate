@@ -55,7 +55,7 @@ View {
             property bool fixedRotation: true
 
             function considerImage() {
-                if (stackHeight < (1.3 + 1/globalUtil.columnCount)*root.height) {
+                if (stackHeight < (1.3 + 1/globalSettings.columnCount)*root.height) {
                     addImage()
                 }
             }

@@ -8,6 +8,8 @@ Window {
     width: 1024
     height: 768
 
+    onWidthChanged: globalUtil.reset()
+
     QtObject {
         id: d
         property int primedColumns: 0
@@ -17,10 +19,8 @@ Window {
         id: globalUtil
         property int itemCount
         property int currentColumn: 0
-        property bool primed: d.primedColumns === columnCount
+        property bool primed: d.primedColumns === globalSettings.columnCount
 
-        property bool commonFeedRoundRobin: globalSettings.commonFeedRoundRobin
-        property int columnCount: globalSettings.columnCount
         property int adjustedInterval: 1000*(globalSettings.interval > 60 ? 60*(globalSettings.interval-60) : Math.max(globalSettings.interval, 1))
 
         function registerColumnPrimed() {
@@ -33,12 +33,12 @@ Window {
         }
 
         function columnSelection() {
-            if (commonFeedRoundRobin) {
+            if (globalSettings.commonFeedRoundRobin) {
                 var ret = currentColumn
-                currentColumn = (currentColumn + 1) % columnCount
+                currentColumn = (currentColumn + 1) % globalSettings.columnCount
                 return ret
             } else {
-                return Math.floor(Math.random()*columnCount)
+                return Math.floor(Math.random()*globalSettings.columnCount)
             }
         }
     }
