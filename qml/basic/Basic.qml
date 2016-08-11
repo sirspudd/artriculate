@@ -113,5 +113,5 @@ View {
     }
 
     Keys.onUpPressed: generalSettings.interval++
-    Keys.onDownPressed: generalSettings.interval = Math.max(0, generalSettings.interval - 1)
+    Keys.onDownPressed: generalSettings.interval = Math.max(1, generalSettings.interval - 1)
 }

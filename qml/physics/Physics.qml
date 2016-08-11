@@ -4,7 +4,7 @@ import Qt.labs.settings 1.0
 
 import ".."
 
-Item {
+View {
     id: root
 
     signal togglePause
@@ -14,12 +14,6 @@ Item {
     property var pictureDelegate: Component {
         ArtDelegate {}
     }
-
-    property var effectDelegate: Component {
-        VisualEffect {}
-    }
-
-    anchors.fill: parent
 
     Settings {
         id: physicsSettings
@@ -35,24 +29,13 @@ Item {
     QtObject {
         id: d
         property real pace: physicsSettings.pace/60.0
-        property int itemTravel: physicsSettings.itemTravel
-        property int primedColumns: 0
-        property int columnCount: generalSettings.columnCount
-        property bool running: primedColumns >= columnCount
-        property bool globalWorld: physicsSettings.globalWorld
-        property string effect: generalSettings.effect
-
-        function reset() {
-            primedColumns = 0
-        }
-
-        onColumnCountChanged: reset()
+        property bool paused: false
     }
 
     World {
         id: world
         timeStep: d.pace
-        running: d.globalWorld && d.running
+        running: physicsSettings.globalWorld && globalUtil.primed
         property var limbo: World {
             timeStep: world.timeStep
             running: world.running
@@ -72,7 +55,7 @@ Item {
             property bool fixedRotation: true
 
             function considerImage() {
-                if (stackHeight < (1.3 + 1/d.columnCount)*root.height) {
+                if (stackHeight < (1.3 + 1/globalUtil.columnCount)*root.height) {
                     addImage()
                 }
             }
@@ -80,14 +63,14 @@ Item {
             function addImage() {
                 var image = pictureDelegate.createObject(column, { x: -1000, y: -1000 })
 
-                if (d.effect !== "" && Effects.validate(d.effect)) {
-                    image.effect = effectDelegate.createObject(column, { target: image, effect: d.effect })
+                if (generalSettings.effect !== "" && Effects.validate(generalSettings.effect)) {
+                    image.effect = effectDelegate.createObject(column, { target: image, effect: generalSettings.effect })
                 }
 
                 image.beyondThePale.connect(removeImage)
-                image.world = d.globalWorld ? world : isolatedWorld
+                image.world = physicsSettings.globalWorld ? world : isolatedWorld
                 image.x = xOffset
-                stackHeight += (image.height + d.itemTravel)
+                stackHeight += (image.height + physicsSettings.itemTravel)
                 image.y = floor.y - stackHeight
 
                 pictureArray.push(image)
@@ -98,12 +81,12 @@ Item {
                 if (image.effect) {
                     image.effect.destroy()
                 }
-                stackHeight -= (image.height + d.itemTravel)
+                stackHeight -= (image.height + physicsSettings.itemTravel)
                 image.destroy()
                 globalUtil.itemCount--
             }
 
-            function shiftImageToLimbo() {
+            function shift() {
                 if (pictureArray.length > 0) {
                     var image = pictureArray.shift()
                     image.world = image.world.limbo
@@ -111,20 +94,24 @@ Item {
                 }
             }
 
+            Component.onCompleted: {
+                columnArray.push(this)
+            }
+
             onStackHeightChanged: {
                 if (!column.full && (stackHeight > root.height)) {
-                    d.primedColumns += 1
+                    globalUtil.registerColumnPrimed()
                     column.full = true
                 }
             }
 
-            width: parent.width/d.columnCount
+            width: parent.width/generalSettings.columnCount
             anchors { top: parent.top; bottom: parent.bottom }
 
             World {
                 id: isolatedWorld
                 timeStep: d.pace
-                running: !d.globalWorld && d.running
+                running: !physicsSettings.globalWorld && globalUtil.primed
                 property var limbo: World {
                     timeStep: isolatedWorld.timeStep
                     running: isolatedWorld.running
@@ -153,15 +140,15 @@ Item {
 
             Timer {
                 id: deathTimer
-                running: d.running
+                running: !generalSettings.commonFeed && globalUtil.primed && d.paused
                 repeat: true
                 interval: globalUtil.adjustedInterval
-                onTriggered: shiftImageToLimbo()
+                onTriggered: shift()
             }
 
             Connections {
                 target: root
-                onTogglePause: deathTimer.running = !deathTimer.running
+                onTogglePause: d.paused = !d.paused
                 onNext: deathTimer.triggered()
                 onToggleChaos: fixedRotation = !fixedRotation
             }
@@ -196,36 +183,6 @@ Item {
         anchors.fill: parent
         opacity: 0.75
         visible: enabled
-    }
-
-    Repeater {
-        model: d.columnCount
-        delegate: columnComponent
-    }
-
-    // TODO: The boot (Monty Python foot) of death to be applied to the stacks
-    RectangleBoxBody {
-        id: rect
-        enabled: false
-        visible: false
-        friction: 1.0
-        density: 1000
-        color: "red"
-        width: 50; height: 50
-        bullet: true
-        SequentialAnimation {
-            id: murderAnimation
-            //loops: Animation.Infinite
-            //running: true
-            ScriptAction { script: { root.togglePause() } }
-            ScriptAction { script: { rect.world = worldArray.pop() } }
-            PropertyAction { target: rect; property: "x"; value: -rect.width }
-            PropertyAction { target: rect; property: "y"; value: root.height }
-            ParallelAnimation {
-                NumberAnimation { target: rect; property: "x"; to: 2560; duration: 1000 }
-                NumberAnimation { target: rect; property: "y"; to: 0; duration: 1000 }
-            }
-        }
     }
 
     Keys.onUpPressed: root.togglePause()

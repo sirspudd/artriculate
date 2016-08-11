@@ -49,19 +49,15 @@ Window {
         property int interval: 5
         property bool viewItemCount: false
         property string effect: ""
-        property string view: "Basic"
+        property string view: "Physics"
         property bool smoothArt: false
         property bool randomlyMirrorArt: true
 
         property bool commonFeed: true
         property bool commonFeedRoundRobin: true
 
-        onViewChanged: {
-            loader.source = generalSettings.view.toLowerCase() + "/" + generalSettings.view + ".qml"
-            globalUtil.reset()
-        }
-
         onColumnCountChanged: globalUtil.reset()
+        Component.onCompleted: loader.source = generalSettings.view.toLowerCase() + "/" + generalSettings.view + ".qml"
     }
 
     Rectangle {
