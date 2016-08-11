@@ -8,7 +8,10 @@ Window {
     width: 1024
     height: 768
 
-    onWidthChanged: globalUtil.reset()
+    onWidthChanged: {
+        loader.source = ""
+        loader.source = globalSettings.view.toLowerCase() + "/" + globalSettings.view + ".qml"
+    }
 
     QtObject {
         id: d
