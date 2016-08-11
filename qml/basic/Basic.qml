@@ -133,6 +133,7 @@ Item {
                 }
 
                 Behavior on y {
+                    enabled: artworkStack.initialized
                     NumberAnimation {
                         duration: Math.min(globalVars.adjustedInterval, basicSettings.animationDuration)
                         easing.type: basicSettings.easingType
