@@ -26,35 +26,14 @@ Item {
 
         property int animationDuration: 2000
         property int easingType: Easing.Linear
-        property bool commonFeed: true
-        property bool commonFeedRoundRobin: true
     }
 
     QtObject {
         id: d
-        property int columnCount: generalSettings.columnCount
         property var columnArray: []
-        property int primedColumns: 0
-        property int currentColumn: 0
-        property bool commonFeedRoundRobin: basicSettings.commonFeedRoundRobin
 
         function reset() {
             columnArray = []
-            primedColumns = 0
-        }
-
-        function columnSelection() {
-            if (commonFeedRoundRobin) {
-                var ret = currentColumn
-                currentColumn = (currentColumn + 1) % d.columnCount
-                return ret
-            } else {
-                return Math.floor(Math.random()*d.columnCount)
-            }
-        }
-
-        onColumnCountChanged: {
-            reset()
         }
     }
 
@@ -85,7 +64,7 @@ Item {
                 onFullChanged: {
                     if (!initialized) {
                         initialized = true
-                        d.primedColumns++
+                        globalVars.registerColumnPrimed()
                     }
                 }
 
@@ -139,7 +118,7 @@ Item {
 
                 Timer {
                     id: deathTimer
-                    running: !basicSettings.commonFeed && artworkStack.initialized
+                    running: !generalSettings.commonFeed && artworkStack.initialized
                     repeat: true
                     interval: globalVars.adjustedInterval
                     onTriggered: artworkStack.shift()
@@ -164,17 +143,18 @@ Item {
 
     Timer {
         id: globalDeathTimer
-        running: basicSettings.commonFeed && (d.primedColumns === d.columnCount)
+        running: generalSettings.commonFeed && globalVars.primed
         repeat: true
         interval: globalVars.adjustedInterval
-        onTriggered: d.columnArray[d.columnSelection()].shift()
+        onTriggered: d.columnArray[globalVars.columnSelection()].shift()
     }
 
     Repeater {
-        model: d.columnCount
+        model: globalVars.columnCount
         delegate: columnComponent
+        onModelChanged: d.reset()
     }
 
-    Keys.onUpPressed: root.togglePause()
-    Keys.onDownPressed: root.next()
+    Keys.onUpPressed: generalSettings.interval++
+    Keys.onDownPressed: generalSettings.interval = Math.max(0, generalSettings.interval - 1)
 }

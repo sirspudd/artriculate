@@ -8,18 +8,38 @@ Window {
     width: 1024
     height: 768
 
-
     QtObject {
         id: d
-        function reset() {
-            globalVars.itemCount = 0
-        }
+        property int primedColumns: 0
     }
 
     QtObject {
         id: globalVars
-        property int adjustedInterval: 1000*(generalSettings.interval > 60 ? 60*(generalSettings.interval-60) : generalSettings.interval)*(Math.random()+1)
         property int itemCount
+        property int currentColumn: 0
+        property bool primed: d.primedColumns === columnCount
+
+        property bool commonFeedRoundRobin: generalSettings.commonFeedRoundRobin
+        property int columnCount: generalSettings.columnCount
+        property int adjustedInterval: 1000*(generalSettings.interval > 60 ? 60*(generalSettings.interval-60) : generalSettings.interval)*(Math.random()+1)
+
+        function registerColumnPrimed() {
+            d.primedColumns++
+        }
+
+        function reset() {
+            itemCount = currentColumn = d.primedColumns = 0
+        }
+
+        function columnSelection() {
+            if (commonFeedRoundRobin) {
+                var ret = currentColumn
+                currentColumn = (currentColumn + 1) % columnCount
+                return ret
+            } else {
+                return Math.floor(Math.random()*columnCount)
+            }
+        }
     }
 
     Settings {
@@ -32,9 +52,12 @@ Window {
         property bool smoothArt: false
         property bool randomlyMirrorArt: true
 
+        property bool commonFeed: true
+        property bool commonFeedRoundRobin: true
+
         onViewChanged: {
             loader.source = generalSettings.view.toLowerCase() + "/" + generalSettings.view + ".qml"
-            d.reset()
+            globalVars.reset()
         }
 
         onColumnCountChanged: d.reset()
