@@ -64,7 +64,7 @@ Item {
                 onFullChanged: {
                     if (!initialized) {
                         initialized = true
-                        globalVars.registerColumnPrimed()
+                        globalUtil.registerColumnPrimed()
                     }
                 }
 
@@ -83,7 +83,7 @@ Item {
                     image.y = root.height - compoundArtworkHeight
 
                     pictureArray.push(image)
-                    globalVars.itemCount++
+                    globalUtil.itemCount++
                 }
 
                 function removeImage(image) {
@@ -91,7 +91,7 @@ Item {
                         image.effect.destroy()
                     }
                     image.destroy()
-                    globalVars.itemCount--
+                    globalUtil.itemCount--
                 }
 
                 function shift() {
@@ -120,14 +120,14 @@ Item {
                     id: deathTimer
                     running: !generalSettings.commonFeed && artworkStack.initialized
                     repeat: true
-                    interval: globalVars.adjustedInterval
+                    interval: globalUtil.adjustedInterval
                     onTriggered: artworkStack.shift()
                 }
 
                 Behavior on y {
                     enabled: artworkStack.initialized
                     NumberAnimation {
-                        duration: Math.min(globalVars.adjustedInterval, basicSettings.animationDuration)
+                        duration: Math.min(globalUtil.adjustedInterval, basicSettings.animationDuration)
                         easing.type: basicSettings.easingType
                     }
                 }
@@ -143,14 +143,14 @@ Item {
 
     Timer {
         id: globalDeathTimer
-        running: generalSettings.commonFeed && globalVars.primed
+        running: generalSettings.commonFeed && globalUtil.primed
         repeat: true
-        interval: globalVars.adjustedInterval
-        onTriggered: d.columnArray[globalVars.columnSelection()].shift()
+        interval: globalUtil.adjustedInterval
+        onTriggered: d.columnArray[globalUtil.columnSelection()].shift()
     }
 
     Repeater {
-        model: globalVars.columnCount
+        model: globalUtil.columnCount
         delegate: columnComponent
         onModelChanged: d.reset()
     }

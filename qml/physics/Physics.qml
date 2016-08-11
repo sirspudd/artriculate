@@ -91,7 +91,7 @@ Item {
                 image.y = floor.y - stackHeight
 
                 pictureArray.push(image)
-                globalVars.itemCount++
+                globalUtil.itemCount++
             }
 
             function removeImage(image) {
@@ -100,7 +100,7 @@ Item {
                 }
                 stackHeight -= (image.height + d.itemTravel)
                 image.destroy()
-                globalVars.itemCount--
+                globalUtil.itemCount--
             }
 
             function shiftImageToLimbo() {
@@ -155,7 +155,7 @@ Item {
                 id: deathTimer
                 running: d.running
                 repeat: true
-                interval: globalVars.adjustedInterval
+                interval: globalUtil.adjustedInterval
                 onTriggered: shiftImageToLimbo()
             }
 

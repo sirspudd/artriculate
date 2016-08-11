@@ -14,7 +14,7 @@ Window {
     }
 
     QtObject {
-        id: globalVars
+        id: globalUtil
         property int itemCount
         property int currentColumn: 0
         property bool primed: d.primedColumns === columnCount
@@ -57,7 +57,7 @@ Window {
 
         onViewChanged: {
             loader.source = generalSettings.view.toLowerCase() + "/" + generalSettings.view + ".qml"
-            globalVars.reset()
+            globalUtil.reset()
         }
 
         onColumnCountChanged: d.reset()
@@ -111,7 +111,7 @@ Window {
         Text {
             id: itemCountLabel
             font.pixelSize: 100
-            text: globalVars.itemCount
+            text: globalUtil.itemCount
             color: "white"
         }
     }
