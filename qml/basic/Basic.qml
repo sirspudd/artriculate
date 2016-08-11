@@ -46,6 +46,9 @@ Item {
                 property int artworkHeight: 0
                 property int compoundArtworkHeight: 0
                 property bool full: artworkHeight > root.height
+                property bool initialized: false
+
+                onFullChanged: initialized = true
 
                 height: childrenRect.height
                 width: parent.width
@@ -79,20 +82,25 @@ Item {
                     }
                     headElement = pictureArray.shift()
                     artworkHeight -= headElement.height
+
+                    while (!full) {
+                        addImage()
+                    }
+
                     artworkStack.y += headElement.height
                 }
 
                 Timer {
                     id: populateTimer
-                    running: !artworkStack.full
+                    running: !artworkStack.initialized
                     repeat: true
-                    interval: 100*Math.random() + 100
+                    interval: 100
                     onTriggered: artworkStack.addImage()
                 }
 
                 Timer {
                     id: deathTimer
-                    running: artworkStack.full
+                    running: artworkStack.initialized
                     repeat: true
                     interval: globalVars.adjustedInterval
                     onTriggered: artworkStack.shift()
