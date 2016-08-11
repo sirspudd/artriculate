@@ -21,7 +21,7 @@ Window {
 
         property bool commonFeedRoundRobin: generalSettings.commonFeedRoundRobin
         property int columnCount: generalSettings.columnCount
-        property int adjustedInterval: 1000*(generalSettings.interval > 60 ? 60*(generalSettings.interval-60) : generalSettings.interval)*(Math.random()+1)
+        property int adjustedInterval: 1000*(generalSettings.interval > 60 ? 60*(generalSettings.interval-60) : Math.max(generalSettings.interval, 1))
 
         function registerColumnPrimed() {
             d.primedColumns++
@@ -29,6 +29,7 @@ Window {
 
         function reset() {
             itemCount = currentColumn = d.primedColumns = 0
+            loader.item.reset()
         }
 
         function columnSelection() {
@@ -60,7 +61,7 @@ Window {
             globalUtil.reset()
         }
 
-        onColumnCountChanged: d.reset()
+        onColumnCountChanged: globalUtil.reset()
     }
 
     Rectangle {

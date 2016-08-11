@@ -14,5 +14,6 @@
         <file>effects/GaussianBlur.qml</file>
         <file>effects/Effects.qml</file>
         <file>common/ArtImage.qml</file>
+        <file>common/View.qml</file>
     </qresource>
 </RCC>
