@@ -27,6 +27,7 @@ Item {
         property int animationDuration: 2000
         property int easingType: Easing.Linear
         property bool commonFeed: true
+        property bool commonFeedRoundRobin: true
     }
 
     QtObject {
@@ -34,10 +35,22 @@ Item {
         property int columnCount: generalSettings.columnCount
         property var columnArray: []
         property int primedColumns: 0
+        property int currentColumn: 0
+        property bool commonFeedRoundRobin: basicSettings.commonFeedRoundRobin
 
         function reset() {
             columnArray = []
             primedColumns = 0
+        }
+
+        function columnSelection() {
+            if (commonFeedRoundRobin) {
+                var ret = currentColumn
+                currentColumn = (currentColumn + 1) % d.columnCount
+                return ret
+            } else {
+                return Math.floor(Math.random()*d.columnCount)
+            }
         }
 
         onColumnCountChanged: {
@@ -154,7 +167,7 @@ Item {
         running: basicSettings.commonFeed && (d.primedColumns === d.columnCount)
         repeat: true
         interval: globalVars.adjustedInterval
-        onTriggered: d.columnArray[Math.floor(Math.random()*d.columnCount)].shift()
+        onTriggered: d.columnArray[d.columnSelection()].shift()
     }
 
     Repeater {
