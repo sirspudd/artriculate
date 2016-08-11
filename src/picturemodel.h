@@ -4,8 +4,6 @@
 #include <QAbstractListModel>
 #include <QUrl>
 
-class FSNode;
-
 class PictureModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -23,12 +21,6 @@ public:
     Q_INVOKABLE QUrl randomPicture() const;
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
-    Q_INVOKABLE void setModelRoot(const QString &root);
-
-    void setSupportedExtensions(QStringList extensions);
-    void addSupportedExtension(const QString &extension);
-    void addModelNode(const FSNode *parent);
-
 signals:
     void countChanged();
 
@@ -36,8 +28,8 @@ protected:
     QHash<int, QByteArray> roleNames() const;
 
 private:
-    QList<const FSNode*> files;
-    QStringList extensions;
+    class PictureModelPrivate;
+    PictureModelPrivate *d;
 };
 
 #endif // PICTUREMODEL_H

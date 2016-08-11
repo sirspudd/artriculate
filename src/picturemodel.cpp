@@ -3,6 +3,8 @@
 #include <QDir>
 #include <QDebug>
 #include <QCoreApplication>
+#include <QSettings>
+#include <QThread>
 
 struct FSNode {
   FSNode(const QString& rname, const FSNode *pparent = nullptr)
@@ -27,20 +29,44 @@ QString FSNode::qualifyNode(const FSNode *node) {
     return qualifiedPath;
 }
 
-
-PictureModel::PictureModel(QObject *parent)
-    : QAbstractListModel(parent)
-{ /**/ }
-
-PictureModel::~PictureModel()
+class FSNodeTree : public QObject
 {
-    // TODO: Destroy model
+    Q_OBJECT
+public:
+    FSNodeTree(PictureModel *p);
+
+    void addModelNode(const FSNode* parentNode);
+    void setSupportedExtensions(const QStringList extensions) { this->extensions = extensions; }
+    void setModelRoot(const QString& rootDir) { this->rootDir = rootDir; }
+
+    int fileCount() const { return files.length(); }
+    QUrl randomFileUrl() const;
+public slots:
+    void populate();
+signals:
+    void countChanged();
+private:
+    QList<const FSNode*> files;
+    QStringList extensions;
+    QString rootDir;
+};
+
+FSNodeTree::FSNodeTree(PictureModel *p)
+    : QObject(nullptr)
+{
+    connect(this, SIGNAL(countChanged()), p, SIGNAL(countChanged()));
 }
 
-void PictureModel::addModelNode(const FSNode* parentNode)
-{
-    QCoreApplication::processEvents();
 
+QUrl FSNodeTree::randomFileUrl() const {
+    if (files.size() <= 0)
+        return QString("qrc:///qt_logo_green_rgb.png");
+
+    return QUrl::fromLocalFile(FSNode::qualifyNode(files.at(qrand()%files.size())));
+}
+
+void FSNodeTree::addModelNode(const FSNode* parentNode)
+{
     // TODO: Check for symlink recursion
     QDir parentDir(FSNode::qualifyNode(parentNode));
 
@@ -61,47 +87,85 @@ void PictureModel::addModelNode(const FSNode* parentNode)
     }
 }
 
-void PictureModel::setModelRoot(const QString &root)
+void FSNodeTree::populate()
 {
-    QDir currentDir(root);
+    QDir currentDir(rootDir);
     if (!currentDir.exists()) {
         qDebug() << "Being told to watch a non existent directory";
     }
-    addModelNode(new FSNode(root));
+    if (extensions.empty()) {
+        qDebug() << "No supported extensions provided, defaulting to jpg and png";
+        extensions << "jpg" << "png";
+    }
+    addModelNode(new FSNode(rootDir));
 }
 
-void PictureModel::setSupportedExtensions(QStringList extensions) {
-    this->extensions = extensions;
+class PictureModel::PictureModelPrivate {
+public:
+    PictureModelPrivate(PictureModel* p);
+    ~PictureModelPrivate();
+
+    FSNodeTree *fsTree;
+private:
+    QThread scanningThread;
+};
+
+PictureModel::PictureModelPrivate::PictureModelPrivate(PictureModel* p)
+{
+    QSettings settings;
+    QString artPath = settings.value("artPath","/blackhole/media/art").toString();
+    QStringList extensions = settings.value("extensions", QStringList() << "jpg" << "png").toStringList();
+
+    settings.setValue("artPath", artPath);
+    settings.setValue("extensions", extensions);
+
+    fsTree = new FSNodeTree(p);
+
+    fsTree->setSupportedExtensions(extensions);
+    fsTree->setModelRoot(artPath);
+
+    fsTree->moveToThread(&scanningThread);
+    scanningThread.start();
+
+    QMetaObject::invokeMethod(fsTree, "populate", Qt::QueuedConnection);
+};
+
+PictureModel::PictureModelPrivate::~PictureModelPrivate()
+{
+    scanningThread.quit();
+    scanningThread.wait(5000);
+
+    delete fsTree;
+    fsTree = nullptr;
+};
+
+PictureModel::PictureModel(QObject *parent)
+    : QAbstractListModel(parent),
+      d(new PictureModelPrivate(this)) { /**/ }
+
+PictureModel::~PictureModel()
+{
+    delete d;
+    d = nullptr;
 }
 
 int PictureModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return files.length();
+    return d->fsTree->fileCount();
 }
 
 QUrl PictureModel::randomPicture() const
-{
-    if (files.size() <= 0)
-        return QString("qrc:///qt_logo_green_rgb.png");
-
-    return QUrl::fromLocalFile(FSNode::qualifyNode(files.at(qrand()%files.size())));
+{   return d->fsTree->randomFileUrl();
 }
 
 QVariant PictureModel::data(const QModelIndex &index, int role) const
 {
     Q_UNUSED(role)
-    if (index.row() < 0 || index.row() >= files.length())
+    if (index.row() < 0 || index.row() >= d->fsTree->fileCount())
         return QVariant();
 
-    const FSNode *node = files.at(index.row());
-
-    return FSNode::qualifyNode(node);
-}
-
-void PictureModel::addSupportedExtension(const QString &extension)
-{
-    extensions << extension;
+    return d->fsTree->randomFileUrl();
 }
 
 QHash<int, QByteArray> PictureModel::roleNames() const
@@ -110,3 +174,5 @@ QHash<int, QByteArray> PictureModel::roleNames() const
     roles[PathRole] = "path";
     return roles;
 }
+
+#include "picturemodel.moc"

@@ -61,12 +61,8 @@ Window {
     }
 
     Rectangle {
-        function checkModel() {
-            visible = (imageModel.rowCount() === 0)
-        }
-
         z: 1
-        visible: imageModel.rowCount() === 0
+        visible: imageModel.rowCount > 0
         color: "red"
 
         width: childrenRect.width
@@ -77,8 +73,6 @@ Window {
             font.pointSize: 40
             text: "No images found/provided"
         }
-
-        Component.onCompleted: modelRelay.countChanged.connect(checkModel);
     }
 
     Rectangle {
