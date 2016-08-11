@@ -75,7 +75,7 @@ Item {
 
                 function shift() {
                     if (headElement) {
-                        headElement.destroy()
+                        removeImage(headElement)
                     }
                     headElement = pictureArray.shift()
                     artworkHeight -= headElement.height
