@@ -26,6 +26,23 @@ Item {
 
         property int animationDuration: 2000
         property int easingType: Easing.Linear
+        property bool commonFeed: true
+    }
+
+    QtObject {
+        id: d
+        property int columnCount: generalSettings.columnCount
+        property var columnArray: []
+        property int primedColumns: 0
+
+        function reset() {
+            columnArray = []
+            primedColumns = 0
+        }
+
+        onColumnCountChanged: {
+            reset()
+        }
     }
 
     Component {
@@ -48,7 +65,16 @@ Item {
                 property bool full: artworkHeight > root.height
                 property bool initialized: false
 
-                onFullChanged: initialized = true
+                Component.onCompleted: {
+                    d.columnArray.push(this)
+                }
+
+                onFullChanged: {
+                    if (!initialized) {
+                        initialized = true
+                        d.primedColumns++
+                    }
+                }
 
                 height: childrenRect.height
                 width: parent.width
@@ -100,7 +126,7 @@ Item {
 
                 Timer {
                     id: deathTimer
-                    running: artworkStack.initialized
+                    running: !basicSettings.commonFeed && artworkStack.initialized
                     repeat: true
                     interval: globalVars.adjustedInterval
                     onTriggered: artworkStack.shift()
@@ -122,8 +148,16 @@ Item {
         }
     }
 
+    Timer {
+        id: globalDeathTimer
+        running: basicSettings.commonFeed && (d.primedColumns === d.columnCount)
+        repeat: true
+        interval: globalVars.adjustedInterval
+        onTriggered: d.columnArray[Math.floor(Math.random()*d.columnCount)].shift()
+    }
+
     Repeater {
-        model: generalSettings.columnCount
+        model: d.columnCount
         delegate: columnComponent
     }
 
