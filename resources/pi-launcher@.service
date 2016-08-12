@@ -1,0 +1,18 @@
+# Forked off xlogin@.service
+
+[Unit]
+Description=Qt-compositor login for user %i
+After=x@vt7.service systemd-user-sessions.service
+Wants=x@vt7.service
+Conflicts=getty@tty7.service
+
+[Service]
+User=%i
+WorkingDirectory=~
+TTYPath=/dev/tty7
+PAMName=login
+ExecStart=-/usr/bin/artriculate -platform eglfs -plugin CECKeyboard
+Restart=on-failure
+
+[Install]
+WantedBy=graphical.target
