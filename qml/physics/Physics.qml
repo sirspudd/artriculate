@@ -19,7 +19,7 @@ View {
         id: physicsSettings
         category: "Physics"
 
-        property int itemTravel: 0
+        property int verticalOffset: 1
         property real pace: 1
         property bool globalWorld: false
         // Very computationally heavy: 40% vs 20% for 0.1 vs 0
@@ -70,8 +70,8 @@ View {
                 image.beyondThePale.connect(removeImage)
                 image.world = physicsSettings.globalWorld ? world : isolatedWorld
                 image.x = xOffset
-                stackHeight += (image.height + physicsSettings.itemTravel)
-                image.y = floor.y - stackHeight
+                stackHeight += image.height
+                image.y = floor.y - stackHeight - physicsSettings.verticalOffset
 
                 pictureArray.push(image)
                 globalUtil.itemCount++
@@ -81,7 +81,7 @@ View {
                 if (image.effect) {
                     image.effect.destroy()
                 }
-                stackHeight -= (image.height + physicsSettings.itemTravel)
+                stackHeight -= image.height
                 image.destroy()
                 globalUtil.itemCount--
             }
