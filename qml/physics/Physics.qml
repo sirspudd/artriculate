@@ -19,6 +19,8 @@ View {
         id: physicsSettings
         category: "Physics"
 
+        // 1/10ths of a second
+        property int feedRate: 10
         // 0 is abutting
         property int verticalOffset: 1
         property real pace: 1
@@ -133,7 +135,7 @@ View {
 
             Timer {
                 id: pumpTimer
-                interval: Math.random()*500 + 500
+                interval: (Math.abs(physicsSettings.feedRate) + 1)*100
                 repeat: true
                 running: true
                 onTriggered: considerImage()
