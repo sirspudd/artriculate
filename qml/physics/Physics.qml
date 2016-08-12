@@ -19,6 +19,7 @@ View {
         id: physicsSettings
         category: "Physics"
 
+        // 0 is abutting
         property int verticalOffset: 1
         property real pace: 1
         property bool globalWorld: false
@@ -151,13 +152,6 @@ View {
                 onTogglePause: d.paused = !d.paused
                 onNext: deathTimer.triggered()
                 onToggleChaos: fixedRotation = !fixedRotation
-            }
-
-            Timer {
-                id: settleTimer
-                running: false
-                interval: 200
-                onTriggered: deathTimer.triggered()
             }
         }
     }
