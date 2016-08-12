@@ -72,7 +72,6 @@ Window {
         Loader {
             id: loader
             anchors.fill: parent
-            source: "basic/Basic.qml"
         }
     }
 
