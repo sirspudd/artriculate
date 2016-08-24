@@ -18,7 +18,7 @@ ImageBoxBody {
     friction: 0
     restitution: physicsSettings.restitution
 
-    fixedRotation: parent.fixedRotation
+    fixedRotation: physicsSettings.fixedRotation
     bodyType: Body.Dynamic
 
     source: imageModel.randomPicture()

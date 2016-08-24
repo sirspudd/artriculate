@@ -25,6 +25,7 @@ View {
         property int verticalOffset: 1
         property real pace: 1
         property bool globalWorld: false
+        property bool fixedRotation: true
         // Very computationally heavy: 40% vs 20% for 0.1 vs 0
         property real restitution: 0
     }
@@ -55,7 +56,6 @@ View {
             property bool full: false
             property int xOffset: width * index
             property var pictureArray: []
-            property bool fixedRotation: true
 
             function considerImage() {
                 if (stackHeight < (1.3 + 1/globalSettings.columnCount)*root.height) {
@@ -153,7 +153,7 @@ View {
                 target: root
                 onTogglePause: d.paused = !d.paused
                 onNext: deathTimer.triggered()
-                onToggleChaos: fixedRotation = !fixedRotation
+                onToggleChaos: physicsSettings.fixedRotation = !physicsSettings.fixedRotation
             }
         }
     }
