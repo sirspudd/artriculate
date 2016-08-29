@@ -74,7 +74,6 @@ signals:
 private:
     QStringList extensions;
     QString rootDir;
-    QImageReader reader;
 };
 
 FSNodeTree::FSNodeTree(PictureModel *p)
@@ -110,8 +109,8 @@ void FSNodeTree::addModelNode(const FSNode* parentNode)
 
         FSNode *file = new FSNode(currentFile, parentNode);
         const QString fullPath = FSNode::qualifyNode(file);
-        reader.setFileName(fullPath);
-        QSize size = reader.size();
+
+        QSize size = QImageReader(fullPath).size();
 
         bool rational = false;
         if (size.isValid()) {
