@@ -203,6 +203,8 @@ QVariant PictureModel::data(const QModelIndex &index, int role) const
         switch (role) {
         case SizeRole:
             return QSize(1222,900);
+        case RatioRole:
+            return 1222/900;
         case NameRole:
             return "Qt logo";
         case PathRole:
