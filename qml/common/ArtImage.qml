@@ -1,24 +1,39 @@
 import QtQuick 2.5
 import PictureModel 1.0
 
-Image {
+Rectangle {
     property var effect
     property int modelIndex
 
-    asynchronous: true
-    fillMode: Image.PreserveAspectFit
-    //fillMode: Image.PreserveAspectCrop
-
-    source: imageModel.data(modelIndex)
+    color: "black"
 
     height: width/imageModel.data(modelIndex, PictureModel.RatioRole)
     width: parent.width
 
-    mirror: globalSettings.randomlyMirrorArt && (Math.random() < 0.5)
-    smooth: globalSettings.smoothArt
+    Image {
+        opacity: 0
+        anchors.fill: parent
+        asynchronous: true
+        fillMode: Image.PreserveAspectFit
 
-    sourceSize.height: height
-    sourceSize.width: width
+        source: imageModel.data(modelIndex)
+
+        mirror: globalSettings.randomlyMirrorArt && (Math.random() < 0.5)
+        smooth: globalSettings.smoothArt
+
+        sourceSize.height: height
+        sourceSize.width: width
+
+        Behavior on opacity {
+            NumberAnimation { duration: 1000 }
+        }
+
+        onStatusChanged: {
+            if (status === Image.Ready) {
+                opacity = 1
+            }
+        }
+    }
 
     Component.onCompleted: {
         modelIndex = Math.floor(Math.random()*imageModel.count)
