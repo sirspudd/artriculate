@@ -28,17 +28,19 @@ class PictureModel : public QAbstractListModel
     Q_PROPERTY (int count READ rowCount NOTIFY countChanged)
 public:
     enum PictureRoles {
-        PathRole = Qt::UserRole + 1
+        NameRole = Qt::UserRole + 1,
+        PathRole,
+        SizeRole,
+        RatioRole
     };
+    Q_ENUM(PictureRoles)
 
     PictureModel(QObject *parent = nullptr);
     ~PictureModel();
 
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
-
-    Q_INVOKABLE QUrl randomPicture() const;
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
-
+    Q_INVOKABLE QVariant data(const int &row, int role = PathRole) const { return data(index(row, 0), role); }
+    QVariant data(const QModelIndex & index, int role = PathRole) const;
 signals:
     void countChanged();
 

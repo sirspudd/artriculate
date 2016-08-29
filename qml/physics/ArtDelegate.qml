@@ -20,6 +20,4 @@ ImageBoxBody {
 
     fixedRotation: physicsSettings.fixedRotation
     bodyType: Body.Dynamic
-
-    source: imageModel.randomPicture()
 }

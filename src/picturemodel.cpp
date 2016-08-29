@@ -27,15 +27,22 @@
 #include <QMimeDatabase>
 
 struct FSNode {
-  FSNode(const QString& rname, const FSNode *pparent = nullptr)
-      : name(rname),
-        parent(pparent) { /**/ }
+  FSNode(const QString& rname, const FSNode *pparent = nullptr);
 
   static QString qualifyNode(const FSNode *node);
 
   const QString name;
   const FSNode *parent;
+
+  QSize size;
+  qreal ratio;
 };
+
+FSNode::FSNode(const QString& rname, const FSNode *pparent)
+    : name(rname),
+      parent(pparent)
+{
+}
 
 QString FSNode::qualifyNode(const FSNode *node) {
     QString qualifiedPath;
@@ -59,15 +66,15 @@ public:
     void setModelRoot(const QString& rootDir) { this->rootDir = rootDir; }
 
     int fileCount() const { return files.length(); }
-    QUrl randomFileUrl() const;
+    QList<FSNode*> files;
 public slots:
     void populate();
 signals:
     void countChanged();
 private:
-    QList<const FSNode*> files;
     QStringList extensions;
     QString rootDir;
+    QImageReader reader;
 };
 
 FSNodeTree::FSNodeTree(PictureModel *p)
@@ -86,14 +93,6 @@ FSNodeTree::FSNodeTree(PictureModel *p)
     }
 }
 
-
-QUrl FSNodeTree::randomFileUrl() const {
-    if (files.size() <= 0)
-        return QString("qrc:///qt_logo_green_rgb.png");
-
-    return QUrl::fromLocalFile(FSNode::qualifyNode(files.at(qrand()%files.size())));
-}
-
 void FSNodeTree::addModelNode(const FSNode* parentNode)
 {
     // TODO: Check for symlink recursion
@@ -109,9 +108,31 @@ void FSNodeTree::addModelNode(const FSNode* parentNode)
         if (!extensions.contains(extension))
             continue;
 
-        const FSNode *file = new FSNode(currentFile, parentNode);
-        files << file;
-        emit countChanged();
+        FSNode *file = new FSNode(currentFile, parentNode);
+        const QString fullPath = FSNode::qualifyNode(file);
+        reader.setFileName(fullPath);
+        QSize size = reader.size();
+
+        bool rational = false;
+        if (size.isValid()) {
+            file->size = size;
+            qreal ratio = qreal(size.width())/size.height();
+            if ((ratio < 0.01) || (ratio > 100)) {
+                qDebug() << "Image" << fullPath << "has excessive ratio" << ratio << "excluded";
+            } else {
+                rational = true;
+                file->ratio = ratio;
+            }
+        } else {
+            qDebug() << "Discarding" << fullPath << "due to invalid size";
+        }
+
+        if (rational) {
+            files << file;
+            emit countChanged();
+        }  else {
+            delete file;
+        }
     }
 }
 
@@ -176,23 +197,43 @@ int PictureModel::rowCount(const QModelIndex &parent) const
     return d->fsTree->fileCount();
 }
 
-QUrl PictureModel::randomPicture() const
-{   return d->fsTree->randomFileUrl();
-}
-
 QVariant PictureModel::data(const QModelIndex &index, int role) const
 {
-    Q_UNUSED(role)
-    if (index.row() < 0 || index.row() >= d->fsTree->fileCount())
-        return QVariant();
+    if (index.row() < 0 || index.row() >= d->fsTree->fileCount()) {
+        switch (role) {
+        case SizeRole:
+            return QSize(1222,900);
+        case NameRole:
+            return "Qt logo";
+        case PathRole:
+        default:
+            return QString("qrc:///qt_logo_green_rgb.png");
+        }
+    }
 
-    return d->fsTree->randomFileUrl();
+
+    switch (role) {
+    case SizeRole:
+        return d->fsTree->files.at(index.row())->size;
+    case RatioRole:
+        return d->fsTree->files.at(index.row())->ratio;
+    case NameRole:
+        return d->fsTree->files.at(index.row())->name;
+    case PathRole:
+    default:
+        return QUrl::fromLocalFile(FSNode::qualifyNode(d->fsTree->files.at(index.row())));
+    }
+
+    return QVariant();
 }
 
 QHash<int, QByteArray> PictureModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
+    roles[NameRole] = "name";
     roles[PathRole] = "path";
+    roles[SizeRole] = "size";
+    roles[RatioRole] = "ratio";
     return roles;
 }
 

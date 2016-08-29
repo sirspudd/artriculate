@@ -71,9 +71,8 @@ int main(int argc, char *argv[])
     }
 
     QQmlApplicationEngine engine;
-    PictureModel model;
+    qmlRegisterType<PictureModel>("PictureModel", 1, 0, "PictureModel");
 
-    engine.rootContext()->setContextProperty("imageModel", &model);
     engine.rootContext()->setContextProperty("fileReader", new FileReader(&app));
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 

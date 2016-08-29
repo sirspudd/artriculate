@@ -1,6 +1,7 @@
 import QtQuick 2.5
 import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
+import PictureModel 1.0
 
 Window {
     id: appWindow
@@ -11,6 +12,10 @@ Window {
     onWidthChanged: {
         loader.source = ""
         loader.source = globalSettings.view.toLowerCase() + "/" + globalSettings.view + ".qml"
+    }
+
+    PictureModel {
+        id: imageModel
     }
 
     QtObject {
@@ -55,6 +60,7 @@ Window {
         property string view: "Physics"
         property bool smoothArt: false
         property bool randomlyMirrorArt: true
+        property bool fullscreen: true
 
         property bool commonFeed: true
         property bool commonFeedRoundRobin: true
@@ -115,5 +121,15 @@ Window {
         }
     }
 
-    Component.onCompleted: showFullScreen()
+    Component.onCompleted: {
+        globalSettings.fullscreen ? showFullScreen() : show()
+    }
+
+    /*Connections {
+        target: imageModel
+        onCountChanged: {
+            //console.log('Count adjusted to:' + imageModel.count)
+            console.log('Image model data:' + imageModel.get(0))
+        }
+    }*/
 }
