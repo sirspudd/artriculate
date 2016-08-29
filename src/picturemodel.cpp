@@ -23,6 +23,8 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QThread>
+#include <QImageReader>
+#include <QMimeDatabase>
 
 struct FSNode {
   FSNode(const QString& rname, const FSNode *pparent = nullptr)
@@ -54,7 +56,6 @@ public:
     FSNodeTree(PictureModel *p);
 
     void addModelNode(const FSNode* parentNode);
-    void setSupportedExtensions(const QStringList extensions) { this->extensions = extensions; }
     void setModelRoot(const QString& rootDir) { this->rootDir = rootDir; }
 
     int fileCount() const { return files.length(); }
@@ -73,6 +74,16 @@ FSNodeTree::FSNodeTree(PictureModel *p)
     : QObject(nullptr)
 {
     connect(this, SIGNAL(countChanged()), p, SIGNAL(countChanged()));
+
+    QMimeDatabase mimeDatabase;
+    for(const QByteArray &m: QImageReader::supportedMimeTypes()) {
+        for(const QString &suffix: mimeDatabase.mimeTypeForName(m).suffixes())
+            extensions.append(suffix);
+    }
+
+    if (extensions.isEmpty()) {
+        qFatal("Your Qt install has no image format support");
+    }
 }
 
 
@@ -94,11 +105,10 @@ void FSNodeTree::addModelNode(const FSNode* parentNode)
     }
 
     for(const QString &currentFile : parentDir.entryList(QDir::Files)) {
-        if (!extensions.isEmpty()) {
-            QString extension = currentFile.mid(currentFile.length() - 3);
-            if (!extensions.contains(extension))
-                continue;
-        }
+        QString extension = currentFile.mid(currentFile.length() - 3);
+        if (!extensions.contains(extension))
+            continue;
+
         const FSNode *file = new FSNode(currentFile, parentNode);
         files << file;
         emit countChanged();
@@ -110,10 +120,6 @@ void FSNodeTree::populate()
     QDir currentDir(rootDir);
     if (!currentDir.exists()) {
         qDebug() << "Being told to watch a non existent directory";
-    }
-    if (extensions.empty()) {
-        qDebug() << "No supported extensions provided, defaulting to jpg and png";
-        extensions << "jpg" << "png";
     }
     addModelNode(new FSNode(rootDir));
 }
@@ -132,14 +138,11 @@ PictureModel::PictureModelPrivate::PictureModelPrivate(PictureModel* p)
 {
     QSettings settings;
     QString artPath = settings.value("artPath","/blackhole/media/art").toString();
-    QStringList extensions = settings.value("extensions", QStringList() << "jpg" << "png").toStringList();
 
     settings.setValue("artPath", artPath);
-    settings.setValue("extensions", extensions);
 
     fsTree = new FSNodeTree(p);
 
-    fsTree->setSupportedExtensions(extensions);
     fsTree->setModelRoot(artPath);
 
     fsTree->moveToThread(&scanningThread);
