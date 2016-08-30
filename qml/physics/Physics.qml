@@ -21,7 +21,7 @@ View {
 
         property int feedRate: 100
         // 0 is abutting
-        property int verticalOffset: 1
+        property int verticalOffset: 5
         property real pace: 1
         property bool globalWorld: false
         property bool fixedRotation: true

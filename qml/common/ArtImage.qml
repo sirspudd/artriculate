@@ -7,7 +7,7 @@ Rectangle {
 
     color: "black"
 
-    height: width/imageModel.data(modelIndex, PictureModel.RatioRole)
+    height: Math.ceil(width/imageModel.data(modelIndex, PictureModel.RatioRole))
     width: parent.width
 
     Image {
