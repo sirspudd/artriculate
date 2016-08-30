@@ -23,6 +23,8 @@ View {
         // 0 is abutting
         property int verticalOffset: 5
         property real pace: 3
+        property real density: 1.0
+        property real friction: 1.0
         property bool globalWorld: false
         property bool fixedRotation: true
         // Very computationally heavy: 40% vs 20% for 0.1 vs 0

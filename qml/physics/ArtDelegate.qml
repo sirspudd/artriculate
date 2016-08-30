@@ -14,8 +14,8 @@ ImageBoxBody {
         }
     }
 
-    density: 1.0
-    friction: 0
+    density: physicsSettings.density
+    friction: physicsSettings.friction
     restitution: physicsSettings.restitution
 
     fixedRotation: physicsSettings.fixedRotation
