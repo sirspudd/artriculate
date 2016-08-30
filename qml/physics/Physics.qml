@@ -22,7 +22,7 @@ View {
         property int feedRate: 100
         // 0 is abutting
         property int verticalOffset: 5
-        property real pace: 1
+        property real pace: 3
         property bool globalWorld: false
         property bool fixedRotation: true
         // Very computationally heavy: 40% vs 20% for 0.1 vs 0
