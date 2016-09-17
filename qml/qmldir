@@ -2,3 +2,7 @@ singleton Effects 1.0 effects/Effects.qml
 ArtImage 1.0 common/ArtImage.qml
 VisualEffect 1.0 common/VisualEffect.qml
 View 1.0 common/View.qml
+ImageBoxBody 1.0 physics/ImageBoxBody.qml
+ArtBoxBody 1.0 physics/ArtBoxBody.qml
+RectangleBoxBody 1.0 physics/RectangleBoxBody.qml
+BoxBody 1.0 physics/BoxBody.qml

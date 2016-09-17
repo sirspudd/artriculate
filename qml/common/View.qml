@@ -7,9 +7,6 @@ Item {
     property var pictureDelegate: Component {
         ArtImage {}
     }
-    property var effectDelegate: Component {
-        VisualEffect {}
-    }
 
     function reset() {
         columnArray = []

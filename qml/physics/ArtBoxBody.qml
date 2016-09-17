@@ -1,8 +1,10 @@
 import QtQuick 2.0
 import Box2D 2.0
 
-Rectangle {
-    id: rectangle
+import ".."
+
+ArtImage {
+    id: image
 
     property alias body: boxBody
     property alias fixture: box
@@ -37,16 +39,16 @@ Rectangle {
     Body {
         id: boxBody
 
-        target: rectangle
+        target: image
 
         Box {
             id: box
 
-            width: rectangle.width
-            height: rectangle.height
+            width: image.width
+            height: image.height
 
-            onBeginContact: rectangle.beginContact(other)
-            onEndContact: rectangle.endContact(other)
+            onBeginContact: image.beginContact(other)
+            onEndContact: image.endContact(other)
         }
     }
 }

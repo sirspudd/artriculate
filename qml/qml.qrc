@@ -3,10 +3,13 @@
         <file>main.qml</file>
         <file>qmldir</file>
         <file>common/VisualEffect.qml</file>
-        <file>physics/ArtDelegate.qml</file>
+        <file>physics/BoxBody.qml</file>
         <file>physics/ImageBoxBody.qml</file>
+        <file>physics/ArtBoxBody.qml</file>
         <file>physics/RectangleBoxBody.qml</file>
-        <file>physics/Physics.qml</file>
+        <file>well/WellDelegate.qml</file>
+        <file>well/Well.qml</file>
+        <file>conveyor/Conveyor.qml</file>
         <file>basic/Basic.qml</file>
         <file>effects/Effect.qml</file>
         <file>effects/Billboard.qml</file>

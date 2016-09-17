@@ -12,7 +12,7 @@ View {
     signal next
 
     property var pictureDelegate: Component {
-        ArtDelegate {}
+        WellDelegate {}
     }
 
     Settings {
@@ -67,10 +67,6 @@ View {
             function addImage() {
                 var image = pictureDelegate.createObject(column, { x: -1000, y: -1000 })
 
-                if (globalSettings.effect !== "" && Effects.validate(globalSettings.effect)) {
-                    image.effect = effectDelegate.createObject(column, { target: image, effect: globalSettings.effect })
-                }
-
                 image.beyondThePale.connect(removeImage)
                 image.world = physicsSettings.globalWorld ? world : isolatedWorld
                 image.x = xOffset
@@ -82,9 +78,6 @@ View {
             }
 
             function removeImage(image) {
-                if (image.effect) {
-                    image.effect.destroy()
-                }
                 stackHeight -= image.height
                 image.destroy()
                 globalUtil.itemCount--
@@ -187,6 +180,5 @@ View {
 
     Component.onCompleted: {
         pictureDelegate.status !== Component.Ready && console.log('Component failed with:' + pictureDelegate.errorString())
-        effectDelegate.status !== Component.Ready && console.log('Component failed with:' + effectDelegate.errorString())
     }
 }

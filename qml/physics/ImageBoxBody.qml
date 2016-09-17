@@ -1,9 +1,7 @@
 import QtQuick 2.0
 import Box2D 2.0
 
-import ".."
-
-ArtImage {
+Image {
     id: image
 
     property alias body: boxBody
@@ -44,8 +42,8 @@ ArtImage {
         Box {
             id: box
 
-            width: image.width
-            height: image.height
+            width:  image.width/1.05
+            height: image.height/1.05
 
             onBeginContact: image.beginContact(other)
             onEndContact: image.endContact(other)

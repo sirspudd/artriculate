@@ -57,7 +57,7 @@ Window {
         property int interval: 5
         property bool viewItemCount: false
         property string effect: ""
-        property string view: "Physics"
+        property string view: "Conveyor"
         property bool smoothArt: false
         property bool randomlyMirrorArt: true
         property bool fullscreen: true
@@ -124,12 +124,4 @@ Window {
     Component.onCompleted: {
         globalSettings.fullscreen ? showFullScreen() : show()
     }
-
-    /*Connections {
-        target: imageModel
-        onCountChanged: {
-            //console.log('Count adjusted to:' + imageModel.count)
-            console.log('Image model data:' + imageModel.get(0))
-        }
-    }*/
 }

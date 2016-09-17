@@ -1,7 +1,10 @@
 import QtQuick 2.5
 import PictureModel 1.0
 
+import ".."
+
 Rectangle {
+    id: root
     property var effect
     property int modelIndex
 
@@ -11,6 +14,7 @@ Rectangle {
     width: parent.width
 
     Image {
+        id: image
         opacity: 0
         anchors.fill: parent
         asynchronous: true
@@ -37,5 +41,10 @@ Rectangle {
 
     Component.onCompleted: {
         modelIndex = Math.floor(Math.random()*imageModel.count)
+        if (globalSettings.effect !== "" && Effects.validate(globalSettings.effect)) {
+            var component = Qt.createComponent("VisualEffect.qml");
+            component.status !== Component.Ready && console.log('Component failed with:' + effectDelegate.errorString())
+            root.effect = component.createObject(root, { target: image, effect: globalSettings.effect })
+        }
     }
 }

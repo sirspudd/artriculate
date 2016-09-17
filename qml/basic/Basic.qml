@@ -51,10 +51,6 @@ View {
                 function addImage() {
                     var image = pictureDelegate.createObject(artworkStack)
 
-                    if (globalSettings.effect !== "" && Effects.validate(globalSettings.effect)) {
-                        image.effect = effectDelegate.createObject(artworkStack, { target: image, effect: globalSettings.effect })
-                    }
-
                     artworkHeight += image.height
                     compoundArtworkHeight += image.height
                     image.y = root.height - compoundArtworkHeight
@@ -64,9 +60,6 @@ View {
                 }
 
                 function removeImage(image) {
-                    if (image.effect) {
-                        image.effect.destroy()
-                    }
                     image.destroy()
                     globalUtil.itemCount--
                 }
