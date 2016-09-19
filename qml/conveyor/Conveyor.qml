@@ -160,12 +160,12 @@ Item {
         property real rowCount: conveyorSettings.rowCount
         property variant source: viewportTexture
         fragmentShader: "
-            varying lowp vec2 qt_TexCoord0;
+            varying highp vec2 qt_TexCoord0;
             uniform sampler2D source;
             uniform lowp float qt_Opacity;
             uniform lowp float rowCount;
             void main() {
-                lowp vec2 tc;
+                highp vec2 tc;
                 lowp float row = floor(qt_TexCoord0.t * rowCount);
                 tc.s = qt_TexCoord0.s / rowCount + row / rowCount;
                 tc.t = mod(qt_TexCoord0.t, 1.0 / rowCount) * rowCount;
