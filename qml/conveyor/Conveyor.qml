@@ -153,6 +153,8 @@ Item {
         sourceItem: viewport
         width: viewport.width
         height: viewport.height
+        hideSource: true
+        live: true
     }
 
     ShaderEffect {
