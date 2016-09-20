@@ -21,6 +21,8 @@ Item {
         readonly property int piMaxTextureSize: 2048
         readonly property int nvidiaMaxTextureSize: 8192
         readonly property int nvidiaMaxTextureSizeTheoretical: 16384
+
+        property int feedGapFudgeFactor: 100
     }
 
     ImageBoxBody {
