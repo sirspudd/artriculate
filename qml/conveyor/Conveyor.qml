@@ -43,7 +43,7 @@ Item {
         }
         onBeginContact: {
             var body = pictureArray[pictureArray.length-1].body
-            body.applyLinearImpulse(Qt.point(body.getMass()*5*Math.sqrt((pictureArray.length+1)),0), Qt.point(0,0));
+            body.applyLinearImpulse(Qt.point(Math.sqrt(body.getMass())*20*d.mountingDesperation*Math.sqrt(pictureArray.length+1),0), Qt.point(0,0));
             withdrawlBoot()
         }
     }
@@ -156,7 +156,7 @@ Item {
             anchors {
                 top: parent.bottom
             }
-            friction: 0.01
+            friction: 0.02
         }
     }
 
@@ -164,7 +164,7 @@ Item {
         id: feedTimer
         repeat: true
         running: true
-        interval: 100
+        interval: 200
         onTriggered: {
             spawnImage()
         }
