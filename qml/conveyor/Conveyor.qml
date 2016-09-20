@@ -17,6 +17,10 @@ Item {
 
         property int footStartingX: -50 - foot.width
         property int mountingDesperation: 1
+
+        readonly property int piMaxTextureSize: 2048
+        readonly property int nvidiaMaxTextureSize: 8192
+        readonly property int nvidiaMaxTextureSizeTheoretical: 16384
     }
 
     ImageBoxBody {
@@ -43,13 +47,14 @@ Item {
         }
         onBeginContact: {
             var body = pictureArray[pictureArray.length-1].body
-            body.applyLinearImpulse(Qt.point(Math.sqrt(body.getMass())*20*d.mountingDesperation*Math.sqrt(pictureArray.length+1),0), Qt.point(0,0));
+            var impulseStrength = body.getMass()*d.mountingDesperation*Math.sqrt((pictureArray.length+1)/conveyorSettings.rowCount)
+            body.applyLinearImpulse(Qt.point(impulseStrength,0), Qt.point(0,0));
             withdrawlBoot()
         }
     }
 
     function bootImage() {
-        d.mountingDesperation += d.mountingDesperation
+        d.mountingDesperation += 1
         foot.active = true;
         foot.x = pictureArray[pictureArray.length-1].x*2
     }
@@ -95,6 +100,7 @@ Item {
 
         property int rowCount: 6
         property int footAnimationTime: 500
+        property bool constrainToPi: false
     }
 
     Component {
@@ -172,11 +178,15 @@ Item {
 
     ShaderEffectSource {
         id: viewportTexture
+
+        property int textureDimension: conveyorSettings.constrainToPi ? d.piMaxTextureSize : d.nvidiaMaxTextureSize
+
         sourceItem: viewport
         width: viewport.width
         height: viewport.height
         hideSource: true
         live: true
+        textureSize: Qt.size(textureDimension,textureDimension/root.width*root.height)
     }
 
     ShaderEffect {
