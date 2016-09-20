@@ -12,39 +12,55 @@ Item {
     property var pictureArray: []
     property var nextImage
 
+    QtObject {
+        id: d
+
+        property int footStartingX: -50 - foot.width
+        property int mountingDesperation: 1
+    }
+
     ImageBoxBody {
         id: foot
+
+        categories: Box.Category1
+        collidesWith: Box.Category2
+
         world: theWorld
-        density: 20000
+        density: 200000
         bodyType: Body.Dynamic
-        x: -width
+        x: d.footStartingX
         anchors.verticalCenter: viewport.verticalCenter
-        rotation: -90
-        mirror: true
         fixedRotation: true
         z: 10
         source: "qrc:/Monty_python_foot.png"
-        sourceSize.height: viewport.height
-        sourceSize.width: viewport.height/foot.implicitHeight*foot.implicitWidth
+        height: viewport.height
+        width: viewport.height/foot.implicitHeight*foot.implicitWidth
+        sourceSize.height: height
+        sourceSize.width: width
         Behavior on x { SmoothedAnimation{ duration: conveyorSettings.footAnimationTime } }
         Component.onCompleted: {
             foot.body.gravityScale = 0
         }
+        onBeginContact: {
+            var body = pictureArray[pictureArray.length-1].body
+            body.applyLinearImpulse(Qt.point(body.getMass()*5*Math.sqrt((pictureArray.length+1)),0), Qt.point(0,0));
+            withdrawlBoot()
+        }
     }
 
-    SequentialAnimation {
-        id: stomp
-        running: false
-        ScriptAction { script: foot.x = pictureArray[pictureArray.length-1].x*1.1 }
-        NumberAnimation { duration: conveyorSettings.footAnimationTime }
-        // linger
-        NumberAnimation { duration: 2*conveyorSettings.footAnimationTime }
-        ScriptAction { script: foot.x = -foot.width - 10 }
-        NumberAnimation { duration: conveyorSettings.footAnimationTime }
+    function bootImage() {
+        d.mountingDesperation += d.mountingDesperation
+        foot.active = true;
+        foot.x = pictureArray[pictureArray.length-1].x*2
+    }
+
+    function withdrawlBoot() {
+        foot.active = false;
+        foot.x = d.footStartingX
     }
 
     function spawnImage() {
-        if (stomp.running)
+        if (foot.x != d.footStartingX)
             return
 
         if (!nextImage) {
@@ -53,8 +69,8 @@ Item {
 
         if (pictureArray.length > 0 && pictureArray[pictureArray.length-1].x < nextImage.width) {
             var body = pictureArray[pictureArray.length-1].body
-            if (body.linearVelocity.y < 0.001) {
-                stomp.start()
+            if ((body.linearVelocity.y < 0.001) && (body.linearVelocity.x < 1)) {
+                bootImage()
             }
         } else {
             nextImage.murder.connect(removeImage)
@@ -63,6 +79,7 @@ Item {
 
             pictureArray.push(nextImage)
             nextImage = null
+            d.mountingDesperation = 1
         }
     }
 
@@ -85,6 +102,9 @@ Item {
         ArtBoxBody {
             signal murder(var item)
 
+            categories: Box.Category2
+            collidesWith: Box.Category1 | Box.Category2 | Box.Category3
+
             density: 1
             height: root.height/conveyorSettings.rowCount
             width: height*imageModel.data(modelIndex, PictureModel.RatioRole)
@@ -92,9 +112,7 @@ Item {
             fixedRotation: true
 
             onXChanged: {
-                if (x < 0) {
-                    murder(this)
-                } else if (x + width > floor.width) {
+                if (x + width > floor.width) {
                     fixedRotation = false
                 }
             }
@@ -128,13 +146,17 @@ Item {
 
         RectangleBoxBody {
             id: floor
+
+            categories: Box.Category3
+            collidesWith: Box.Category2
+
             world: theWorld
             height: 0
-            width: parent.width - 400
+            width: parent.width - root.width/4
             anchors {
                 top: parent.bottom
             }
-            friction: 0
+            friction: 0.01
         }
     }
 
