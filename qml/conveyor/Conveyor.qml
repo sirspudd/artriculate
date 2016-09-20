@@ -47,7 +47,7 @@ Item {
         }
         onBeginContact: {
             var body = pictureArray[pictureArray.length-1].body
-            var impulseStrength = body.getMass()*d.mountingDesperation*Math.sqrt((pictureArray.length+1)/conveyorSettings.rowCount)
+            var impulseStrength = body.getMass()*conveyorSettings.forceFudgeFactor*d.mountingDesperation*Math.sqrt((pictureArray.length+1)/conveyorSettings.rowCount)
             body.applyLinearImpulse(Qt.point(impulseStrength,0), Qt.point(0,0));
             withdrawlBoot()
         }
@@ -101,6 +101,9 @@ Item {
         property int rowCount: 6
         property int footAnimationTime: 500
         property bool constrainToPi: false
+
+        property real friction: 0.02
+        property int forceFudgeFactor: 1
     }
 
     Component {
@@ -162,7 +165,7 @@ Item {
             anchors {
                 top: parent.bottom
             }
-            friction: 0.02
+            friction: conveyorSettings.friction
         }
     }
 
