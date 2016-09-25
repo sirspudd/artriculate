@@ -29,7 +29,10 @@ Rectangle {
         sourceSize.width: width
 
         Behavior on opacity {
-            NumberAnimation { duration: 1000 }
+            SequentialAnimation {
+                ScriptAction { script: root.effect !== undefined ? root.effect.scheduleUpdate() : undefined }
+                NumberAnimation { duration: 1000 }
+            }
         }
 
         onStatusChanged: {

@@ -57,6 +57,8 @@ ShaderEffect {
     property string fragmentShaderFilename
     property string vertexShaderFilename
 
+    blending: false
+
     QtObject {
         id: d
         property string fragmentShaderCommon: "

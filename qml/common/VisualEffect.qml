@@ -8,6 +8,8 @@ Item {
     property string effect: "Random"
     property var effectObject
 
+    function scheduleUpdate() { effectSource.scheduleUpdate() }
+
     anchors.fill: target
 
     ShaderEffectSource {
@@ -15,6 +17,7 @@ Item {
         smooth: true
         hideSource: true
         sourceItem: target
+        live: false
     }
 
     Component.onCompleted: {
