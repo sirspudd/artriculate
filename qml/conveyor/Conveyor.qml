@@ -49,7 +49,7 @@ Item {
         }
         onBeginContact: {
             var body = pictureArray[pictureArray.length-1].body
-            var impulseStrength = body.getMass()*conveyorSettings.forceFudgeFactor*d.mountingDesperation*Math.sqrt((pictureArray.length+1)/conveyorSettings.rowCount)
+            var impulseStrength = body.getMass()*Math.sqrt(conveyorSettings.rowCount)*3*d.mountingDesperation*Math.sqrt((pictureArray.length+1)/conveyorSettings.rowCount)
             body.applyLinearImpulse(Qt.point(impulseStrength,0), Qt.point(0,0));
             withdrawlBoot()
         }
@@ -100,12 +100,11 @@ Item {
         id: conveyorSettings
         category: "Conveyor"
 
-        property int rowCount: 6
+        property int rowCount: 4
         property int footAnimationTime: 500
         property bool constrainToPi: false
 
-        property real friction: 0.02
-        property int forceFudgeFactor: 1
+        property real friction: 0.01
     }
 
     Component {
@@ -184,20 +183,20 @@ Item {
     ShaderEffectSource {
         id: viewportTexture
 
-        property int textureDimension: conveyorSettings.constrainToPi ? d.piMaxTextureSize : d.nvidiaMaxTextureSize
-
         sourceItem: viewport
         width: viewport.width
         height: viewport.height
         hideSource: true
         live: true
-        textureSize: Qt.size(textureDimension,textureDimension/root.width*root.height)
+        textureSize: conveyorSettings.constrainToPi ? Qt.size(d.piMaxTextureSize,d.piMaxTextureSize/root.width*root.height) : undefined
     }
 
     ShaderEffect {
         anchors.fill: parent
         property real rowCount: conveyorSettings.rowCount
         property variant source: viewportTexture
+        blending: false
+        cullMode: ShaderEffect.BackFaceCulling
         fragmentShader: "
             varying highp vec2 qt_TexCoord0;
             uniform sampler2D source;
