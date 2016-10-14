@@ -11,7 +11,7 @@ User=%i
 WorkingDirectory=~
 TTYPath=/dev/tty7
 PAMName=login
-ExecStart=-/usr/bin/artriculate -platform eglfs -plugin CECKeyboard
+ExecStart=-/usr/bin/artriculate -platform eglfs
 Restart=on-failure
 
 [Install]
