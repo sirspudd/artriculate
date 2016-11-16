@@ -55,7 +55,8 @@ Window {
         id: globalSettings
         property int columnCount: 5
         property int interval: 5
-        property bool viewItemCount: false
+        property bool showViewItemCount: false
+        property bool showScreenResolution: false
         property string effect: ""
         property string view: "Conveyor"
         property bool smoothArt: false
@@ -106,7 +107,7 @@ Window {
     Rectangle {
         z: 1
         opacity: 0.5
-        visible: globalSettings.viewItemCount
+        visible: globalSettings.showViewItemCount
         color: "black"
 
         anchors { right: parent.right; top: parent.top }
@@ -117,6 +118,24 @@ Window {
             id: itemCountLabel
             font.pixelSize: 100
             text: globalUtil.itemCount
+            color: "white"
+        }
+    }
+
+    Rectangle {
+        z: 1
+        opacity: 0.5
+        visible: globalSettings.showScreenResolution
+        color: "black"
+
+        anchors { right: parent.right; top: parent.top }
+        width: resolutionLabel.width
+        height: resolutionLabel.height
+
+        Text {
+            id: resolutionLabel
+            font.pixelSize: 100
+            text: screenSize.width + "x" + screenSize.height
             color: "white"
         }
     }

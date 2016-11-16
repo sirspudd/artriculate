@@ -32,6 +32,7 @@
 #include <QTextStream>
 
 #include <QDebug>
+#include <QScreen>
 
 class FileReader : public QObject {
     Q_OBJECT
@@ -88,6 +89,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     qmlRegisterType<PictureModel>("PictureModel", 1, 0, "PictureModel");
 
+    engine.rootContext()->setContextProperty("screenSize", app.screens().at(0)->availableSize());
     engine.rootContext()->setContextProperty("fileReader", new FileReader(&app));
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
