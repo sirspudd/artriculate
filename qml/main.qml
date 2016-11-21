@@ -25,7 +25,7 @@ Window {
 
         function timeChanged() {
             var date = new Date;
-            timeString = date.toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' });
+            timeString = date.getHours() + ':' + date.getMinutes();
         }
 
         property variant timeTimer: Timer {
@@ -93,18 +93,20 @@ Window {
 
         Loader {
             id: loader
-            anchors { top: parent.top; left: parent.left; right: parent.right; bottom: clock.top  }
+            anchors.fill: parent
         }
 
         Rectangle {
             id: clock
+            width: childrenRect.width
+            opacity: 0.7
             color: "black"
             visible: height > 0
             height: globalSettings.clockWidget ? appWindow.height/15 : 0
-            anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
+            anchors { top: parent.top; horizontalCenter: parent.horizontalCenter }
             Text {
                 anchors.centerIn: parent
-                color: Qt.rgba(globalSettings.clockIntensity, globalSettings.clockIntensity, globalSettings.clockIntensity, 1.0)
+                color: "white"//Qt.rgba(globalSettings.clockIntensity, globalSettings.clockIntensity, globalSettings.clockIntensity, 1.0)
                 font.pixelSize: parent.height
                 text: d.timeString
             }
