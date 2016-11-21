@@ -25,7 +25,7 @@ Window {
 
         function timeChanged() {
             var date = new Date;
-            timeString = date.getHours() + ':' + date.getMinutes();
+            timeString = ("00" + date.getHours()).slice(-2) + ':' + ("00" + date.getMinutes()).slice(-2);
         }
 
         property variant timeTimer: Timer {
@@ -107,6 +107,7 @@ Window {
             Text {
                 anchors.centerIn: parent
                 color: "white"//Qt.rgba(globalSettings.clockIntensity, globalSettings.clockIntensity, globalSettings.clockIntensity, 1.0)
+                font.bold: true
                 font.pixelSize: parent.height
                 text: d.timeString
             }
