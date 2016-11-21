@@ -10,6 +10,7 @@ View {
         id: basicSettings
         category: "Basic"
 
+        property bool animationEnabled: true
         property int animationDuration: 2000
         property int easingType: Easing.Linear
     }
@@ -95,7 +96,7 @@ View {
                 }
 
                 Behavior on y {
-                    enabled: artworkStack.initialized
+                    enabled: artworkStack.initialized && basicSettings.animationEnabled
                     NumberAnimation {
                         duration: Math.min(globalUtil.adjustedInterval, basicSettings.animationDuration)
                         easing.type: basicSettings.easingType
