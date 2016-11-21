@@ -25,7 +25,7 @@ Window {
 
         function timeChanged() {
             var date = new Date;
-            timeString = date.toLocaleTimeString('en-US', { hour12: false });
+            timeString = date.toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' });
         }
 
         property variant timeTimer: Timer {
@@ -74,6 +74,10 @@ Window {
         property bool randomlyMirrorArt: true
         property bool fullscreen: true
 
+
+        property bool clockWidget: false
+        property real clockIntensity: 0.6
+
         property bool commonFeed: true
         property bool commonFeedRoundRobin: true
 
@@ -95,11 +99,12 @@ Window {
         Rectangle {
             id: clock
             color: "black"
-            height: appWindow.height/15
+            visible: height > 0
+            height: globalSettings.clockWidget ? appWindow.height/15 : 0
             anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
             Text {
                 anchors.centerIn: parent
-                color: Qt.rgba(0.3, 0.3, 0.3, 1.0)
+                color: Qt.rgba(globalSettings.clockIntensity, globalSettings.clockIntensity, globalSettings.clockIntensity, 1.0)
                 font.pixelSize: parent.height
                 text: d.timeString
             }
