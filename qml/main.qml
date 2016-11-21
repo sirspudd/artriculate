@@ -21,6 +21,17 @@ Window {
     QtObject {
         id: d
         property int primedColumns: 0
+        property string timeString
+
+        function timeChanged() {
+            var date = new Date;
+            timeString = date.toLocaleTimeString('en-US', { hour12: false });
+        }
+
+        property variant timeTimer: Timer {
+            interval: 1000; running: true; repeat: true;
+            onTriggered: d.timeChanged()
+        }
     }
 
     QtObject {
@@ -78,7 +89,20 @@ Window {
 
         Loader {
             id: loader
-            anchors.fill: parent
+            anchors { top: parent.top; left: parent.left; right: parent.right; bottom: clock.top  }
+        }
+
+        Rectangle {
+            id: clock
+            color: "black"
+            height: appWindow.height/15
+            anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
+            Text {
+                anchors.centerIn: parent
+                color: Qt.rgba(0.3, 0.3, 0.3, 1.0)
+                font.pixelSize: parent.height
+                text: d.timeString
+            }
         }
     }
 
