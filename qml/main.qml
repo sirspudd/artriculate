@@ -22,10 +22,14 @@ Window {
         id: d
         property int primedColumns: 0
         property string timeString
+        property string day
+        property string month
 
         function timeChanged() {
             var date = new Date;
-            timeString = ("00" + date.getHours()).slice(-2) + ':' + ("00" + date.getMinutes()).slice(-2);
+            timeString = Qt.formatDateTime(date, "hh:mm")
+            day = Qt.formatDateTime(date, "dd")
+            month = Qt.formatDateTime(date, "MM")
         }
 
         property variant timeTimer: Timer {
@@ -105,11 +109,45 @@ Window {
             height: globalSettings.clockWidget ? appWindow.height/15 : 0
             anchors { top: parent.top; horizontalCenter: parent.horizontalCenter }
             Text {
-                anchors.centerIn: parent
-                color: "white"//Qt.rgba(globalSettings.clockIntensity, globalSettings.clockIntensity, globalSettings.clockIntensity, 1.0)
+                //anchors.centerIn: parent
+                id: clockLabel
+                color: "white"
                 font.bold: true
                 font.pixelSize: parent.height
                 text: d.timeString
+            }
+            Item {
+                anchors { left: clockLabel.right; leftMargin: 20 }
+                height: clock.height
+                width: childrenRect.width
+                Item {
+                    width: childrenRect.width
+                    height: parent.height/2
+                    Text {
+                        anchors.centerIn: parent
+                        color: "white"
+                        font.bold: true
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                        font.pixelSize: clock.height/3
+                        text: d.day
+                    }
+                }
+                Item {
+                    y: parent.height/2
+                    width: childrenRect.width
+                    height: parent.height/2
+                    Text {
+                        anchors.centerIn: parent
+                        color: "white"
+                        font.bold: true
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                        font.pixelSize: clock.height/3
+                        text: d.month
+                    }
+                }
+
             }
         }
     }
