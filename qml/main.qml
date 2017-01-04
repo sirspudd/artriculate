@@ -157,6 +157,7 @@ Window {
         focus: true
         Keys.onLeftPressed: globalSettings.columnCount = Math.max(globalSettings.columnCount-1,1)
         Keys.onRightPressed: globalSettings.columnCount++
+        Keys.onEscapePressed: Qt.quit()
     }
 
     Rectangle {
