@@ -62,7 +62,11 @@ int main(int argc, char *argv[])
     QSettings settings;
 
     if (settings.value("raster", false).toBool()) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 8, 0)
+        qDebug() << "Trying to use the SG software backend prior to Qt 5.8";
+#else
         QQuickWindow::setSceneGraphBackend(QSGRendererInterface::Software);
+#endif
     } else {
         if (settings.value("force32bpp", true).toBool()) {
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
