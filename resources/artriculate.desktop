@@ -9,3 +9,4 @@ Type=Application
 Keywords=Image;
 Categories=Utility;ImageViewer;
 StartupNotify=true
+Icon=artriculate.png

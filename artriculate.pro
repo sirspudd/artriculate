@@ -16,7 +16,10 @@ target.path = /usr/bin
 desktop.path = /usr/share/applications
 desktop.files += resources/artriculate.desktop
 
-INSTALLS += target desktop
+icon.path = /usr/share/icons/hicolor/128x128/apps
+icon.files += resources/artriculate.png
+
+INSTALLS += target desktop icon
 
 # Default rules for deployment.
 include(deployment.pri)
