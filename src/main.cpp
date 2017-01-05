@@ -25,14 +25,14 @@
 #include <QSurfaceFormat>
 #include <QTimer>
 #include <QQuickWindow>
-
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
-
 #include <QDebug>
 #include <QScreen>
+#include <QDBusInterface>
+#include <QDBusConnection>
 
 class FileReader : public QObject {
     Q_OBJECT
@@ -88,6 +88,17 @@ int main(int argc, char *argv[])
             format.setSwapBehavior(QSurfaceFormat::TripleBuffer);
             QSurfaceFormat::setDefaultFormat(format);
         }
+    }
+
+    // qdbus org.freedesktop.ScreenSaver /org/freedesktop/ScreenSaver Inhibit "artriculate" "media playback"
+
+    if (settings.value("suppressScreensaver", false).toBool()) {
+        QDBusInterface screenSaver("org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver");
+        uint id = screenSaver.call("Inhibit", app.applicationName(), "Media playback").arguments().at(0).toInt();
+        QObject::connect(&app, &QCoreApplication::aboutToQuit, [id]() {
+            QDBusInterface screenSaver("org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver");
+            screenSaver.call("UnInhibit", id);
+        });
     }
 
     QQmlApplicationEngine engine;
