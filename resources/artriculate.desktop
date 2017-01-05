@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Artriculate
+GenericName=Image Viewer
+Comment=QML based image displaying application
+TryExec=artriculate
+Exec=artriculate
+Terminal=false
+Type=Application
+Keywords=Image;
+Categories=Utility;ImageViewer;
+StartupNotify=true

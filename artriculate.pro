@@ -12,6 +12,12 @@ RESOURCES += qml/qml.qrc resources/resources.qrc
 QML_IMPORT_PATH =
 
 target.path = /usr/bin
+
+desktop.path = /usr/share/applications
+desktop.files += resources/artriculate.desktop
+
+INSTALLS += target desktop
+
 # Default rules for deployment.
 include(deployment.pri)
 
