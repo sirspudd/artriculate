@@ -95,11 +95,9 @@ int main(int argc, char *argv[])
     if (settings.value("suppressScreensaver", false).toBool()) {
         QDBusInterface screenSaver("org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver");
         uint id = screenSaver.call("Inhibit", app.applicationName(), "Media playback").arguments().at(0).toInt();
-        screenSaver.call("SetActive", true);
         QObject::connect(&app, &QCoreApplication::aboutToQuit, [id]() {
             QDBusInterface screenSaver("org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver");
             screenSaver.call("UnInhibit", id);
-            screenSaver.call("SetActive", false);
         });
     }
 
