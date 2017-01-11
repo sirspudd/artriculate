@@ -15,10 +15,10 @@ ArtBoxBody {
         }
     }
 
-    density: physicsSettings.density
-    friction: physicsSettings.friction
-    restitution: physicsSettings.restitution
+    density: wellSettings.density
+    friction: wellSettings.friction
+    restitution: wellSettings.restitution
 
-    fixedRotation: physicsSettings.fixedRotation
+    fixedRotation: wellSettings.fixedRotation
     bodyType: Body.Dynamic
 }

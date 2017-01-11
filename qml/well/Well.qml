@@ -16,11 +16,12 @@ View {
     }
 
     Settings {
-        id: physicsSettings
-        category: "Physics"
+        id: wellSettings
+        category: "Well"
 
         property int feedRate: 100
         // 0 is abutting
+        property bool graduatedColumns: true
         property int verticalOffset: 5
         property real pace: 3
         property real density: 1.0
@@ -33,14 +34,14 @@ View {
 
     QtObject {
         id: d
-        property real pace: physicsSettings.pace/60.0
+        property real pace: wellSettings.pace/60.0
         property bool paused: false
     }
 
     World {
         id: world
         timeStep: d.pace
-        running: physicsSettings.globalWorld && globalUtil.primed
+        running: wellSettings.globalWorld && globalUtil.primed
         property var limbo: World {
             timeStep: world.timeStep
             running: world.running
@@ -55,8 +56,14 @@ View {
 
             property int stackHeight: 0
             property bool full: false
-            property int xOffset: width * index
+            property int cappedXOffset: index ? parent.width*graduationFactor : 0
+            property int xOffset: wellSettings.graduatedColumns ? cappedXOffset : width * index
             property var pictureArray: []
+            property real graduationFactor: {
+                var cappedPositionalWeight = index ? index : 1
+                var graduationFactor=1.0/(Math.pow(2,(globalSettings.columnCount - cappedPositionalWeight)))
+                return graduationFactor
+            }
 
             function considerImage() {
                 if (stackHeight < (1.3 + 1/globalSettings.columnCount)*root.height) {
@@ -68,10 +75,10 @@ View {
                 var image = pictureDelegate.createObject(column, { x: -1000, y: -1000 })
 
                 image.beyondThePale.connect(removeImage)
-                image.world = physicsSettings.globalWorld ? world : isolatedWorld
+                image.world = wellSettings.globalWorld ? world : isolatedWorld
                 image.x = xOffset
                 stackHeight += image.height
-                image.y = floor.y - stackHeight - physicsSettings.verticalOffset
+                image.y = floor.y - stackHeight - wellSettings.verticalOffset
 
                 pictureArray.push(image)
                 globalUtil.itemCount++
@@ -91,10 +98,6 @@ View {
                 }
             }
 
-            Component.onCompleted: {
-                columnArray.push(this)
-            }
-
             onStackHeightChanged: {
                 if (!column.full && (stackHeight > root.height)) {
                     globalUtil.registerColumnPrimed()
@@ -102,13 +105,13 @@ View {
                 }
             }
 
-            width: parent.width/globalSettings.columnCount
+            width: wellSettings.graduatedColumns ? parent.width*graduationFactor : parent.width/globalSettings.columnCount
             anchors { top: parent.top; bottom: parent.bottom }
 
             World {
                 id: isolatedWorld
                 timeStep: d.pace
-                running: !physicsSettings.globalWorld && globalUtil.primed
+                running: !wellSettings.globalWorld && globalUtil.primed
                 property var limbo: World {
                     timeStep: isolatedWorld.timeStep
                     running: isolatedWorld.running
@@ -129,7 +132,7 @@ View {
 
             Timer {
                 id: pumpTimer
-                interval: Math.abs(physicsSettings.feedRate)
+                interval: Math.abs(wellSettings.feedRate)
                 repeat: true
                 running: true
                 onTriggered: considerImage()
@@ -147,7 +150,11 @@ View {
                 target: root
                 onTogglePause: d.paused = !d.paused
                 onNext: deathTimer.triggered()
-                onToggleChaos: physicsSettings.fixedRotation = !physicsSettings.fixedRotation
+                onToggleChaos: wellSettings.fixedRotation = !wellSettings.fixedRotation
+            }
+
+            Component.onCompleted: {
+                columnArray.push(this)
             }
         }
     }
