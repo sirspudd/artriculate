@@ -73,7 +73,7 @@ Window {
         property bool showViewItemCount: false
         property bool showScreenResolution: false
         property string effect: ""
-        property string view: "Basic"
+        property string view: "Well"
         property bool smoothArt: false
         property bool randomlyMirrorArt: true
         property bool fullscreen: true
