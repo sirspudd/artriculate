@@ -80,9 +80,8 @@ Window {
         property string effect: ""
         property string view: "Well"
         property bool smoothArt: false
-        property bool randomlyMirrorArt: true
+        property bool randomlyMirrorArt: false
         property bool fullscreen: true
-
 
         property bool clockWidget: false
         property real clockIntensity: 0.6
