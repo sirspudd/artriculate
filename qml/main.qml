@@ -90,6 +90,10 @@ Window {
         property bool commonFeed: true
         property bool commonFeedRoundRobin: true
 
+        property real artOpacity: 1.0
+        property bool randomTapestryColour: false
+        property bool fadeInImages: true
+
         onColumnCountChanged: globalUtil.reset()
         Component.onCompleted: loader.source = globalSettings.view.toLowerCase() + "/" + globalSettings.view + ".qml"
     }

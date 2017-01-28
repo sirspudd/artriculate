@@ -8,14 +8,14 @@ Rectangle {
     property var effect
     property int modelIndex
 
-    color: "black"
+    color: globalSettings.randomTapestryColour ? Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0) : "black"
 
     height: Math.ceil(width/imageModel.data(modelIndex, PictureModel.RatioRole))
     width: parent.width
 
     Image {
         id: image
-        opacity: 0
+        opacity: globalSettings.fadeInImages ? 0 : 1.0
         anchors.fill: parent
         asynchronous: true
         fillMode: Image.PreserveAspectFit
@@ -37,7 +37,7 @@ Rectangle {
 
         onStatusChanged: {
             if (status === Image.Ready) {
-                opacity = 1
+                opacity = globalSettings.artOpacity
             }
         }
     }

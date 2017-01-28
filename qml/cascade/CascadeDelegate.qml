@@ -13,9 +13,9 @@ ArtBoxBody {
         }
     }
 
-    density: 1 //cascadeSettings.density
-    friction: 1.0 //cascadeSettings.friction
-    restitution: 0.0 //cascadeSettings.restitution
+    density: 1
+    friction: 1.0
+    restitution: 0.0
 
     fixedRotation: true
     bodyType: Body.Dynamic

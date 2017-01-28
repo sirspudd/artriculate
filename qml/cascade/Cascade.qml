@@ -4,11 +4,10 @@ import Qt.labs.settings 1.0
 
 import ".."
 
-View {
+Item {
     id: root
 
     signal togglePause
-    signal toggleChaos
     signal next
 
     property var columnArray: []
@@ -18,30 +17,32 @@ View {
 
     anchors.fill: parent
 
-    QtObject {
-        id: d
-        property int columnCount: 6
-        property real pace: cascadeSettings.pace/60.0
-        property bool paused: false
-    }
-
-    Repeater {
-        model: d.columnCount
-        delegate: columnComponent
-    }
-
     Settings {
         id: cascadeSettings
         category: "Cascade"
-
+        property int columnCount: 5
         property int feedRate: 1000
-        // 0 is abutting
-        property int verticalOffset: 500
-        property real pace: 3
-        property real density: 1.0
-        property real friction: 1.0
-        // Very computationally heavy: 40% vs 20% for 0.1 vs 0
-        property real restitution: 0
+    }
+
+    QtObject {
+        id: d
+        property real goldenRatio: 1.61803398875
+        property real pace: 1.0/20.0
+        property bool paused: false
+        function goldenBeast(col) {
+            return (1 - d.goldenRatio)/(1 - Math.pow(d.goldenRatio, col))
+        }
+
+        property real columnWidth: {
+            var foo = root.width*goldenBeast(cascadeSettings.columnCount)
+            console.log('Column width is:', foo)
+            return foo
+        }
+    }
+
+    Repeater {
+        model: cascadeSettings.columnCount
+        delegate: columnComponent
     }
 
     Component {
@@ -50,37 +51,35 @@ View {
         Item {
             id: column
 
-            property bool shifty: false
             property int stackHeight: 0
-            property int xOffset: width * index
+            property int xOffset: d.columnWidth/d.goldenBeast(index)
             property var pictureArray: []
+            property bool full: stackHeight > (1.3 + 1/cascadeSettings.columnCount)*root.height
 
             function addExistingImage(image) {
                 // make sure there is no spacial conflict in limbo, or shit goes tits up
+                image.width = width
                 image.x = image.y = index*-1000
                 image.linearVelocity.x = image.linearVelocity.y = 0.0
                 image.beyondThePale.connect(removeImage)
-                image.x = xOffset
+
                 stackHeight += image.height
-                image.y = -image.height - pictureArray.length*100
+                image.x = xOffset
+                image.y = - stackHeight
                 image.world = isolatedWorld
 
                 pictureArray.push(image)
             }
 
             function addImage() {
-                var image = pictureDelegate.createObject(column, { x: -1000, y: -1000 })
+                var image = pictureDelegate.createObject(column)
                 addExistingImage(image)
-
                 globalUtil.itemCount++
             }
 
             function removeImage(image) {
                 image.beyondThePale.disconnect(removeImage)
-                stackHeight -= image.height
-                //console.log('Image slipped through the cracks')
-                if (index === d.columnCount-1) {
-                    console.log('Image deleted')
+                if (index === cascadeSettings.columnCount-1) {
                     image.destroy()
                     globalUtil.itemCount--
                 } else {
@@ -89,19 +88,12 @@ View {
             }
 
             function shift() {
-                if (pictureArray.length > 0) {
-                    var image = pictureArray.shift()
-                    image.world = image.world.limbo
-                }
+                var image = pictureArray.shift()
+                image.world = image.world.limbo
+                stackHeight -= image.height
             }
 
-            onStackHeightChanged: {
-                if (stackHeight > (1.3 + 1/d.columnCount)*root.height) {
-                    shifty = true
-                }
-            }
-
-            width: parent.width/globalSettings.columnCount
+            width: d.columnWidth*Math.pow(d.goldenRatio, index)
             anchors { top: parent.top; bottom: parent.bottom }
 
             World {
@@ -128,22 +120,19 @@ View {
 
             Timer {
                 id: pumpTimer
-                interval: 1000
+                interval: full ? cascadeSettings.feedRate : 10
                 repeat: true
-                running: (index === 0) && !shifty
+                running: index === 0
                 onTriggered: addImage()
             }
 
             Timer {
                 id: deathTimer
-                running: true
+                running: full
                 repeat: true
-                interval: 5000
+                interval: cascadeSettings.feedRate
                 onTriggered: {
-                    if (shifty) {
-                        shift()
-                        shifty = false
-                    }
+                    shift()
                 }
             }
 
