@@ -25,8 +25,8 @@ Rectangle {
         mirror: globalSettings.randomlyMirrorArt && (Math.random() < 0.5)
         smooth: globalSettings.smoothArt
 
-        sourceSize.height: height
-        sourceSize.width: width
+        sourceSize.height: globalVars.loadFullImage ? undefined : height
+        sourceSize.width: globalVars.loadFullImage ? undefined : width
 
         Behavior on opacity {
             SequentialAnimation {

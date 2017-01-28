@@ -9,6 +9,8 @@
         <file>physics/RectangleBoxBody.qml</file>
         <file>well/WellDelegate.qml</file>
         <file>well/Well.qml</file>
+        <file>cascade/Cascade.qml</file>
+        <file>cascade/CascadeDelegate.qml</file>
         <file>conveyor/Conveyor.qml</file>
         <file>basic/Basic.qml</file>
         <file>effects/Effect.qml</file>

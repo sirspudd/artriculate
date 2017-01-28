@@ -19,6 +19,11 @@ Window {
     }
 
     QtObject {
+        id: globalVars
+        property bool loadFullImage: false
+    }
+
+    QtObject {
         id: d
         property int primedColumns: 0
         property string timeString
