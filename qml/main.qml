@@ -20,7 +20,7 @@ Window {
 
     QtObject {
         id: globalVars
-        property bool loadFullImage: false
+        property real imageWidthOverride: -1
     }
 
     QtObject {

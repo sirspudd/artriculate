@@ -101,7 +101,11 @@ Item {
                 stackHeight -= image.height
             }
 
-            width: d.columnWidth*Math.pow(d.columnRatio, index)
+            width: {
+                var colWidth = d.columnWidth*Math.pow(d.columnRatio, index)
+                index === cascadeSettings.columnCount - 1 && (globalVars.imageWidthOverride = colWidth)
+                return colWidth
+            }
             anchors { top: parent.top; bottom: parent.bottom }
 
             World {
@@ -164,7 +168,6 @@ Item {
     Keys.onDownPressed: root.drain()
 
     Component.onCompleted: {
-        globalVars.loadFullImage = true
         pictureDelegate.status !== Component.Ready && console.log('Component failed with:' + pictureDelegate.errorString())
     }
 }
