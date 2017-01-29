@@ -15,28 +15,33 @@ Item {
         CascadeDelegate {}
     }
 
+    function drain() {
+        // TODO: implement draining of all visible artwork
+    }
+
     anchors.fill: parent
 
     Settings {
         id: cascadeSettings
         category: "Cascade"
-        property int columnCount: 5
-        property int feedRate: 1000
+        property int columnCount: 6
+        property int feedRate: 5000
+        property real ratio: 1.4
+        property bool useGoldenRatio: true
     }
 
     QtObject {
         id: d
-        property real goldenRatio: 1.61803398875
-        property real pace: 1.0/20.0
+        property int feedrate: populated ? cascadeSettings.feedRate : 500
+        property bool populated: false
         property bool paused: false
-        function goldenBeast(col) {
-            return (1 - d.goldenRatio)/(1 - Math.pow(d.goldenRatio, col))
-        }
+        property real goldenRatio: 1.61803398875
+        property real columnRatio: cascadeSettings.useGoldenRatio ? 1.61803398875 : 1.45
+        property real pace: 1.0/30.0
+        property real columnWidth: root.width*goldenBeast(cascadeSettings.columnCount)
 
-        property real columnWidth: {
-            var foo = root.width*goldenBeast(cascadeSettings.columnCount)
-            console.log('Column width is:', foo)
-            return foo
+        function goldenBeast(col) {
+            return (1 - d.columnRatio)/(1 - Math.pow(d.columnRatio, col))
         }
     }
 
@@ -54,18 +59,21 @@ Item {
             property int stackHeight: 0
             property int xOffset: d.columnWidth/d.goldenBeast(index)
             property var pictureArray: []
-            property bool full: stackHeight > (1.3 + 1/cascadeSettings.columnCount)*root.height
+            property var pictureQueue: []
+            property bool full: {
+                var fullStack = stackHeight > (1.3 + 1/cascadeSettings.columnCount)*root.height
+                !d.populated && fullStack && (index == (cascadeSettings.columnCount)-1) && (d.populated = true)
+                return fullStack
+            }
 
             function addExistingImage(image) {
-                // make sure there is no spacial conflict in limbo, or shit goes tits up
                 image.width = width
                 image.x = image.y = index*-1000
                 image.linearVelocity.x = image.linearVelocity.y = 0.0
                 image.beyondThePale.connect(removeImage)
-
                 stackHeight += image.height
                 image.x = xOffset
-                image.y = - stackHeight
+                image.y = index == 0 ? root.height - stackHeight : -stackHeight - pictureArray.length*10
                 image.world = isolatedWorld
 
                 pictureArray.push(image)
@@ -83,7 +91,7 @@ Item {
                     image.destroy()
                     globalUtil.itemCount--
                 } else {
-                    columnArray[index+1].addExistingImage(image)
+                    columnArray[index+1].pictureQueue.push(image)
                 }
             }
 
@@ -93,7 +101,7 @@ Item {
                 stackHeight -= image.height
             }
 
-            width: d.columnWidth*Math.pow(d.goldenRatio, index)
+            width: d.columnWidth*Math.pow(d.columnRatio, index)
             anchors { top: parent.top; bottom: parent.bottom }
 
             World {
@@ -120,20 +128,24 @@ Item {
 
             Timer {
                 id: pumpTimer
-                interval: full ? cascadeSettings.feedRate : 10
-                repeat: true
-                running: index === 0
-                onTriggered: addImage()
+                interval: d.feedrate
+                repeat: true && !d.paused
+                running: true
+                onTriggered: {
+                    if (index === 0) {
+                        addImage()
+                    } else {
+                        pictureQueue.length && addExistingImage(pictureQueue.shift())
+                    }
+                }
             }
 
             Timer {
                 id: deathTimer
                 running: full
                 repeat: true
-                interval: cascadeSettings.feedRate
-                onTriggered: {
-                    shift()
-                }
+                interval: d.feedrate
+                onTriggered: shift()
             }
 
             Connections {
@@ -148,8 +160,8 @@ Item {
         }
     }
 
-    Keys.onUpPressed: root.togglePause()
-    Keys.onDownPressed: root.toggleChaos() //root.next()
+    Keys.onUpPressed: d.paused = !d.paused
+    Keys.onDownPressed: root.drain()
 
     Component.onCompleted: {
         globalVars.loadFullImage = true

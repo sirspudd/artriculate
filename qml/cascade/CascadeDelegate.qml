@@ -13,8 +13,8 @@ ArtBoxBody {
         }
     }
 
-    density: 1
-    friction: 1.0
+    density: 1.0
+    friction: 0.0
     restitution: 0.0
 
     fixedRotation: true
