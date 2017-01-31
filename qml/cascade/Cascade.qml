@@ -25,20 +25,20 @@ Item {
         id: cascadeSettings
         category: "Cascade"
         property int columnCount: 6
-        property int feedRate: 5000
+        property int initialFeedRate: 500
         property real ratio: 1.4
         property bool useGoldenRatio: true
     }
 
     QtObject {
         id: d
-        property int feedrate: populated ? cascadeSettings.feedRate : 500
+        property int feedrate: populated ? globalUtil.adjustedInterval : cascadeSettings.initialFeedRate
         property bool populated: false
         property bool paused: false
         property real goldenRatio: 1.61803398875
         property real columnRatio: cascadeSettings.useGoldenRatio ? 1.61803398875 : 1.45
         property real pace: 1.0/30.0
-        property real columnWidth: root.width*goldenBeast(cascadeSettings.columnCount)
+        property real columnWidth: root.width*goldenBeast(globalSettings.columnCount)
 
         function goldenBeast(col) {
             return (1 - d.columnRatio)/(1 - Math.pow(d.columnRatio, col))
@@ -46,7 +46,7 @@ Item {
     }
 
     Repeater {
-        model: cascadeSettings.columnCount
+        model: globalSettings.columnCount
         delegate: columnComponent
     }
 
@@ -61,8 +61,8 @@ Item {
             property var pictureArray: []
             property var pictureQueue: []
             property bool full: {
-                var fullStack = stackHeight > (1.3 + 1/cascadeSettings.columnCount)*root.height
-                !d.populated && fullStack && (index == (cascadeSettings.columnCount)-1) && (d.populated = true)
+                var fullStack = stackHeight > (1.3 + 1/globalSettings.columnCount)*root.height
+                !d.populated && fullStack && (index === (globalSettings.columnCount - 1)) && (d.populated = true)
                 return fullStack
             }
 
@@ -87,7 +87,7 @@ Item {
 
             function removeImage(image) {
                 image.beyondThePale.disconnect(removeImage)
-                if (index === cascadeSettings.columnCount-1) {
+                if (index === (globalSettings.columnCount - 1)) {
                     image.destroy()
                     globalUtil.itemCount--
                 } else {
@@ -102,8 +102,8 @@ Item {
             }
 
             width: {
-                var colWidth = d.columnWidth*Math.pow(d.columnRatio, index)
-                index === cascadeSettings.columnCount - 1 && (globalVars.imageWidthOverride = colWidth)
+                var colWidth = d.columnWidth*Math.pow(d.columnRatio, index);
+                (index === (globalSettings.columnCount - 1)) && (globalVars.imageWidthOverride = colWidth)
                 return colWidth
             }
             anchors { top: parent.top; bottom: parent.bottom }
