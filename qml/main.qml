@@ -78,7 +78,7 @@ Window {
         property bool showViewItemCount: false
         property bool showScreenResolution: false
         property string effect: ""
-        property string view: "Well"
+        property string view: "Cascade"
         property bool smoothArt: true
         property bool randomlyMirrorArt: false
         property bool fullscreen: true
