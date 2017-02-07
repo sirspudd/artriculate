@@ -20,6 +20,7 @@ Window {
 
     QtObject {
         id: globalVars
+        property real goldenRatio: 1.61803398875
         property real imageWidthOverride: -1
     }
 
@@ -92,6 +93,9 @@ Window {
         property real artOpacity: 1.0
         property bool randomTapestryColour: false
         property bool fadeInImages: true
+
+        property bool useGoldenRatio: true
+        property real lessGoldenRatio: 1.25
 
         onColumnCountChanged: globalUtil.reset()
         Component.onCompleted: loader.source = globalSettings.view.toLowerCase() + "/" + globalSettings.view + ".qml"

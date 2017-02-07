@@ -24,10 +24,7 @@ Item {
     Settings {
         id: cascadeSettings
         category: "Cascade"
-        property int columnCount: 6
         property int initialFeedRate: 500
-        property real ratio: 1.25
-        property bool useGoldenRatio: true
     }
 
     QtObject {
@@ -35,8 +32,7 @@ Item {
         property int feedrate: populated ? globalUtil.adjustedInterval : cascadeSettings.initialFeedRate
         property bool populated: false
         property bool paused: false
-        property real goldenRatio: 1.61803398875
-        property real columnRatio: cascadeSettings.useGoldenRatio ? goldenRatio : cascadeSettings.ratio
+        property real columnRatio: globalSettings.useGoldenRatio ? globalVars.goldenRatio : globalSettings.lessGoldenRatio
         property real pace: 1.0/30.0
         property real columnWidth: root.width*goldenBeast(globalSettings.columnCount)
 
