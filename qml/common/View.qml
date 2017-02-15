@@ -8,15 +8,11 @@ Item {
         ArtImage {}
     }
 
-    function reset() {
-        columnArray = []
-    }
-
     anchors.fill: parent
 
     Timer {
         id: globalDeathTimer
-        running: globalSettings.commonFeed && globalUtil.primed
+        running: globalVars.globalDeathTimer && globalSettings.commonFeed && globalUtil.primed
         repeat: true
         interval: globalUtil.adjustedInterval
         onTriggered: columnArray[globalUtil.columnSelection()].shift()

@@ -11,7 +11,7 @@ Rectangle {
     color: globalSettings.randomTapestryColour ? Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0) : "black"
 
     height: Math.ceil(width/imageModel.data(modelIndex, PictureModel.RatioRole))
-    width: parent.width
+    width: parent ? parent.width : 0
 
     Image {
         id: image

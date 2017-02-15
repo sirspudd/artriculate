@@ -10,8 +10,7 @@ Window {
     height: 768
 
     onWidthChanged: {
-        loader.source = ""
-        loader.source = globalSettings.view.toLowerCase() + "/" + globalSettings.view + ".qml"
+        globalUtil.reset()
     }
 
     PictureModel {
@@ -20,28 +19,17 @@ Window {
 
     QtObject {
         id: globalVars
-        property real goldenRatio: 1.61803398875
-        property real imageWidthOverride: -1
-    }
+        property real goldenRatio
+        property real imageWidthOverride
+        property bool globalDeathTimer
 
-    QtObject {
-        id: d
-        property int primedColumns: 0
-        property string timeString
-        property string day
-        property string month
-
-        function timeChanged() {
-            var date = new Date;
-            timeString = Qt.formatDateTime(date, "hh:mm")
-            day = Qt.formatDateTime(date, "dd")
-            month = Qt.formatDateTime(date, "MM")
+        function reset() {
+            goldenRatio = 1.61803398875
+            imageWidthOverride = -1
+            globalDeathTimer = false
         }
 
-        property variant timeTimer: Timer {
-            interval: 1000; running: true; repeat: true;
-            onTriggered: d.timeChanged()
-        }
+        Component.onCompleted: reset()
     }
 
     QtObject {
@@ -57,8 +45,12 @@ Window {
         }
 
         function reset() {
-            itemCount = currentColumn = d.primedColumns = 0
-            loader.item.reset()
+            if (d.currentViewFilename) {
+                globalVars.reset()
+                loader.source = ""
+                loader.source = d.currentViewFilename
+                itemCount = currentColumn = d.primedColumns = 0
+            }
         }
 
         function columnSelection() {
@@ -69,6 +61,44 @@ Window {
             } else {
                 return Math.floor(Math.random()*globalSettings.columnCount)
             }
+        }
+
+        function columnWidthRatio(ratio, col) {
+            return (1 - ratio)/(1 - Math.pow(ratio, col))
+        }
+    }
+
+    QtObject {
+        id: d
+        property int primedColumns: 0
+        property string timeString
+        property string day
+        property string month
+        property string currentViewFilename
+        property string overrideViewFilename: "Procession"
+
+        function setView(view) {
+            d.currentViewFilename = deriveViewPath(overrideViewFilename.length ? overrideViewFilename : view)
+        }
+
+        function deriveViewPath(view) {
+            return view.toLowerCase() + "/" + view + ".qml"
+        }
+
+        function timeChanged() {
+            var date = new Date;
+            timeString = Qt.formatDateTime(date, "hh:mm")
+            day = Qt.formatDateTime(date, "dd")
+            month = Qt.formatDateTime(date, "MM")
+        }
+
+        property variant timeTimer: Timer {
+            interval: 1000; running: true; repeat: true;
+            onTriggered: d.timeChanged()
+        }
+
+        onCurrentViewFilenameChanged: {
+            globalUtil.reset()
         }
     }
 
@@ -98,7 +128,9 @@ Window {
         property real lessGoldenRatio: 1.25
 
         onColumnCountChanged: globalUtil.reset()
-        Component.onCompleted: loader.source = globalSettings.view.toLowerCase() + "/" + globalSettings.view + ".qml"
+        Component.onCompleted: {
+            d.setView(view)
+        }
     }
 
     Rectangle {
@@ -164,26 +196,26 @@ Window {
         }
     }
 
-    Rectangle {
+    Item {
         id: toplevelhandler
         focus: true
-        Keys.onLeftPressed: globalSettings.columnCount = Math.max(globalSettings.columnCount-1,1)
-        Keys.onRightPressed: globalSettings.columnCount++
-        Keys.onEscapePressed: Qt.quit()
-    }
-
-    Rectangle {
-        z: 1
-        visible: imageModel.rowCount > 0
-        color: "red"
-
-        width: childrenRect.width
-        height: childrenRect.height
-        anchors { bottom: parent.bottom; horizontalCenter: parent.horizontalCenter }
-
-        Text {
-            font.pointSize: 40
-            text: "No images found/provided"
+        Keys.onPressed: {
+            switch(event.key) {
+            case Qt.Key_Left:
+                globalSettings.columnCount = Math.max(globalSettings.columnCount - 1, 1);
+                break;
+            case Qt.Key_Right:
+                globalSettings.columnCount++;
+                break;
+            case Qt.Key_Escape:
+                Qt.quit();
+                break;
+            case Qt.Key_F10:
+                globalSettings.showViewItemCount = !globalSettings.showViewItemCount;
+                break;
+            default:
+                console.log('Key not handled')
+            }
         }
     }
 

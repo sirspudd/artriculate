@@ -6,6 +6,10 @@ import ".."
 View {
     id: root
 
+    Component.onCompleted: {
+        globalVars.globalDeathTimer = true
+    }
+
     Settings {
         id: basicSettings
         category: "Basic"

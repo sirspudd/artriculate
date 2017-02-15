@@ -34,11 +34,7 @@ Item {
         property bool paused: false
         property real columnRatio: globalSettings.useGoldenRatio ? globalVars.goldenRatio : globalSettings.lessGoldenRatio
         property real pace: 1.0/30.0
-        property real columnWidth: root.width*goldenBeast(globalSettings.columnCount)
-
-        function goldenBeast(col) {
-            return (1 - d.columnRatio)/(1 - Math.pow(d.columnRatio, col))
-        }
+        property real columnWidth: root.width*globalUtil.columnWidthRatio(d.columnRatio, globalSettings.columnCount)
     }
 
     Repeater {
@@ -53,7 +49,7 @@ Item {
             id: column
 
             property int stackHeight: 0
-            property int xOffset: d.columnWidth/d.goldenBeast(index)
+            property int xOffset: d.columnWidth/globalUtil.columnWidthRatio(d.columnRatio, index)
             property var pictureArray: []
             property var pictureQueue: []
             property bool full: {
