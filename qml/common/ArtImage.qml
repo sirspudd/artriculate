@@ -8,6 +8,8 @@ Rectangle {
     property var effect
     property int modelIndex
 
+    property alias asynchronous: image.asynchronous
+
     color: globalSettings.randomTapestryColour ? Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0) : "black"
 
     height: Math.ceil(width/imageModel.data(modelIndex, PictureModel.RatioRole))

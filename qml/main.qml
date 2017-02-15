@@ -75,7 +75,7 @@ Window {
         property string day
         property string month
         property string currentViewFilename
-        property string overrideViewFilename: "Procession"
+        property string overrideViewFilename
 
         function setView(view) {
             d.currentViewFilename = deriveViewPath(overrideViewFilename.length ? overrideViewFilename : view)
@@ -104,12 +104,12 @@ Window {
 
     Settings {
         id: globalSettings
-        property int columnCount: 5
+        property int columnCount: 6
         property int interval: 5
         property bool showViewItemCount: false
         property bool showScreenResolution: false
         property string effect: ""
-        property string view: "Cascade"
+        property string view: "Reel"
         property bool smoothArt: true
         property bool randomlyMirrorArt: false
         property bool fullscreen: true
@@ -124,8 +124,9 @@ Window {
         property bool randomTapestryColour: false
         property bool fadeInImages: true
 
-        property bool useGoldenRatio: true
-        property real lessGoldenRatio: 1.25
+        property bool useGoldenRatio: false
+        //property real lessGoldenRatio: 1.25
+        property real lessGoldenRatio: 1.35
 
         onColumnCountChanged: globalUtil.reset()
         Component.onCompleted: {

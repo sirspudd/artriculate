@@ -4,7 +4,8 @@ QT += qml quick dbus
 CONFIG += c++11
 
 SOURCES += src/main.cpp \
-    src/picturemodel.cpp
+    src/picturemodel.cpp \
+    src/helperfunctions.cpp
 
 RESOURCES += qml/qml.qrc resources/resources.qrc
 
@@ -25,4 +26,6 @@ INSTALLS += target desktop icon
 include(deployment.pri)
 
 HEADERS += \
-    src/picturemodel.h
+    src/picturemodel.h \
+    src/helperfunctions.h \
+    src/filereader.h

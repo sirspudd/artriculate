@@ -17,6 +17,8 @@
 ****************************************************************************/
 
 #include "picturemodel.h"
+#include "filereader.h"
+#include "helperfunctions.h"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -26,29 +28,12 @@
 #include <QTimer>
 #include <QQuickWindow>
 #include <QDir>
-#include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
 #include <QDebug>
 #include <QScreen>
 #include <QDBusInterface>
 #include <QDBusConnection>
-
-class FileReader : public QObject {
-    Q_OBJECT
-public:
-    FileReader(QObject *p) : QObject(p) { /**/ }
-    Q_INVOKABLE static QString readFile(const QString &fileName)
-    {
-        QString content;
-        QFile file(fileName);
-        if (file.open(QIODevice::ReadOnly)) {
-            QTextStream stream(&file);
-            content = stream.readAll();
-        }
-        return content;
-    }
-};
 
 int main(int argc, char *argv[])
 {
@@ -106,9 +91,8 @@ int main(int argc, char *argv[])
 
     engine.rootContext()->setContextProperty("screenSize", app.screens().at(0)->availableSize());
     engine.rootContext()->setContextProperty("fileReader", new FileReader(&app));
+    engine.rootContext()->setContextProperty("nativeHelper", new HelperFunctions(&app));
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     return app.exec();
 }
-
-#include "main.moc"
