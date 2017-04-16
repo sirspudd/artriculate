@@ -31,6 +31,7 @@ Rectangle {
         sourceSize.width: globalVars.imageWidthOverride > 0 ? globalVars.imageWidthOverride : width
 
         Behavior on opacity {
+            enabled: image.asynchronous
             SequentialAnimation {
                 ScriptAction { script: root.effect !== undefined ? root.effect.scheduleUpdate() : undefined }
                 NumberAnimation { duration: 1000 }
