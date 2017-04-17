@@ -86,9 +86,7 @@ View {
 
                     if (image.y > root.height) {
                         imageArray.shift()
-                        if (!lastColumn) {
-                            columnArray[columnIndex+1].addImage(image)
-                        }
+                        columnArray[columnIndex+1].addImage(image)
                     } else if (( lastColumn || !columnArray[columnIndex+1].receptive()) && prospectiveY >= restingY) {
                         image.y = restingY
                         if (lastColumn) {
