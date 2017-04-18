@@ -48,6 +48,7 @@ View {
             property int columnIndex: index
             property var imageArray: []
             property var imageQueue: []
+            property bool lastColumn: columnIndex === (globalSettings.columnCount - 1)
 
             function stackHeight(imageIndex) {
                 var height = 0
@@ -82,12 +83,12 @@ View {
                     var image = imageArray[i]
                     var restingY = root.height - image.height - stackHeight(i)
                     var prospectiveY = image.y + d.velocity
-                    var lastColumn = columnIndex === (globalSettings.columnCount - 1)
+                    var nextColumn = columnArray[columnIndex+1]
 
                     if (image.y > root.height) {
                         imageArray.shift()
-                        columnArray[columnIndex+1].addImage(image)
-                    } else if (( lastColumn || !columnArray[columnIndex+1].receptive()) && prospectiveY >= restingY) {
+                        nextColumn.addImage(image)
+                    } else if ((lastColumn || !nextColumn.receptive()) && prospectiveY >= restingY) {
                         image.y = restingY
                         if (lastColumn) {
                             deathTimer.start()
@@ -107,7 +108,7 @@ View {
             x: d.columnWidth/globalUtil.columnWidthRatio(d.columnRatio, index)
             width: {
                 var colWidth = d.columnWidth*Math.pow(d.columnRatio, index);
-                (index === (globalSettings.columnCount - 1)) && (globalVars.imageWidthOverride = colWidth)
+                lastColumn && (globalVars.imageWidthOverride = colWidth)
                 return colWidth
             }
             anchors { top: parent.top; bottom: parent.bottom }
