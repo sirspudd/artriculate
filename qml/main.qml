@@ -266,6 +266,17 @@ Window {
     }
 
     Component.onCompleted: {
-        showAtCorrectSize()
+        showTimer.start()
+    }
+
+    Timer {
+        id: showTimer
+
+        running: false
+        repeat: false
+        interval: 1
+        onTriggered: {
+            showAtCorrectSize()
+        }
     }
 }
