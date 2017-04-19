@@ -59,7 +59,7 @@ View {
             }
 
             function receptive() {
-                return imageQueue.length < d.imageBuffer
+                return !d.initialized || imageQueue.length < d.imageBuffer
             }
 
             function addImage(image) {
