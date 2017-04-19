@@ -94,7 +94,7 @@ View {
                             deathTimer.start()
                             if(!d.initialized) {
                                 d.initialized = true
-                                d.velocity = 4
+                                d.velocity = 1
                             }
                         }
                     } else {

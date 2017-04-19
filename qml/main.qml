@@ -13,6 +13,10 @@ Window {
         globalUtil.reset()
     }
 
+    function showAtCorrectSize() {
+        globalSettings.fullscreen ? showFullScreen() : show()
+    }
+
     PictureModel {
         id: imageModel
     }
@@ -129,6 +133,8 @@ Window {
         property real lessGoldenRatio: 1.35
 
         onColumnCountChanged: globalUtil.reset()
+        onFullscreenChanged: showAtCorrectSize()
+
         Component.onCompleted: {
             d.setView(view)
         }
@@ -202,6 +208,9 @@ Window {
         focus: true
         Keys.onPressed: {
             switch(event.key) {
+            case Qt.Key_F:
+                globalSettings.fullscreen = !globalSettings.fullscreen
+                break;
             case Qt.Key_Left:
                 globalSettings.columnCount = Math.max(globalSettings.columnCount - 1, 1);
                 break;
@@ -257,6 +266,6 @@ Window {
     }
 
     Component.onCompleted: {
-        globalSettings.fullscreen ? showFullScreen() : show()
+        showAtCorrectSize()
     }
 }
