@@ -6,8 +6,8 @@ import PictureModel 1.0
 Window {
     id: appWindow
 
-    width: 1024
-    height: 768
+    width: 1280
+    height: 720
 
     onWidthChanged: {
         globalUtil.reset()
