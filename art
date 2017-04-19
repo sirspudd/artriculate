@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+executed_file=$(readlink -f ${BASH_SOURCE[0]})
+script_dir=$(dirname ${executed_file})
+
+args=""
+env=""
+
+if [[ "$XDG_SESSION_TYPE" = "wayland" ]]; then
+  args="-platform wayland"
+  env="QT_WAYLAND_SHELL_INTEGRATION=wl-shell"
+fi
+
+export $env
+${script_dir}/artriculate $args
