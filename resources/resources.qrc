@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>unlicensed.png</file>
         <file>qt_logo_green_rgb.png</file>
         <file>Monty_python_foot.png</file>
         <file>shaders/billboard.fsh</file>
