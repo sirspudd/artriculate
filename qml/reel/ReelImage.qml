@@ -4,5 +4,4 @@ import ".."
 
 ArtImage {
     property bool doomed: false
-    asynchronous: false
 }
