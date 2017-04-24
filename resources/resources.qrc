@@ -7,5 +7,8 @@
         <file>shaders/emboss.fsh</file>
         <file>shaders/gaussianblur_h.fsh</file>
         <file>shaders/gaussianblur_v.fsh</file>
+        <file>3rdparty/animatedBackground/Swirl.qml</file>
+        <file>3rdparty/animatedBackground/particle.png</file>
+        <file>3rdparty/animatedBackground/BackgroundSwirls.qml</file>
     </qresource>
 </RCC>

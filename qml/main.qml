@@ -2,6 +2,7 @@ import QtQuick 2.5
 import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
 import PictureModel 1.0
+import "qrc:/3rdparty/animatedBackground"
 
 Window {
     id: appWindow
@@ -131,6 +132,8 @@ Window {
         property bool randomTapestryColour: false
         property bool fadeInImages: true
 
+        property bool animatedBackground: false
+
         property bool useGoldenRatio: false
         //property real lessGoldenRatio: 1.25
         property real lessGoldenRatio: 1.35
@@ -148,6 +151,11 @@ Window {
         color: "black"
         anchors.fill: parent
         Keys.forwardTo: [loader.item, toplevelhandler]
+
+        BackgroundSwirls {
+            visible: globalSettings.animatedBackground
+            anchors.fill: parent
+        }
 
         Loader {
             id: loader
