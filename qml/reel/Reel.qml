@@ -18,6 +18,7 @@ View {
 
     QtObject {
         id: d
+        property real t: 0
         property var priorImage
         property real velocity: 0
         property bool initialized: false
@@ -37,6 +38,9 @@ View {
             var col = columnArray[globalSettings.columnCount - 1]
             priorImage = col.imageArray.shift()
         }
+
+        NumberAnimation on t { from: 0; to: 1; duration: 1000; loops: -1 }
+        onTChanged: { animationStep(); }
     }
 
     Component {
@@ -113,14 +117,6 @@ View {
             }
             anchors { top: parent.top; bottom: parent.bottom }
         }
-    }
-
-    // feed
-    Timer {
-        repeat: true
-        running: true
-        interval: 100/6
-        onTriggered: d.animationStep()
     }
 
     // accel
