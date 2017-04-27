@@ -7,13 +7,13 @@ View {
     id: root
 
     property var pictureDelegate: Component {
-        ReelImage {}
+        ArtImage {}
     }
 
     Settings {
         id: reelSettings
         category: "Reel"
-        property int deathYawn: 5000
+        property int deathYawn: 10000
     }
 
     QtObject {
@@ -98,7 +98,7 @@ View {
                             deathTimer.start()
                             if(!d.initialized) {
                                 d.initialized = true
-                                d.velocity = 1
+                                d.velocity = 2
                             }
                         }
                     } else {
@@ -125,7 +125,7 @@ View {
         running: !d.initialized
         interval: 100
         onTriggered: {
-            d.velocity += 0.1
+            d.velocity += 0.2
         }
     }
 

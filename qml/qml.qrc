@@ -14,7 +14,6 @@
         <file>conveyor/Conveyor.qml</file>
         <file>basic/Basic.qml</file>
         <file>reel/Reel.qml</file>
-        <file>reel/ReelImage.qml</file>
         <file>procession/Procession.qml</file>
         <file>procession/ProcessionImage.qml</file>
         <file>effects/Effect.qml</file>
