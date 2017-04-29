@@ -13,7 +13,9 @@ View {
     Settings {
         id: reelSettings
         category: "Reel"
-        property int deathYawn: 10000
+        property int deathPeriod: 10000
+        property real restingVelocity: 4
+        property real velocityAccelIncrements: 0.3
     }
 
     QtObject {
@@ -98,7 +100,7 @@ View {
                             deathTimer.start()
                             if(!d.initialized) {
                                 d.initialized = true
-                                d.velocity = 2
+                                d.velocity = reelSettings.restingVelocity
                             }
                         }
                     } else {
@@ -125,7 +127,7 @@ View {
         running: !d.initialized
         interval: 100
         onTriggered: {
-            d.velocity += 0.2
+            d.velocity += reelSettings.velocityAccelIncrements
         }
     }
 
@@ -134,7 +136,7 @@ View {
         id: deathTimer
         repeat: false
         running: false
-        interval: reelSettings.deathYawn
+        interval: reelSettings.deathPeriod
         onTriggered: {
             d.killLastImage()
         }
