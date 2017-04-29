@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     } else {
         if (settings.value("force32bpp", true).toBool()) {
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
-            format.setAlphaBufferSize(8);
+            format.setAlphaBufferSize(0);
             format.setRedBufferSize(8);
             format.setGreenBufferSize(8);
             format.setBlueBufferSize(8);
@@ -66,9 +66,7 @@ int main(int argc, char *argv[])
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
             format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
             QSurfaceFormat::setDefaultFormat(format);
-        }
-
-        if (settings.value("forceTripleBuffer", false).toBool()) {
+        } else if (settings.value("forceDoubleBuffer", false).toBool()) {
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
             format.setSwapBehavior(QSurfaceFormat::TripleBuffer);
             QSurfaceFormat::setDefaultFormat(format);
