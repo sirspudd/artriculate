@@ -117,7 +117,7 @@ Window {
         property bool showScreenResolution: false
         property string effect: ""
         property string view: "Reel"
-        property bool smoothArt: true
+        property bool smoothArt: false
         property bool randomlyMirrorArt: false
         property bool fullscreen: true
 
