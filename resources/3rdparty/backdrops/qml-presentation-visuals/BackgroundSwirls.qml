@@ -98,7 +98,7 @@ Item {
     ImageParticle{
         anchors.fill: parent
         system: particles
-        source: "qrc:/3rdparty/animatedBackground/particle.png"
+        source: "particle.png"
         alpha: 0
         colorVariation: 0.3
     }

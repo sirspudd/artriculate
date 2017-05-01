@@ -7,3 +7,4 @@ ArtBoxBody 1.0 physics/ArtBoxBody.qml
 RectangleBoxBody 1.0 physics/RectangleBoxBody.qml
 BoxBody 1.0 physics/BoxBody.qml
 FPSMonitor 1.0 widget/FPSMonitor.qml
+BackgroundSwirls 1.0 3rdparty/backdrops/qml-presentation-visuals/BackgroundSwirls.qml
