@@ -130,7 +130,6 @@ Window {
         property bool unlicensed: false
 
         property real artOpacity: 1.0
-        property bool randomTapestryColour: false
         property bool fadeInImages: true
 
         property bool animatedBackground: false

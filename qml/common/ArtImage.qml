@@ -3,14 +3,14 @@ import PictureModel 1.0
 
 import ".."
 
-Rectangle {
+Item {
     id: root
     property var effect
     property int modelIndex
 
     property alias asynchronous: image.asynchronous
 
-    color: globalSettings.randomTapestryColour ? Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0) : "black"
+    //color: Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0)
 
     height: Math.ceil(width/imageModel.data(modelIndex, PictureModel.RatioRole))
     width: parent ? parent.width : 0
