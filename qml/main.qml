@@ -3,8 +3,6 @@ import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
 import PictureModel 1.0
 
-import "."
-
 Window {
     id: appWindow
 
@@ -117,6 +115,7 @@ Window {
         property bool showScreenResolution: false
         property string effect: ""
         property string view: "Reel"
+        property string backdrop: ""
         property bool smoothArt: false
         property bool randomlyMirrorArt: true
         property bool fullscreen: true
@@ -146,16 +145,12 @@ Window {
         }
     }
 
-    Rectangle {
+    Item {
+        id: root
         focus: true
-        color: "black"
+
         anchors.fill: parent
         Keys.forwardTo: [artViewLoader.item, toplevelhandler]
-
-        BackgroundSwirls {
-            visible: globalSettings.animatedBackground
-            anchors.fill: parent
-        }
 
         Loader {
             id: artViewLoader
@@ -210,6 +205,11 @@ Window {
                     }
                 }
 
+            }
+        }
+        Component.onCompleted: {
+            if (globalSettings.backdrop != "") {
+                Qt.createQmlObject(globalSettings.backdrop + ' { anchors.fill: parent}', root)
             }
         }
     }

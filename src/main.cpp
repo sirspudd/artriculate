@@ -87,6 +87,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     qmlRegisterType<PictureModel>("PictureModel", 1, 0, "PictureModel");
 
+    engine.addImportPath("qrc:/");
     engine.rootContext()->setContextProperty("screenSize", app.screens().at(0)->availableSize());
     engine.rootContext()->setContextProperty("fileReader", new FileReader(&app));
     engine.rootContext()->setContextProperty("nativeHelper", new HelperFunctions(&app));
