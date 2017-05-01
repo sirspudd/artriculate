@@ -118,7 +118,7 @@ Window {
         property string effect: ""
         property string view: "Reel"
         property bool smoothArt: false
-        property bool randomlyMirrorArt: false
+        property bool randomlyMirrorArt: true
         property bool fullscreen: true
 
         property bool clockWidget: false
