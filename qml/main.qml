@@ -53,8 +53,8 @@ Window {
         function reset() {
             if (d.currentViewFilename) {
                 globalVars.reset()
-                loader.source = ""
-                loader.source = d.currentViewFilename
+                artViewLoader.source = ""
+                artViewLoader.source = d.currentViewFilename
                 itemCount = currentColumn = d.primedColumns = 0
             }
         }
@@ -150,7 +150,7 @@ Window {
         focus: true
         color: "black"
         anchors.fill: parent
-        Keys.forwardTo: [loader.item, toplevelhandler]
+        Keys.forwardTo: [artViewLoader.item, toplevelhandler]
 
         BackgroundSwirls {
             visible: globalSettings.animatedBackground
@@ -158,7 +158,7 @@ Window {
         }
 
         Loader {
-            id: loader
+            id: artViewLoader
             anchors.fill: parent
         }
 
