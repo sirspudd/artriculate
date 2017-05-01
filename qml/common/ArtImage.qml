@@ -12,7 +12,7 @@ Item {
 
     //color: Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0)
 
-    height: Math.ceil(width/imageModel.data(modelIndex, PictureModel.RatioRole))
+    height: width/imageModel.data(modelIndex, PictureModel.RatioRole)
     width: parent ? parent.width : 0
 
     Image {
