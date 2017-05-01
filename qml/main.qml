@@ -6,6 +6,8 @@ import PictureModel 1.0
 Window {
     id: appWindow
 
+    color: "black"
+
     width: 1280
     height: 720
 
