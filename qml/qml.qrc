@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>qmldir</file>
+        <file>widget/FPSMonitor.qml</file>
         <file>common/VisualEffect.qml</file>
         <file>physics/BoxBody.qml</file>
         <file>physics/ImageBoxBody.qml</file>

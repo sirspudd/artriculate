@@ -2,7 +2,8 @@ import QtQuick 2.5
 import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
 import PictureModel 1.0
-import "qrc:/3rdparty/animatedBackground"
+
+import "."
 
 Window {
     id: appWindow
@@ -339,5 +340,9 @@ Window {
                 d.displayUnlicensed = true
             }
         }
+    }
+
+    FPSMonitor {
+        anchors { top: parent.top; right: parent.right }
     }
 }
