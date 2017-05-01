@@ -3,9 +3,7 @@ import QtQuick 2.0
 // pretty much entirely stolen from:
 // https://github.com/capisce/motionblur/blob/master/main.qml
 
-Rectangle {
-    color: "black"
-
+Widget {
     property real t
     property int frame: 0
 
@@ -15,7 +13,7 @@ Rectangle {
     Text {
         id: fpsText
 
-        font.pixelSize: 100
+        font.pixelSize: widgetProperties.fontPixelSize
         color: "white"
         text: "FPS:" + fpsTimer.fps
     }

@@ -6,6 +6,10 @@ ImageBoxBody 1.0 physics/ImageBoxBody.qml
 ArtBoxBody 1.0 physics/ArtBoxBody.qml
 RectangleBoxBody 1.0 physics/RectangleBoxBody.qml
 BoxBody 1.0 physics/BoxBody.qml
-FPSMonitor 1.0 widget/FPSMonitor.qml
+FPS 1.0 widgets/FPS.qml
+Clock 1.0 widgets/Clock.qml
+Resolution 1.0 widgets/Resolution.qml
+ItemCount 1.0 widgets/ItemCount.qml
+WidgetTray 1.0 widgets/WidgetTray.qml
 BackgroundSwirls 1.0 3rdparty/backdrops/qml-presentation-visuals/BackgroundSwirls.qml
 Unlicensed 1.0 unlicensed/Unlicensed.qml

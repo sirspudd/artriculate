@@ -50,7 +50,7 @@ Item {
         modelIndex = Math.floor(Math.random()*imageModel.count)
         if (globalSettings.effect !== "" && Effects.validate(globalSettings.effect)) {
             var component = Qt.createComponent("VisualEffect.qml");
-            component.status !== Component.Ready && console.log('Component failed with:' + effectDelegate.errorString())
+            component.status !== Component.Ready && console.log('Component failed with:' + component.errorString())
             root.effect = component.createObject(root, { target: image, effect: globalSettings.effect })
         }
     }
