@@ -11,5 +11,6 @@ Clock 1.0 widgets/Clock.qml
 Resolution 1.0 widgets/Resolution.qml
 ItemCount 1.0 widgets/ItemCount.qml
 WidgetTray 1.0 widgets/WidgetTray.qml
+BackgroundCells 1.0 3rdparty/backdrops/cells/cells.qml
 BackgroundSwirls 1.0 3rdparty/backdrops/qml-presentation-visuals/BackgroundSwirls.qml
 Unlicensed 1.0 unlicensed/Unlicensed.qml

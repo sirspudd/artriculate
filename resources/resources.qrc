@@ -11,5 +11,7 @@
         <file>3rdparty/backdrops/qml-presentation-visuals/Swirl.qml</file>
         <file>3rdparty/backdrops/qml-presentation-visuals/BackgroundSwirls.qml</file>
         <file>3rdparty/backdrops/qml-presentation-visuals/particle.png</file>
+        <file>3rdparty/backdrops/cells/cells.qml</file>
+        <file>3rdparty/backdrops/cells/noise.png</file>
     </qresource>
 </RCC>
