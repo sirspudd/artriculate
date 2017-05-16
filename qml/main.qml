@@ -114,7 +114,7 @@ Window {
         property bool widgetTray: false
 
         property real artOpacity: 1.0
-        property real lessGoldenRatio: 1.35
+        property real lessGoldenRatio: 4/3
 
         onColumnCountChanged: globalUtil.reset()
         onFullscreenChanged: showAtCorrectSize()
