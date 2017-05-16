@@ -7,16 +7,7 @@ Widget {
     property real t
     property int frame: 0
 
-    height: fpsText.height
-    width: fpsText.width
-
-    Text {
-        id: fpsText
-
-        font.pixelSize: widgetProperties.fontPixelSize
-        color: "white"
-        text: "FPS:" + fpsTimer.fps
-    }
+    text: "FPS:" + fpsTimer.fps
 
     Timer {
         id: fpsTimer

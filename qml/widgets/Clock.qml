@@ -3,8 +3,7 @@ import QtQuick 2.6
 Widget {
     id: root
 
-    width: childrenRect.width
-    height: clockLabel.height
+    text: d.timeString
 
     QtObject {
         id: d
@@ -25,15 +24,7 @@ Widget {
         onTriggered: d.timeChanged()
     }
 
-    Text {
-        //anchors.centerIn: parent
-        id: clockLabel
-        color: "white"
-        font.bold: true
-        font.pixelSize: 100
-        text: d.timeString
-    }
-    Item {
+    /*Item {
         anchors { left: clockLabel.right; leftMargin: 20 }
         height: root.height
         width: childrenRect.width
@@ -64,6 +55,5 @@ Widget {
                 text: d.month
             }
         }
-
-    }
+    }*/
 }

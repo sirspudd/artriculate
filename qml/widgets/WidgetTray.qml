@@ -12,6 +12,8 @@ Item {
 
     Row {
         spacing: 10.0
+        Resolution {
+        }
         ItemCount {
         }
         FPS {
