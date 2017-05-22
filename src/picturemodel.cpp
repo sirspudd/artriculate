@@ -33,9 +33,12 @@ struct FSNode {
 
   const QString name;
   const FSNode *parent;
+};
 
-  QSize size;
-  qreal ratio;
+struct FSLeafNode : public FSNode {
+    using FSNode::FSNode;
+    QSize size;
+    qreal ratio;
 };
 
 FSNode::FSNode(const QString& rname, const FSNode *pparent)
@@ -66,7 +69,7 @@ public:
     void setModelRoot(const QString& rootDir) { this->rootDir = rootDir; }
 
     int fileCount() const { return files.length(); }
-    QList<FSNode*> files;
+    QList<FSLeafNode*> files;
 public slots:
     void populate();
 signals:
@@ -107,7 +110,7 @@ void FSNodeTree::addModelNode(const FSNode* parentNode)
         if (!extensions.contains(extension))
             continue;
 
-        FSNode *file = new FSNode(currentFile, parentNode);
+        FSLeafNode *file = new FSLeafNode(currentFile, parentNode);
         const QString fullPath = FSNode::qualifyNode(file);
 
         QSize size = QImageReader(fullPath).size();
