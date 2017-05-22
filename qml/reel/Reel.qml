@@ -20,6 +20,7 @@ View {
 
     QtObject {
         id: d
+        property int itemLimit: -1
         property real t: 0
         property var priorImage
         property real velocity: 0
@@ -68,6 +69,12 @@ View {
                 return !d.initialized || imageQueue.length < d.imageBuffer
             }
 
+            function addNewImage() {
+                globalUtil.itemCount++
+                addImage(pictureDelegate.createObject())
+                imageArray.push(imageQueue.pop())
+            }
+
             function addImage(image) {
                 image.parent = column
                 image.y = - image.height
@@ -79,9 +86,9 @@ View {
                     if (imageQueue.length) {
                         imageArray.push(imageQueue.pop())
                     } else if (columnIndex === 0) {
-                        globalUtil.itemCount++
-                        addImage(pictureDelegate.createObject())
-                        imageArray.push(imageQueue.pop())
+                        if (!(d.itemLimit > 0 && d.itemLimit <= globalUtil.itemCount)) {
+                            addNewImage()
+                        }
                     }
                 }
 
