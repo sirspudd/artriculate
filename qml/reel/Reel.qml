@@ -20,7 +20,6 @@ View {
 
     QtObject {
         id: d
-        property int itemLimit: -1
         property real t: 0
         property var priorImage
         property real velocity: 0
@@ -86,7 +85,7 @@ View {
                     if (imageQueue.length) {
                         imageArray.push(imageQueue.pop())
                     } else if (columnIndex === 0) {
-                        if (!(d.itemLimit > 0 && d.itemLimit <= globalUtil.itemCount)) {
+                        if (!(globalSettings.itemLimit > 0 && globalSettings.itemLimit <= globalUtil.itemCount)) {
                             addNewImage()
                         }
                     }

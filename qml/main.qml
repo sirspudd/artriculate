@@ -98,6 +98,7 @@ Window {
         id: globalSettings
         property int columnCount: 6
         property int interval: 5
+        property int itemLimit: -1
 
         property string effect: ""
         property string view: "Reel"
