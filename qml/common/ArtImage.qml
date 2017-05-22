@@ -19,7 +19,13 @@ Item {
         id: image
         cache: false
         opacity: globalSettings.fadeInImages ? 0 : 1.0
-        anchors.fill: parent
+
+        height: globalVars.imageWidthOverride > 0 ? Math.ceil(globalVars.imageWidthOverride/imageModel.data(modelIndex, PictureModel.RatioRole)) : imageModel.data(modelIndex, PictureModel.SizeRole).height
+        width: globalVars.imageWidthOverride > 0 ? globalVars.imageWidthOverride : imageModel.data(modelIndex, PictureModel.SizeRole).width
+
+        transformOrigin: Item.TopLeft
+        scale: root.width/image.width
+
         asynchronous: true
         fillMode: Image.PreserveAspectFit
 
@@ -29,8 +35,8 @@ Item {
         smooth: globalSettings.smoothArt
         mipmap: !globalSettings.smoothArt
 
-        sourceSize.height: globalVars.imageWidthOverride > 0 ? Math.ceil(globalVars.imageWidthOverride/imageModel.data(modelIndex, PictureModel.RatioRole)) : height
-        sourceSize.width: globalVars.imageWidthOverride > 0 ? globalVars.imageWidthOverride : width
+        sourceSize.height: height
+        sourceSize.width: width
 
         Behavior on opacity {
             enabled: image.asynchronous
