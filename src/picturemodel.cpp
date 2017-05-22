@@ -25,6 +25,7 @@
 #include <QThread>
 #include <QImageReader>
 #include <QMimeDatabase>
+#include <QElapsedTimer>
 
 struct FSNode {
   FSNode(const QString& rname, const FSNode *pparent = nullptr);
@@ -140,11 +141,14 @@ void FSNodeTree::addModelNode(const FSNode* parentNode)
 
 void FSNodeTree::populate()
 {
+    QElapsedTimer timer;
+    timer.start();
     QDir currentDir(rootDir);
     if (!currentDir.exists()) {
         qDebug() << "Being told to watch a non existent directory";
     }
     addModelNode(new FSNode(rootDir));
+    qDebug() << "Completed building file tree after:" << timer.elapsed();
 }
 
 class PictureModel::PictureModelPrivate {
