@@ -104,7 +104,7 @@ Window {
         property string backdrop: ""
 
         property bool smoothArt: false
-        property bool randomlyMirrorArt: true
+        property bool randomlyMirrorArt: false
         property bool fullscreen: true
         property bool commonFeed: true
         property bool commonFeedRoundRobin: true
@@ -113,6 +113,7 @@ Window {
         property bool useGoldenRatio: false
         property bool widgetTray: false
 
+        property real randomlyMirrorArtFreq: 0.5
         property real artOpacity: 1.0
         property real lessGoldenRatio: 4/3
 

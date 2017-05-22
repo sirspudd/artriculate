@@ -25,7 +25,7 @@ Item {
 
         source: imageModel.data(modelIndex)
 
-        mirror: globalSettings.randomlyMirrorArt && (Math.random() < 0.5)
+        mirror: globalSettings.randomlyMirrorArt && (Math.random() < globalSettings.randomlyMirrorArtFreq)
         smooth: globalSettings.smoothArt
         mipmap: !globalSettings.smoothArt
 
