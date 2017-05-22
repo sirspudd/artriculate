@@ -17,6 +17,7 @@ Item {
 
     Image {
         id: image
+        cache: false
         opacity: globalSettings.fadeInImages ? 0 : 1.0
         anchors.fill: parent
         asynchronous: true
