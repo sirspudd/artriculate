@@ -86,8 +86,8 @@ FSNodeTree::FSNodeTree(PictureModel *p)
     connect(this, SIGNAL(countChanged()), p, SIGNAL(countChanged()));
 
     QMimeDatabase mimeDatabase;
-    for(const QByteArray &m: QImageReader::supportedMimeTypes()) {
-        for(const QString &suffix: mimeDatabase.mimeTypeForName(m).suffixes())
+    foreach(const QByteArray &m, QImageReader::supportedMimeTypes()) {
+        foreach(const QString &suffix, mimeDatabase.mimeTypeForName(m).suffixes())
             extensions.append(suffix);
     }
 
@@ -101,12 +101,12 @@ void FSNodeTree::addModelNode(const FSNode* parentNode)
     // TODO: Check for symlink recursion
     QDir parentDir(FSNode::qualifyNode(parentNode));
 
-    for(const QString &currentDir : parentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+    foreach(const QString &currentDir, parentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
         const FSNode *dir = new FSNode(currentDir, parentNode);
         addModelNode(dir);
     }
 
-    for(const QString &currentFile : parentDir.entryList(QDir::Files)) {
+    foreach(const QString &currentFile, parentDir.entryList(QDir::Files)) {
         QString extension = currentFile.mid(currentFile.length() - 3);
         if (!extensions.contains(extension))
             continue;
