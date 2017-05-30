@@ -39,7 +39,6 @@ struct FSNode {
 struct FSLeafNode : public FSNode {
     using FSNode::FSNode;
     QSize size;
-    qreal ratio;
 };
 
 FSNode::FSNode(const QString& rname, const FSNode *pparent)
@@ -124,7 +123,6 @@ void FSNodeTree::addModelNode(const FSNode* parentNode)
                 qDebug() << "Image" << fullPath << "has excessive ratio" << ratio << "excluded";
             } else {
                 rational = true;
-                file->ratio = ratio;
             }
         } else {
             qDebug() << "Discarding" << fullPath << "due to invalid size";
@@ -209,8 +207,6 @@ QVariant PictureModel::data(const QModelIndex &index, int role) const
         switch (role) {
         case SizeRole:
             return QSize(1222,900);
-        case RatioRole:
-            return 1222/900;
         case NameRole:
             return "Qt logo";
         case PathRole:
@@ -223,8 +219,6 @@ QVariant PictureModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case SizeRole:
         return d->fsTree->files.at(index.row())->size;
-    case RatioRole:
-        return d->fsTree->files.at(index.row())->ratio;
     case NameRole:
         return d->fsTree->files.at(index.row())->name;
     case PathRole:
@@ -241,7 +235,6 @@ QHash<int, QByteArray> PictureModel::roleNames() const
     roles[NameRole] = "name";
     roles[PathRole] = "path";
     roles[SizeRole] = "size";
-    roles[RatioRole] = "ratio";
     return roles;
 }
 

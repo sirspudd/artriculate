@@ -117,7 +117,7 @@ Item {
 
             density: 1
             height: root.height/conveyorSettings.rowCount
-            width: height*imageModel.data(modelIndex, PictureModel.RatioRole)
+            width: height/imageModel.data(modelIndex, PictureModel.SizeRole).height*imageModel.data(modelIndex, PictureModel.SizeRole).width
             bodyType: Body.Dynamic
             fixedRotation: true
 

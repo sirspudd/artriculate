@@ -12,7 +12,7 @@ Item {
 
     //color: Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0)
 
-    height: width/imageModel.data(modelIndex, PictureModel.RatioRole)
+    height: width*imageModel.data(modelIndex, PictureModel.SizeRole).height/imageModel.data(modelIndex, PictureModel.SizeRole).width
     width: parent ? parent.width : 0
 
     Image {
@@ -20,7 +20,7 @@ Item {
         cache: false
         opacity: globalSettings.fadeInImages ? 0 : 1.0
 
-        height: globalVars.imageWidthOverride > 0 ? Math.ceil(globalVars.imageWidthOverride/imageModel.data(modelIndex, PictureModel.RatioRole)) : imageModel.data(modelIndex, PictureModel.SizeRole).height
+        height: globalVars.imageWidthOverride > 0 ? Math.ceil(globalVars.imageWidthOverride*imageModel.data(modelIndex, PictureModel.SizeRole).height/imageModel.data(modelIndex, PictureModel.SizeRole).width) : imageModel.data(modelIndex, PictureModel.SizeRole).height
         width: globalVars.imageWidthOverride > 0 ? globalVars.imageWidthOverride : imageModel.data(modelIndex, PictureModel.SizeRole).width
 
         transformOrigin: Item.TopLeft
