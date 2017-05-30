@@ -1,7 +1,9 @@
 TEMPLATE = app
 
-QT += qml quick dbus
+QT += qml quick dbus sql
 CONFIG += c++11
+
+DEFINES *= QT_USE_QSTRINGBUILDER
 
 SOURCES += src/main.cpp \
     src/picturemodel.cpp \
