@@ -69,7 +69,7 @@ public:
     void setModelRoot(const QString& rootDir) { this->rootDir = rootDir; }
 
     int fileCount() const { return files.length(); }
-    QList<FSLeafNode*> files;
+    QVector<FSLeafNode*> files;
 public slots:
     void populate();
 signals:
