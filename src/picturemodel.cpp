@@ -162,7 +162,7 @@ private:
 PictureModel::PictureModelPrivate::PictureModelPrivate(PictureModel* p)
 {
     QSettings settings;
-    QString artPath = settings.value("artPath","/blackhole/media/art").toString();
+    QString artPath = settings.value("artPath", QStandardPaths::standardLocations(QStandardPaths::PicturesLocation).first()).toString();
 
     settings.setValue("artPath", artPath);
 
