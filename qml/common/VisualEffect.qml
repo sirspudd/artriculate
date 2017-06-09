@@ -10,7 +10,9 @@ Item {
 
     function scheduleUpdate() { effectSource.scheduleUpdate() }
 
+    transformOrigin: Item.TopLeft
     anchors.fill: target
+    scale: target.scale
 
     ShaderEffectSource {
         id: effectSource
