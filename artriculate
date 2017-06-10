@@ -18,7 +18,6 @@ env=""
 
 if $force_wayland && [[ "$XDG_SESSION_TYPE" = "wayland" ]]; then
   args="-platform wayland"
-  env="QT_WAYLAND_SHELL_INTEGRATION=wl-shell"
 fi
 
 env="$env __GL_SYNC_TO_VBLANK=1 QML_FORCE_THREADED_RENDERER=1"
