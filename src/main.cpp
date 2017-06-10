@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     app.setOrganizationName("Chaos Reins");
-    app.setApplicationName("Articulate");
+    app.setApplicationName("artriculate");
 
     QSettings settings;
 
