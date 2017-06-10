@@ -5,6 +5,14 @@ script_dir=$(dirname ${executed_file})
 
 force_wayland=true
 
+bin_name=artriculate-bin
+dev_name=${script_dir}/src/${bin_name}
+if [[ -x ${dev_name} ]]; then
+  cmd=${dev_name}
+else
+  cmd=${script_dir}/${bin_name}
+fi
+
 args=""
 env=""
 
@@ -16,4 +24,4 @@ fi
 env="$env __GL_SYNC_TO_VBLANK=1 QML_FORCE_THREADED_RENDERER=1"
 
 export $env
-${script_dir}/src/artriculate $args
+$cmd $args

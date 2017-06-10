@@ -17,7 +17,7 @@ RESOURCES += resources/resources.qrc
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
-TARGET = artriculate
+TARGET = artriculate-bin
 target.path = /usr/bin
 
 desktop.path = /usr/share/applications
