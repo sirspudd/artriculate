@@ -5,6 +5,8 @@
 #include <QFile>
 #include <QTextStream>
 
+#include <QCoreApplication>
+
 class FileReader : public QObject {
     Q_OBJECT
 public:
@@ -12,7 +14,8 @@ public:
     Q_INVOKABLE static QString readFile(const QString &fileName)
     {
         QString content;
-        QFile file(fileName);
+        QString qmlPath = QCoreApplication::applicationDirPath() + "/../qml/3rdparty/effects/";
+        QFile file(qmlPath + fileName);
         if (file.open(QIODevice::ReadOnly)) {
             QTextStream stream(&file);
             content = stream.readAll();

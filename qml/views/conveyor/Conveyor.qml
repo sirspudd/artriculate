@@ -3,7 +3,8 @@ import Box2D 2.0
 import Qt.labs.settings 1.0
 import PictureModel 1.0
 
-import ".."
+// Forgive me
+import "../.."
 
 Item {
     id: root
@@ -38,7 +39,7 @@ Item {
         anchors.verticalCenter: viewport.verticalCenter
         fixedRotation: true
         z: 10
-        source: "qrc:/Monty_python_foot.png"
+        source: "Monty_python_foot.png"
         height: viewport.height
         width: viewport.height/foot.implicitHeight*foot.implicitWidth
         sourceSize.height: height

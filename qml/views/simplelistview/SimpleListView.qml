@@ -1,6 +1,7 @@
 import QtQuick 2.5
 
-import ".."
+// Forgive me
+import "../.."
 
 ListView {
     delegate: ArtImage {

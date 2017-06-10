@@ -77,7 +77,7 @@ ShaderEffect {
     // rather than being inline in the QML file
 
     onFragmentShaderFilenameChanged:
-        fragmentShader = d.fragmentShaderCommon + fileReader.readFile(":shaders/" + fragmentShaderFilename)
+        fragmentShader = d.fragmentShaderCommon + fileReader.readFile("shaders/" + fragmentShaderFilename)
     onVertexShaderFilenameChanged:
-        vertexShader = fileReader.readFile(":shaders/" + vertexShaderFilename)
+        vertexShader = fileReader.readFile("shaders/" + vertexShaderFilename)
 }

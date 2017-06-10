@@ -86,7 +86,7 @@ Window {
         }
 
         function deriveViewPath(view) {
-            return view.toLowerCase() + "/" + view + ".qml"
+            return "views/" + view.toLowerCase() + "/" + view + ".qml"
         }
 
         onCurrentViewFilenameChanged: {

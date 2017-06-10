@@ -18,7 +18,6 @@
 
 #include "picturemodel.h"
 #include "filereader.h"
-#include "helperfunctions.h"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -87,10 +86,16 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     qmlRegisterType<PictureModel>("PictureModel", 1, 0, "PictureModel");
 
-    engine.addImportPath("qrc:/");
+    QString qmlPath;
+    if (QDir(app.applicationDirPath()).dirName() == "src") {
+        qmlPath = QCoreApplication::applicationDirPath() % "/../qml";
+    } else {
+        qmlPath = "/usr/share/" % app.applicationName() % "/qml";
+    }
+
+    engine.addImportPath(qmlPath);
     engine.rootContext()->setContextProperty("fileReader", new FileReader(&app));
-    engine.rootContext()->setContextProperty("nativeHelper", new HelperFunctions(&app));
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+    engine.load(QUrl(qmlPath + "/main.qml"));
 
     return app.exec();
 }

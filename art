@@ -16,4 +16,4 @@ fi
 env="$env __GL_SYNC_TO_VBLANK=1 QML_FORCE_THREADED_RENDERER=1"
 
 export $env
-${script_dir}/artriculate $args
+${script_dir}/src/artriculate $args
