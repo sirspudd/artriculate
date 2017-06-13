@@ -43,3 +43,8 @@ DISTFILES += \
         3rdparty/effects/shaders/emboss.fsh \
         3rdparty/effects/shaders/gaussianblur_h.fsh \
         3rdparty/effects/shaders/gaussianblur_v.fsh
+
+qml.path = /usr/share/artriculate/qml
+qml.files = *
+
+INSTALLS += qml
