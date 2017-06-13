@@ -2,8 +2,7 @@
 
 [Unit]
 Description=Qt-compositor login for user %i
-After=x@vt7.service systemd-user-sessions.service
-Wants=x@vt7.service
+After=systemd-user-sessions.service
 Conflicts=getty@tty7.service
 
 [Service]
