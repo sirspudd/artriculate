@@ -125,9 +125,9 @@ int main(int argc, char *argv[])
 #ifdef COMPILED_RESOURCES
     qmlPath = "qrc:/qml";
 #else
-    if (QDir(app.applicationDirPath()).dirName() == "src") {
-        qmlPath = QCoreApplication::applicationDirPath() % "/../qml";
-    } else {
+    qmlPath = QCoreApplication::applicationDirPath() % "/qml";
+
+    if (!QDir(qmlPath).exists()) {
         qmlPath = "/usr/share/" % app.applicationName() % "/qml";
     }
 #endif

@@ -1,5 +1,7 @@
 TEMPLATE = app
 
+DESTDIR = ../
+
 QT += qml quick dbus sql
 CONFIG += c++11
 

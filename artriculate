@@ -5,13 +5,7 @@ script_dir=$(dirname ${executed_file})
 
 force_wayland=true
 
-bin_name=artriculate-bin
-dev_name=${script_dir}/src/${bin_name}
-if [[ -x ${dev_name} ]]; then
-  cmd=${dev_name}
-else
-  cmd=${script_dir}/${bin_name}
-fi
+cmd=${script_dir}/artriculate-bin
 
 args=""
 env=""
