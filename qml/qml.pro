@@ -8,7 +8,7 @@ DISTFILES += \
         widgets/Clock.qml \
         widgets/ItemCount.qml \
         widgets/Resolution.qml \
-        widgets/WidgetTray.qml \
+        widgets/InfoTray.qml \
         common/VisualEffect.qml \
         common/ArtImage.qml \
         common/View.qml \

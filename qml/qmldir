@@ -10,7 +10,8 @@ FPS 1.0 widgets/FPS.qml
 Clock 1.0 widgets/Clock.qml
 Resolution 1.0 widgets/Resolution.qml
 ItemCount 1.0 widgets/ItemCount.qml
-WidgetTray 1.0 widgets/WidgetTray.qml
+InfoTray 1.0 widgets/InfoTray.qml
+RebootReq 1.0 widgets/RebootReq.qml
 Cells 1.0 3rdparty/backdrops/cells/cells.qml
 Swirls 1.0 3rdparty/backdrops/qml-presentation-visuals/BackgroundSwirls.qml
 Unlicensed 1.0 unlicensed/Unlicensed.qml

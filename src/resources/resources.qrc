@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>qt_logo_green_rgb.png</file>
+        <file>buuf/Free Your Mind.png</file>
     </qresource>
 </RCC>

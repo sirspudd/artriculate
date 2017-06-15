@@ -33,6 +33,41 @@
 #include <QScreen>
 #include <QDBusInterface>
 #include <QDBusConnection>
+#include <QFileSystemWatcher>
+
+class NativeUtil : public QObject {
+    Q_OBJECT
+    Q_PROPERTY(bool rebootRequired MEMBER rebootRequired NOTIFY rebootRequiredChanged)
+public:
+    NativeUtil();
+
+signals:
+    void rebootRequiredChanged();
+public slots:
+    void monitorRunPath(const QString &path);
+private:
+    QString watchFile;
+    QFileSystemWatcher runDirWatcher;
+    bool rebootRequired;
+};
+
+NativeUtil::NativeUtil()
+    : QObject(),
+      watchFile("/run/reboot-required"),
+      rebootRequired(false)
+{
+    runDirWatcher.addPath(QFileInfo(watchFile).absolutePath());
+    connect(&runDirWatcher, &QFileSystemWatcher::directoryChanged, this, &NativeUtil::monitorRunPath);
+    monitorRunPath("");
+}
+
+void NativeUtil::monitorRunPath(const QString &path)
+{
+    Q_UNUSED(path);
+
+    rebootRequired = QFileInfo::exists(watchFile);
+    emit rebootRequiredChanged();
+}
 
 int main(int argc, char *argv[])
 {
@@ -83,6 +118,7 @@ int main(int argc, char *argv[])
         });
     }
 
+    NativeUtil nativeUtils;
     QQmlApplicationEngine engine;
     qmlRegisterType<PictureModel>("PictureModel", 1, 0, "PictureModel");
 
@@ -94,8 +130,11 @@ int main(int argc, char *argv[])
     }
 
     engine.addImportPath(qmlPath);
+    engine.rootContext()->setContextProperty("nativeUtils", &nativeUtils);
     engine.rootContext()->setContextProperty("fileReader", new FileReader(&app));
     engine.load(QUrl(qmlPath + "/main.qml"));
 
     return app.exec();
 }
+
+#include "main.moc"

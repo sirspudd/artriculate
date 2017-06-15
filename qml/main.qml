@@ -112,7 +112,8 @@ Window {
         property bool unlicensed: false
         property bool fadeInImages: true
         property bool useGoldenRatio: false
-        property bool widgetTray: false
+        property bool infoTray: false
+        property bool rebootNecessary: true
 
         property real randomlyMirrorArtFreq: 0.5
         property real artOpacity: 1.0
@@ -144,8 +145,12 @@ Window {
                 Qt.createQmlObject(globalSettings.backdrop + ' { anchors.fill: parent }', root)
             }
 
-            if (globalSettings.widgetTray) {
-                Qt.createQmlObject('WidgetTray { z: 2; anchors { top: parent.top; right: parent.right } }', root)
+            if (globalSettings.rebootNecessary) {
+                Qt.createQmlObject('RebootReq { z: 2; anchors { top: parent.top; right: parent.right } }', root)
+            }
+
+            if (globalSettings.infoTray) {
+                Qt.createQmlObject('InfoTray { z: 2; anchors { bottom: parent.bottom; left: parent.left } }', root)
             }
 
             if (globalSettings.unlicensed) {
