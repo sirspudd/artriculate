@@ -8,7 +8,7 @@ View {
     id: root
 
     property var pictureDelegate: Component {
-        ArtImage {}
+        ReelImage {}
     }
 
     Settings {
@@ -40,6 +40,7 @@ View {
             }
             var col = columnArray[globalSettings.columnCount - 1]
             priorImage = col.imageArray.shift()
+            priorImage.bowOut()
         }
 
         NumberAnimation on t { from: 0; to: 1; duration: 1000; loops: -1 }

@@ -24,6 +24,7 @@ DISTFILES += \
         views/conveyor/Monty_python_foot.png \
         views/basic/Basic.qml \
         views/reel/Reel.qml \
+        views/reel/ReelImage.qml \
         views/procession/Procession.qml \
         views/procession/ProcessionImage.qml \
         views/simplelistview/SimpleListView.qml \
