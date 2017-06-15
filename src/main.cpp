@@ -17,7 +17,6 @@
 ****************************************************************************/
 
 #include "picturemodel.h"
-#include "filereader.h"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -135,7 +134,6 @@ int main(int argc, char *argv[])
 
     engine.addImportPath(qmlPath);
     engine.rootContext()->setContextProperty("nativeUtils", &nativeUtils);
-    engine.rootContext()->setContextProperty("fileReader", new FileReader(&app));
     engine.load(QUrl(qmlPath + "/main.qml"));
 
     return app.exec();

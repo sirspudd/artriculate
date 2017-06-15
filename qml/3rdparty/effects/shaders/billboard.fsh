@@ -50,6 +50,14 @@
 
 // Based on http://kodemongki.blogspot.com/2011/06/kameraku-custom-shader-effects-example.html
 
+#ifdef GL_ES
+    precision mediump float;
+#else
+#   define lowp
+#   define mediump
+#   define highp
+#endif // GL_ES
+
 uniform float grid;
 uniform float step_x;
 uniform float step_y;

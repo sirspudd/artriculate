@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.5
+import QtQuick 2.8
 
 Effect {
     property real grid: 15.0
@@ -56,5 +56,5 @@ Effect {
     property real step_x: 0.0015625
     property real step_y: targetHeight ? (step_x * targetWidth / targetHeight) : 0.0
 
-    fragmentShaderFilename: "billboard.fsh"
+    fragmentShader: Qt.resolvedUrl("shaders/billboard.fsh")
 }

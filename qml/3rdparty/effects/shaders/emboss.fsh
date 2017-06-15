@@ -50,6 +50,14 @@
 
 // Based on http://kodemongki.blogspot.com/2011/06/kameraku-custom-shader-effects-example.html
 
+#ifdef GL_ES
+    precision mediump float;
+#else
+#   define lowp
+#   define mediump
+#   define highp
+#endif // GL_ES
+
 const float step_w = 0.0015625;
 const float step_h = 0.0027778;
 

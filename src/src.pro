@@ -6,8 +6,7 @@ CONFIG += c++11
 DEFINES *= QT_USE_QSTRINGBUILDER
 
 HEADERS += \
-    picturemodel.h \
-    filereader.h
+    picturemodel.h
 
 SOURCES += main.cpp \
     picturemodel.cpp

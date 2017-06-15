@@ -50,7 +50,7 @@
 
 // Based on http://www.geeks3d.com/20100909/shader-library-gaussian-blur-post-processing-filter-in-glsl/
 
-import QtQuick 2.5
+import QtQuick 2.8
 
 Item {
     id: root
@@ -82,14 +82,14 @@ Item {
         onTargetWidthChanged: {
             updateBlurSize()
         }
-        fragmentShaderFilename: "gaussianblur_v.fsh"
+        fragmentShader: Qt.resolvedUrl("shaders/gaussianblur_v.fsh")
     }
 
     Effect {
         id: horizontalShader
         anchors.fill: parent
         property real blurSize: 0.0
-        fragmentShaderFilename: "gaussianblur_h.fsh"
+        fragmentShader: Qt.resolvedUrl("shaders/gaussianblur_h.fsh")
         source: horizontalShaderSource
 
         ShaderEffectSource {

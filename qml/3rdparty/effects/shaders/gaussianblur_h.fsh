@@ -48,6 +48,14 @@
 **
 ****************************************************************************/
 
+#ifdef GL_ES
+    precision mediump float;
+#else
+#   define lowp
+#   define mediump
+#   define highp
+#endif // GL_ES
+
 uniform float blurSize;
 
 uniform sampler2D source;
