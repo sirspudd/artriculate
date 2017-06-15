@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 
 CONFIG += ordered
 
-SUBDIRS += src qml
+SUBDIRS += src
 
 symlink.path = /usr/bin
 symlink.files = artriculate

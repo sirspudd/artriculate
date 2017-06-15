@@ -123,11 +123,15 @@ int main(int argc, char *argv[])
     qmlRegisterType<PictureModel>("PictureModel", 1, 0, "PictureModel");
 
     QString qmlPath;
+#ifdef COMPILED_RESOURCES
+    qmlPath = "qrc:/qml";
+#else
     if (QDir(app.applicationDirPath()).dirName() == "src") {
         qmlPath = QCoreApplication::applicationDirPath() % "/../qml";
     } else {
         qmlPath = "/usr/share/" % app.applicationName() % "/qml";
     }
+#endif
 
     engine.addImportPath(qmlPath);
     engine.rootContext()->setContextProperty("nativeUtils", &nativeUtils);
