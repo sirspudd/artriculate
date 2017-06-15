@@ -14,6 +14,7 @@ View {
     Settings {
         id: reelSettings
         category: "Reel"
+        property bool deathTransition: false
         property int deathPeriod: 10000
         property real restingVelocity: 4
         property real velocityAccelIncrements: 0.3
@@ -40,7 +41,7 @@ View {
             }
             var col = columnArray[globalSettings.columnCount - 1]
             priorImage = col.imageArray.shift()
-            priorImage.bowOut()
+            reelSettings.deathTransition && priorImage.bowOut()
         }
 
         NumberAnimation on t { from: 0; to: 1; duration: 1000; loops: -1 }
