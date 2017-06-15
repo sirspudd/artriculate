@@ -1,6 +1,6 @@
 import QtQuick 2.6
 
-import ".."
+import "../.."
 
 ArtImage {
     property bool primed: false

@@ -7,6 +7,8 @@ CONFIG += c++11
 
 DEFINES *= QT_USE_QSTRINGBUILDER
 
+include(../3rdparty/qml-box2d/box2d-static.pri)
+
 HEADERS += \
     picturemodel.h
 
