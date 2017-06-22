@@ -31,7 +31,9 @@ View {
         property real columnWidth: root.width*globalUtil.columnWidthRatio(d.columnRatio, globalSettings.columnCount)
 
         function animationStep() {
-            columnArray.forEach(function(column) { column.animationStep(); })
+            for(var i = columnArray.length - 1; i >= 0; i--) {
+                columnArray[i].animationStep()
+            }
         }
 
         function killLastImage() {
