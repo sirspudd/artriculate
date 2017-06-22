@@ -5,6 +5,8 @@ import "../.."
 ArtImage {
     id: root
 
+    property bool reviewed: false
+
     function bowOut() {
         deathBow.start()
     }
