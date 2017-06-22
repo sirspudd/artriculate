@@ -61,16 +61,8 @@ View {
             property var imageQueue: []
             property bool lastColumn: columnIndex === (globalSettings.columnCount - 1)
 
-            function stackHeight(imageIndex) {
-                var height = 0
-                for(var i = 0; i < imageIndex; i++) {
-                    height += imageArray[i].height
-                }
-                return height
-            }
-
             function receptive() {
-                return !d.initialized || imageQueue.length < d.imageBuffer
+                return !imageArray.length || imageArray[imageArray.length - 1].y > -d.velocity
             }
 
             function addNewImage() {
@@ -86,19 +78,22 @@ View {
             }
 
             function animationStep() {
-                if (!imageArray.length || imageArray[imageArray.length - 1].y > -1) {
+                if (receptive()) {
+                    if (columnIndex === 0
+                            && !(globalSettings.itemLimit > 0 && globalSettings.itemLimit <= globalUtil.itemCount)) {
+                        addNewImage()
+                    }
+
                     if (imageQueue.length) {
-                        imageArray.push(imageQueue.pop())
-                    } else if (columnIndex === 0) {
-                        if (!(globalSettings.itemLimit > 0 && globalSettings.itemLimit <= globalUtil.itemCount)) {
-                            addNewImage()
-                        }
+                        var image = imageQueue.pop()
+                        image.y = (imageArray.length ? imageArray[imageArray.length-1].y : 0) - image.height
+                        imageArray.push(image)
                     }
                 }
 
-                for (var i = 0; i < imageArray.length; i++) {
-                    var image = imageArray[i]
-                    var restingY = root.height - image.height - stackHeight(i)
+                if (imageArray.length) {
+                    var image = imageArray[0]
+                    var restingY = root.height - image.height
                     var prospectiveY = image.y + d.velocity
                     var nextColumn = columnArray[columnIndex+1]
 
@@ -117,6 +112,12 @@ View {
                     } else {
                         image.y = prospectiveY
                     }
+                }
+
+                for (var i = 1; i < imageArray.length; i++) {
+                   var lowerImage = imageArray[i - 1];
+                   var image = imageArray[i]
+                   image.y = lowerImage.y - image.height
                 }
             }
 
