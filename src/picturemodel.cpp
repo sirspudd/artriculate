@@ -31,6 +31,7 @@
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
+#include <QtSql/QSqlDriver>
 
 namespace {
     QString stripDbHostileCharacters(QString path) {
@@ -180,12 +181,13 @@ void FSNodeTree::populate(bool useDatabaseBackend)
         qDebug() << "Being told to watch a non existent directory:" << rootDir;
     }
     addModelNode(new FSNode(rootDir));
-    qDebug() << "Completed building file tree after:" << timer.elapsed();
+    qDebug() << "Completed building file tree after:" << timer.elapsed() << "ms";
 
     if (useDatabaseBackend) {
+        qDebug() << "No database found; dumping tree to db" << rootDir;
         timer.restart();
         QSqlError err = dumpTreeToDb();
-        qDebug() << "Completed database dump after:" << timer.elapsed();
+        qDebug() << "Completed database dump after:" << timer.elapsed() << "ms";
 
         if (err.type() != QSqlError::NoError) {
             qDebug() << "Database dump of content tree failed with" << err.text();
@@ -212,20 +214,28 @@ QSqlError FSNodeTree::dumpTreeToDb()
 
     insertQuery = insertQuery.replace(insertQuery.length()-1, 1, ";");
 
-    QSqlQuery q;
+    QSqlDatabase::database().transaction();
+    QSqlQuery query;
 
-    if (!q.prepare(insertQuery))
-        return q.lastError();
+    if (!query.prepare(insertQuery))
+        return query.lastError();
 
     foreach(const FSLeafNode *node, files) {
-        q.addBindValue(node->qualifyNode(node));
-        q.addBindValue(node->size.width());
-        q.addBindValue(node->size.height());
+        query.addBindValue(node->qualifyNode(node));
+        query.addBindValue(node->size.width());
+        query.addBindValue(node->size.height());
     }
 
-    q.exec();
+    qDebug() << "Database supports transactions" << QSqlDatabase::database().driver()->hasFeature(QSqlDriver::Transactions);
 
-    return q.lastError();
+    query.exec();
+
+    if (QSqlDatabase::database().commit())
+        qDebug() << "SQL transaction succeeded";
+    else
+        qDebug() << "SQL transaction failed";
+
+    return query.lastError();
 }
 
 QSqlError FSNodeTree::initDb()
@@ -284,7 +294,9 @@ PictureModel::PictureModelPrivate::PictureModelPrivate(PictureModel* p)
 
                 collectionSize = query.value(0).toInt();
                 QMetaObject::invokeMethod(parent, "countChanged");
+                qDebug() << "Using existing database entry for" << artPath;
             } else {
+                qDebug() << "No database found; creating file tree" << artPath;
                 createFSTree(artPath);
             }
         } else {
