@@ -10,7 +10,7 @@ User=%i
 WorkingDirectory=~
 TTYPath=/dev/tty7
 PAMName=login
-ExecStart=-/usr/bin/artriculate -platform eglfs
+ExecStart=-/usr/bin/qpi-env-exec /usr/bin/artriculate -platform eglfs
 Restart=on-failure
 
 [Install]

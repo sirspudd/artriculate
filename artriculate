@@ -7,14 +7,17 @@ force_wayland=true
 
 cmd=${script_dir}/artriculate-bin
 
-args=""
+args="$@"
 env=""
 
 if $force_wayland && [[ "$XDG_SESSION_TYPE" = "wayland" ]]; then
-  args="-platform wayland"
+  args="$args -platform wayland"
 fi
 
 env="$env __GL_SYNC_TO_VBLANK=1 QML_FORCE_THREADED_RENDERER=1"
 
 export $env
+echo "Running in env"
+env
+echo "Running cmd: $cmd with args: $args"
 $cmd $args
