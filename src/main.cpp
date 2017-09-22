@@ -33,6 +33,7 @@
 #include <QDBusInterface>
 #include <QDBusConnection>
 #include <QFileSystemWatcher>
+#include <QtPlugin>
 
 class NativeUtil : public QObject {
     Q_OBJECT
@@ -70,10 +71,14 @@ void NativeUtil::monitorRunPath(const QString &path)
 
 int main(int argc, char *argv[])
 {
+#ifdef STATIC_BUILD
+    Q_IMPORT_PLUGIN(QmlSettingsPlugin)
+    Q_IMPORT_PLUGIN(QtQuick2WindowPlugin)
+    Q_IMPORT_PLUGIN(QtQuick2Plugin)
+#endif
     qsrand(time(NULL));
 
     QGuiApplication app(argc, argv);
-
     app.setOrganizationName("Chaos Reins");
     app.setApplicationName("artriculate");
 

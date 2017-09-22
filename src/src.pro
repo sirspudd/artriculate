@@ -7,7 +7,18 @@ CONFIG += c++11
 
 DEFINES *= QT_USE_QSTRINGBUILDER
 
-include(../3rdparty/qml-box2d/box2d-static.pri)
+#CONFIG += box2d
+box2d {
+    include(../3rdparty/qml-box2d/box2d-static.pri)
+}
+
+contains(QT_CONFIG, static) {
+    DEFINES += STATIC_BUILD
+    QTPLUGIN += windowplugin \
+                qtquick2plugin \
+                qmlsettingsplugin
+    LIBPATH += $$[QT_INSTALL_QML]/QtQuick.2 $$[QT_INSTALL_QML]/QtQuick/Window.2 $$[QT_INSTALL_QML]/Qt/labs/settings
+}
 
 HEADERS += \
     picturemodel.h
