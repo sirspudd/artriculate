@@ -13,6 +13,7 @@ box2d {
 }
 
 contains(QT_CONFIG, static) {
+    CONFIG += compiledResources
     DEFINES += STATIC_BUILD
     QTPLUGIN += windowplugin \
                 qtquick2plugin \
