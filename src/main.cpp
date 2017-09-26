@@ -141,6 +141,8 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("nativeUtils", &nativeUtils);
     engine.load(QUrl(qmlPath + "/main.qml"));
 
+    QGuiApplication::processEvents();
+    sd_notify(0, "READY=1");
     return app.exec();
 }
 
