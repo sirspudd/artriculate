@@ -18,6 +18,10 @@
 
 #include "picturemodel.h"
 
+#ifdef USING_SYSTEMD
+#include <systemd/sd-daemon.h>
+#endif
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -142,7 +146,9 @@ int main(int argc, char *argv[])
     engine.load(QUrl(qmlPath + "/main.qml"));
 
     QGuiApplication::processEvents();
+#ifdef USING_SYSTEMD
     sd_notify(0, "READY=1");
+#endif
     return app.exec();
 }
 

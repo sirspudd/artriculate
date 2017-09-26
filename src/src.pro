@@ -3,13 +3,19 @@ TEMPLATE = app
 DESTDIR = ../
 
 QT += qml quick dbus sql
-CONFIG += c++11
+CONFIG += c++11 systemd
 
 DEFINES *= QT_USE_QSTRINGBUILDER
 
 #CONFIG += box2d
 box2d {
     include(../3rdparty/qml-box2d/box2d-static.pri)
+}
+
+systemd {
+    DEFINES += USING_SYSTEMD
+    CONFIG += link_pkgconfig
+    PKGCONFIG += libsystemd
 }
 
 contains(QT_CONFIG, static) {
