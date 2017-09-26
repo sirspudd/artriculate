@@ -1,0 +1,17 @@
+# Forked off xlogin@.service
+
+[Unit]
+Description=Qt-compositor login for user %i
+DefaultDependencies=no
+After=local-fs.target
+Before=systemd-networkd.service
+
+[Service]
+User=root
+Type=notify
+WorkingDirectory=/tmp
+ExecStart=-/usr/bin/artriculate-bin
+Restart=on-failure
+
+[Install]
+WantedBy=local-fs.target

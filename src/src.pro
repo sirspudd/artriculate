@@ -113,6 +113,6 @@ icon.path = /usr/share/icons/hicolor/128x128/apps
 icon.files += resources/artriculate.png
 
 systemd.path = /usr/lib/systemd/system
-systemd.files += resources/artriculate@.service
+systemd.files += resources/artriculate@.service resources/artriculate.service
 
 INSTALLS += target desktop icon systemd
