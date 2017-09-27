@@ -4,7 +4,7 @@
 Description=Qt-compositor login for user %i
 DefaultDependencies=no
 After=local-fs.target
-Before=systemd-networkd.service
+Before=systemd-tmpfiles-setup.service systemd-networkd.service systemd-rfkill.service
 
 [Service]
 User=root
