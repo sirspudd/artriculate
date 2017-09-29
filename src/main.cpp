@@ -23,8 +23,9 @@
 #endif
 
 #include <QGuiApplication>
-#include <QQmlApplicationEngine>
+#include <QQuickView>
 #include <QQmlContext>
+#include <QQmlEngine>
 #include <QSettings>
 #include <QSurfaceFormat>
 #include <QTimer>
@@ -127,7 +128,7 @@ int main(int argc, char *argv[])
     }
 
     NativeUtil nativeUtils;
-    QQmlApplicationEngine engine;
+    QQuickView view;
     qmlRegisterType<PictureModel>("PictureModel", 1, 0, "PictureModel");
 
     QString qmlPath;
@@ -135,15 +136,15 @@ int main(int argc, char *argv[])
     qmlPath = "qrc:/qml";
 #else
     qmlPath = QCoreApplication::applicationDirPath() % "/qml";
-
     if (!QDir(qmlPath).exists()) {
         qmlPath = "/usr/share/" % app.applicationName() % "/qml";
     }
 #endif
 
-    engine.addImportPath(qmlPath);
-    engine.rootContext()->setContextProperty("nativeUtils", &nativeUtils);
-    engine.load(QUrl(qmlPath + "/main.qml"));
+    view.engine()->addImportPath(qmlPath);
+    view.rootContext()->setContextProperty("nativeUtils", &nativeUtils);
+    view.setSource(QUrl(qmlPath + "/main.qml"));
+    view.show();
 
     QGuiApplication::processEvents();
 #ifdef USING_SYSTEMD

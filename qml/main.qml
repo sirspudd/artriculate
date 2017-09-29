@@ -1,22 +1,12 @@
 import QtQuick 2.5
-import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
 import PictureModel 1.0
 
-Window {
+Item {
     id: appWindow
-
-    color: "black"
-
-    width: 1280
-    height: 720
 
     onWidthChanged: {
         globalUtil.reset()
-    }
-
-    function showAtCorrectSize() {
-        globalSettings.fullscreen ? showFullScreen() : show()
     }
 
     PictureModel {
@@ -106,7 +96,6 @@ Window {
 
         property bool smoothArt: false
         property bool randomlyMirrorArt: false
-        property bool fullscreen: true
         property bool commonFeed: true
         property bool commonFeedRoundRobin: true
         property bool unlicensed: false
@@ -120,7 +109,6 @@ Window {
         property real lessGoldenRatio: 4/3
 
         onColumnCountChanged: globalUtil.reset()
-        onFullscreenChanged: showAtCorrectSize()
 
         Component.onCompleted: {
             d.setView(view)
@@ -164,9 +152,6 @@ Window {
         focus: true
         Keys.onPressed: {
             switch(event.key) {
-            case Qt.Key_F:
-                globalSettings.fullscreen = !globalSettings.fullscreen
-                break;
             case Qt.Key_Left:
                 globalSettings.columnCount = Math.max(globalSettings.columnCount - 1, 1);
                 break;
@@ -182,21 +167,6 @@ Window {
             default:
                 console.log('Key not handled')
             }
-        }
-    }
-
-    Component.onCompleted: {
-        showTimer.start()
-    }
-
-    Timer {
-        id: showTimer
-
-        running: false
-        repeat: false
-        interval: 1
-        onTriggered: {
-            showAtCorrectSize()
         }
     }
 }
