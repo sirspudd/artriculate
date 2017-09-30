@@ -82,7 +82,7 @@ Item {
 
     Settings {
         id: globalSettings
-        property int columnCount: 6
+        property int columnCount: 7
         property int interval: 5
         property int itemLimit: -1
 
@@ -102,7 +102,7 @@ Item {
 
         property real randomlyMirrorArtFreq: 0.5
         property real artOpacity: 1.0
-        property real lessGoldenRatio: 4/3
+        property real lessGoldenRatio: 1.5
 
         onColumnCountChanged: globalUtil.reset()
 
