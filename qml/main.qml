@@ -9,10 +9,6 @@ Item {
         globalUtil.reset()
     }
 
-    PictureModel {
-        id: imageModel
-    }
-
     QtObject {
         id: globalVars
         property real goldenRatio

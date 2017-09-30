@@ -89,7 +89,7 @@ View {
                             image.destroy()
                             globalUtil.itemCount--
                         } else {
-                            nextColumn.addImage(image)
+                            !!nextColumn && nextColumn.addImage(image)
                         }
                     } else if ((!nextColumn || !nextColumn.receptive(image))
                                && prospectiveY >= restingY

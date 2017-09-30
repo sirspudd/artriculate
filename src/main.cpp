@@ -40,11 +40,11 @@
 #include <QFileSystemWatcher>
 #include <QtPlugin>
 
-class NativeUtil : public QObject {
+class NativeUtils : public QObject {
     Q_OBJECT
     Q_PROPERTY(bool rebootRequired MEMBER rebootRequired NOTIFY rebootRequiredChanged)
 public:
-    NativeUtil();
+    NativeUtils(QObject *p);
 
 signals:
     void rebootRequiredChanged();
@@ -56,22 +56,55 @@ private:
     bool rebootRequired;
 };
 
-NativeUtil::NativeUtil()
-    : QObject(),
+NativeUtils::NativeUtils(QObject *p)
+    : QObject(p),
       watchFile("/run/reboot-required"),
       rebootRequired(false)
 {
     runDirWatcher.addPath(QFileInfo(watchFile).absolutePath());
-    connect(&runDirWatcher, &QFileSystemWatcher::directoryChanged, this, &NativeUtil::monitorRunPath);
+    connect(&runDirWatcher, &QFileSystemWatcher::directoryChanged, this, &NativeUtils::monitorRunPath);
     monitorRunPath("");
 }
 
-void NativeUtil::monitorRunPath(const QString &path)
+void NativeUtils::monitorRunPath(const QString &path)
 {
     Q_UNUSED(path);
 
     rebootRequired = QFileInfo::exists(watchFile);
     emit rebootRequiredChanged();
+}
+
+namespace ArtView {
+    static QQuickView* artView();
+    static QQmlEngine* sharedQmlEngine = nullptr;
+}
+
+QQuickView* ArtView::artView()
+{
+    static QString qmlPath;
+#ifdef COMPILED_RESOURCES
+    qmlPath = "qrc:/qml";
+#else
+    qmlPath = QCoreApplication::applicationDirPath() % "/qml";
+    if (!QDir(qmlPath).exists()) {
+        qmlPath = "/usr/share/" % qApp->applicationName() % "/qml";
+    }
+#endif
+
+    QQuickView *view;
+    if (sharedQmlEngine) {
+        view = new QQuickView(sharedQmlEngine, nullptr);
+    } else {
+        view = new QQuickView();
+        sharedQmlEngine = view->engine();
+        sharedQmlEngine->addImportPath(qmlPath);
+        sharedQmlEngine->rootContext()->setContextProperty("nativeUtils", new NativeUtils(sharedQmlEngine));
+        sharedQmlEngine->rootContext()->setContextProperty("imageModel", new PictureModel(sharedQmlEngine));
+
+    }
+    view->setResizeMode(QQuickView::SizeRootObjectToView);
+    view->setSource(QUrl(qmlPath + "/main.qml"));
+    return view;
 }
 
 int main(int argc, char *argv[])
@@ -127,24 +160,15 @@ int main(int argc, char *argv[])
         });
     }
 
-    NativeUtil nativeUtils;
-    QQuickView view;
     qmlRegisterType<PictureModel>("PictureModel", 1, 0, "PictureModel");
 
-    QString qmlPath;
-#ifdef COMPILED_RESOURCES
-    qmlPath = "qrc:/qml";
-#else
-    qmlPath = QCoreApplication::applicationDirPath() % "/qml";
-    if (!QDir(qmlPath).exists()) {
-        qmlPath = "/usr/share/" % app.applicationName() % "/qml";
+    foreach(QScreen *screen, QGuiApplication::screens()) {
+            qDebug() << "Displaying artwork on" << screen;
+            QQuickView *view = ArtView::artView();
+            view->setScreen(screen);
+            view->setGeometry(screen->availableGeometry());
+            view->showFullScreen();
     }
-#endif
-
-    view.engine()->addImportPath(qmlPath);
-    view.rootContext()->setContextProperty("nativeUtils", &nativeUtils);
-    view.setSource(QUrl(qmlPath + "/main.qml"));
-    view.show();
 
     QGuiApplication::processEvents();
 #ifdef USING_SYSTEMD
