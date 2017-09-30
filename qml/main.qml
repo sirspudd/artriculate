@@ -165,4 +165,6 @@ Item {
             }
         }
     }
+
+    Component.onCompleted: appWindow.setFocus()
 }

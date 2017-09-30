@@ -40,6 +40,25 @@
 #include <QFileSystemWatcher>
 #include <QtPlugin>
 
+class CloseEventFilter : public QObject
+{
+    Q_OBJECT
+public:
+    CloseEventFilter(QObject *p) : QObject(p) { /**/ }
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event);
+};
+
+bool CloseEventFilter::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::Close) {
+        qApp->quit();
+    }
+
+    return QObject::eventFilter(obj, event);
+}
+
 class NativeUtils : public QObject {
     Q_OBJECT
     Q_PROPERTY(bool rebootRequired MEMBER rebootRequired NOTIFY rebootRequiredChanged)
@@ -100,8 +119,9 @@ QQuickView* ArtView::artView()
         sharedQmlEngine->addImportPath(qmlPath);
         sharedQmlEngine->rootContext()->setContextProperty("nativeUtils", new NativeUtils(sharedQmlEngine));
         sharedQmlEngine->rootContext()->setContextProperty("imageModel", new PictureModel(sharedQmlEngine));
-
+        QObject::connect(sharedQmlEngine, &QQmlEngine::quit, qApp, &QCoreApplication::quit);
     }
+    view->setColor(Qt::transparent);
     view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->setSource(QUrl(qmlPath + "/main.qml"));
     return view;
@@ -119,6 +139,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     app.setOrganizationName("Chaos Reins");
     app.setApplicationName("artriculate");
+    app.installEventFilter(new CloseEventFilter(&app));
 
     QSettings settings;
 
