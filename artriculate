@@ -3,15 +3,13 @@
 executed_file=$(readlink -f ${BASH_SOURCE[0]})
 script_dir=$(dirname ${executed_file})
 
-force_wayland=true
-
 cmd=${script_dir}/artriculate-bin
 
 args="$@"
 env=""
 
-if $force_wayland && [[ "$XDG_SESSION_TYPE" = "wayland" ]]; then
-  args="$args -platform wayland"
+if [[ "$QT_QPA_PLATFORM" != "eglfs" ]]; then
+    unset QT_QPA_PLATFORM
 fi
 
 env="$env __GL_SYNC_TO_VBLANK=1 QML_FORCE_THREADED_RENDERER=1"
