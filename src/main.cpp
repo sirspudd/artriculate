@@ -96,13 +96,14 @@ void NativeUtils::monitorRunPath(const QString &path)
 
 class ArtView {
 public:
-    static QQuickView* artView();
+    static void populateScreen(QScreen *screen = nullptr);
+private:
     static QQmlEngine* sharedQmlEngine;
 };
 
 QQmlEngine* ArtView::sharedQmlEngine = nullptr;
 
-QQuickView* ArtView::artView()
+void ArtView::populateScreen(QScreen *screen)
 {
     static QString qmlPath;
 #ifdef COMPILED_RESOURCES
@@ -133,7 +134,12 @@ QQuickView* ArtView::artView()
     view->setColor(Qt::transparent);
     view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->setSource(QUrl(qmlPath + "/main.qml"));
-    return view;
+    if (screen) {
+        view->setScreen(screen);
+        view->setGeometry(screen->availableGeometry());
+    }
+    view->showFullScreen();
+    qDebug() << "Displaying artwork on" << screen;
 }
 
 int main(int argc, char *argv[])
@@ -192,13 +198,21 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<PictureModel>("PictureModel", 1, 0, "PictureModel");
 
-    foreach(QScreen *screen, QGuiApplication::screens()) {
-            qDebug() << "Displaying artwork on" << screen;
-            QQuickView *view = ArtView::artView();
-            view->setScreen(screen);
-            view->setGeometry(screen->availableGeometry());
-            view->showFullScreen();
+    int screenIndex = settings.value("screenIndex", "-1").toInt();
+    QList<QScreen*> screens = QGuiApplication::screens();
+
+    if (screenIndex == -1) {
+        foreach(QScreen *screen, screens) {
+            ArtView::populateScreen(screen);
+        }
+    } else {
+        if ((screenIndex >= 0) && (screenIndex < screens.length())) {
+            ArtView::populateScreen(screens.at(screenIndex));
+        } else {
+            ArtView::populateScreen();
+        }
     }
+    settings.setValue("screenIndex", screenIndex);
 
     QGuiApplication::processEvents();
 #ifdef USING_SYSTEMD
