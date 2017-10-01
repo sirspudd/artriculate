@@ -94,10 +94,13 @@ void NativeUtils::monitorRunPath(const QString &path)
     emit rebootRequiredChanged();
 }
 
-namespace ArtView {
+class ArtView {
+public:
     static QQuickView* artView();
-    static QQmlEngine* sharedQmlEngine = nullptr;
-}
+    static QQmlEngine* sharedQmlEngine;
+};
+
+QQmlEngine* ArtView::sharedQmlEngine = nullptr;
 
 QQuickView* ArtView::artView()
 {
