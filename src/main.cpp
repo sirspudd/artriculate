@@ -135,11 +135,12 @@ void ArtView::populateScreen(QScreen *screen)
     view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->setSource(QUrl(qmlPath + "/main.qml"));
     if (screen) {
+        QRect geometry = screen->availableGeometry();
         view->setScreen(screen);
-        view->setGeometry(screen->availableGeometry());
+        view->setGeometry(geometry);
+        qDebug() << "Displaying artwork on" << screen << "with geometry" << geometry;
     }
     view->showFullScreen();
-    qDebug() << "Displaying artwork on" << screen;
 }
 
 int main(int argc, char *argv[])
