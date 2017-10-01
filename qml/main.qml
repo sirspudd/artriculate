@@ -82,7 +82,8 @@ Item {
 
     Settings {
         id: globalSettings
-        property int columnCount: 7
+        // This colCount + col ratio requires 700M graphical mem at 1080p on the pi
+        property int columnCount: 8
         property int interval: 5
         property int itemLimit: -1
 
@@ -102,7 +103,7 @@ Item {
 
         property real randomlyMirrorArtFreq: 0.5
         property real artOpacity: 1.0
-        property real lessGoldenRatio: 1.5
+        property real lessGoldenRatio: 1.4
 
         onColumnCountChanged: globalUtil.reset()
 
