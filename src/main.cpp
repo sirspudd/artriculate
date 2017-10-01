@@ -199,10 +199,12 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<PictureModel>("PictureModel", 1, 0, "PictureModel");
 
-    int screenIndex = settings.value("screenIndex", "-1").toInt();
+    int screenIndex = settings.value("screenIndex", -2).toInt();
     QList<QScreen*> screens = QGuiApplication::screens();
 
-    if (screenIndex == -1) {
+    if (screenIndex == -2) {
+        ArtView::populateScreen();
+    } else if (screenIndex == -1) {
         foreach(QScreen *screen, screens) {
             ArtView::populateScreen(screen);
         }
