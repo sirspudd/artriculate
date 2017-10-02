@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>Lato-Regular.ttf</file>
         <file>qt_logo_green_rgb.png</file>
         <file>buuf/Free Your Mind.png</file>
     </qresource>

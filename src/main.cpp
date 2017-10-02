@@ -22,6 +22,7 @@
 #include <systemd/sd-daemon.h>
 #endif
 
+#include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQuickView>
 #include <QQmlContext>
@@ -157,6 +158,10 @@ int main(int argc, char *argv[])
     qsrand(time(NULL));
 
     QGuiApplication app(argc, argv);
+    if (QFontDatabase::addApplicationFont(":/Lato-Regular.ttf") == -1) {
+        qDebug() << "Failed to successfully add the application font";
+    }
+    app.setFont(QFont("Lato Regular"));
     app.setOrganizationName("Chaos Reins");
     app.setApplicationName("artriculate");
     app.installEventFilter(new CloseEventFilter(&app));
