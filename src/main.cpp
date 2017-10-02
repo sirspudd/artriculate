@@ -126,21 +126,25 @@ void ArtView::populateScreen(QScreen *screen)
         sharedQmlEngine->rootContext()->setContextProperty("imageModel", new PictureModel(sharedQmlEngine));
         QObject::connect(sharedQmlEngine, &QQmlEngine::quit, qApp, &QCoreApplication::quit);
     }
+    if (screen) {
+        view->setScreen(screen);
+    } else {
+        screen = view->screen();
+    }
+    QRect geometry = screen->availableGeometry();
+    view->setColor(Qt::transparent);
+    view->setResizeMode(QQuickView::SizeRootObjectToView);
+    view->setSource(QUrl(qmlPath + "/main.qml"));
+    view->setGeometry(geometry);
+    view->showFullScreen();
+
     QObject::connect(view, &QQuickView::statusChanged, [](QQuickView::Status status) {
         if (status == QQuickView::Error) {
             QMetaObject::invokeMethod(qApp, "quit", Qt::QueuedConnection);
         }
     });
-    view->setColor(Qt::transparent);
-    view->setResizeMode(QQuickView::SizeRootObjectToView);
-    view->setSource(QUrl(qmlPath + "/main.qml"));
-    if (screen) {
-        QRect geometry = screen->availableGeometry();
-        view->setScreen(screen);
-        view->setGeometry(geometry);
-        qDebug() << "Displaying artwork on" << screen << "with geometry" << geometry;
-    }
-    view->showFullScreen();
+
+    qDebug() << "Displaying artwork on" << screen << "with geometry" << geometry;
 }
 
 int main(int argc, char *argv[])
