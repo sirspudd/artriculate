@@ -6,16 +6,10 @@ script_dir=$(dirname ${executed_file})
 cmd=${script_dir}/artriculate-bin
 
 args="$@"
-env=""
 
 if [[ "$QT_QPA_PLATFORM" != "eglfs" ]]; then
     unset QT_QPA_PLATFORM
 fi
 
-env="$env __GL_SYNC_TO_VBLANK=1 QML_FORCE_THREADED_RENDERER=1"
-
-export $env
-echo "Running in env"
-env
 echo "Running cmd: $cmd with args: $args"
 $cmd $args
