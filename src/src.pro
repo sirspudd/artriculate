@@ -75,6 +75,7 @@ QMLFILES += \
     ../qml/views/cascade/CascadeDelegate.qml \
     ../qml/views/conveyor/Conveyor.qml \
     ../qml/views/basic/Basic.qml \
+    ../qml/views/trivial/Trivial.qml \
     ../qml/views/reel/Reel.qml \
     ../qml/views/reel/ReelImage.qml \
     ../qml/views/procession/Procession.qml \
