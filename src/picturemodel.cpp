@@ -97,7 +97,7 @@ signals:
     void countChanged();
 private:
     QSqlError initDb();
-    QSqlError dumpTreeToDb();
+    void dumpTreeToDb();
 
     QStringList extensions;
     QString rootDir;
@@ -181,61 +181,90 @@ void FSNodeTree::populate(bool useDatabaseBackend)
         qDebug() << "Being told to watch a non existent directory:" << rootDir;
     }
     addModelNode(new FSNode(rootDir));
-    qDebug() << "Completed building file tree after:" << timer.elapsed() << "ms";
+    qDebug() << "Completed building file tree containing:" << files.length() << "images after:" << timer.elapsed() << "ms";
 
     if (useDatabaseBackend) {
         qDebug() << "No database found; dumping tree to db" << rootDir;
         timer.restart();
-        QSqlError err = dumpTreeToDb();
+        dumpTreeToDb();
         qDebug() << "Completed database dump after:" << timer.elapsed() << "ms";
-
-        if (err.type() != QSqlError::NoError) {
-            qDebug() << "Database dump of content tree failed with" << err.text();
-        } else {
-            qDebug() << "Successfully finished populating DB:" << rootDir;
-        }
     }
 }
 
-QSqlError FSNodeTree::dumpTreeToDb()
+void FSNodeTree::dumpTreeToDb()
 {
     QSqlError err = initDb();
     if (err.type() != QSqlError::NoError) {
-        return err;
-    }
-
-    QString insertQuery = QString("INSERT INTO %1 (path, width, height) VALUES ").arg(::stripDbHostileCharacters(rootDir));
-    QString insertQueryValues("(?, ?, ?),");
-
-    insertQuery.reserve(insertQuery.size() + insertQueryValues.size()*files.length());
-    for(int i = 0; i < files.length(); i++) {
-         insertQuery.append(insertQueryValues);
-    }
-
-    insertQuery = insertQuery.replace(insertQuery.length()-1, 1, ";");
-
-    QSqlDatabase::database().transaction();
-    QSqlQuery query;
-
-    if (!query.prepare(insertQuery))
-        return query.lastError();
-
-    foreach(const FSLeafNode *node, files) {
-        query.addBindValue(node->qualifyNode(node));
-        query.addBindValue(node->size.width());
-        query.addBindValue(node->size.height());
+        qDebug() << "Failed to init DB with:" << err.text();
+        return;
     }
 
     qDebug() << "Database supports transactions" << QSqlDatabase::database().driver()->hasFeature(QSqlDriver::Transactions);
 
-    query.exec();
+    // Turns out SQLITE has a 999 variable limit by default
+    // Arch shieleded me from this
 
-    if (QSqlDatabase::database().commit())
-        qDebug() << "SQL transaction succeeded";
-    else
-        qDebug() << "SQL transaction failed";
+    int varLimitPerWave = 999;
+    int varCountPerItem = 3;
+    int itemCountPerWave = varLimitPerWave/varCountPerItem;
 
-    return query.lastError();
+    int waveCount = files.length()/itemCountPerWave;
+    const int waveTail = files.length()%itemCountPerWave;
+
+    if (waveTail > 0) {
+        waveCount += 1;
+    }
+
+    qDebug() << "About to drop" << files.length() << "files to DB";
+    qDebug() << "This will require" << waveCount << "separate DB transactions";
+
+    for (int wave = 0; wave < waveCount; wave++)
+    {
+        int itemCount = itemCountPerWave;
+        if ((waveTail > 0) && (wave == waveCount - 1)) {
+            itemCount = waveTail;
+        }
+
+        QString insertQuery = QString("INSERT INTO %1 (path, width, height) VALUES ").arg(::stripDbHostileCharacters(rootDir));
+        QString insertQueryValues("(?, ?, ?),");
+
+        insertQuery.reserve(insertQuery.size() + insertQueryValues.size()*itemCount);
+        for(int i = 0; i < itemCount; i++) {
+            insertQuery.append(insertQueryValues);
+        }
+
+        insertQuery = insertQuery.replace(insertQuery.length()-1, 1, ";");
+
+        QSqlDatabase::database().transaction();
+        QSqlQuery query;
+
+        if (!query.prepare(insertQuery)) {
+            qDebug() << "Query preperation failed with" << query.lastError().text();
+            return;
+        }
+
+        for(int i = wave*itemCountPerWave; i < (wave*itemCountPerWave + itemCount); i++) {
+            const FSLeafNode *node = files.at(i);
+            query.addBindValue(node->qualifyNode(node));
+            query.addBindValue(node->size.width());
+            query.addBindValue(node->size.height());
+        }
+
+        query.exec();
+
+        if (QSqlDatabase::database().commit()) {
+            qDebug() << "SQL transaction succeeded";
+        } else {
+            qDebug() << "SQL transaction failed";
+        }
+
+        err = query.lastError();
+        if (err.type() != QSqlError::NoError) {
+            qDebug() << "Database dump of content tree failed with" << err.text();
+        } else {
+            qDebug() << "Successfully finished adding wave" << wave << "to DB" << rootDir;
+        }
+    }
 }
 
 QSqlError FSNodeTree::initDb()
