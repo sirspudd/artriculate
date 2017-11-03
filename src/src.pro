@@ -53,6 +53,7 @@ QMLFILES += \
     ../qml/widgets/Clock.qml \
     ../qml/widgets/ItemCount.qml \
     ../qml/widgets/Resolution.qml \
+    ../qml/widgets/CollectionSize.qml \
     ../qml/widgets/InfoTray.qml \
     ../qml/widgets/RebootReq.qml \
     ../qml/common/VisualEffect.qml \

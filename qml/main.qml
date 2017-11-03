@@ -1,6 +1,5 @@
 import QtQuick 2.5
 import Qt.labs.settings 1.0
-import PictureModel 1.0
 
 Item {
     id: appWindow

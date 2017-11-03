@@ -18,5 +18,7 @@ Item {
         }
         FPS {
         }
+        CollectionSize {
+        }
     }
 }

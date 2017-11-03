@@ -9,6 +9,7 @@ BoxBody 1.0 physics/BoxBody.qml
 FPS 1.0 widgets/FPS.qml
 Clock 1.0 widgets/Clock.qml
 Resolution 1.0 widgets/Resolution.qml
+CollectionSize 1.0 widgets/CollectionSize.qml
 ItemCount 1.0 widgets/ItemCount.qml
 InfoTray 1.0 widgets/InfoTray.qml
 RebootReq 1.0 widgets/RebootReq.qml
