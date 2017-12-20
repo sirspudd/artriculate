@@ -1,6 +1,9 @@
 TEMPLATE = app
 
 DESTDIR = ../
+OBJECTS_DIR=obj
+MOC_DIR=moc
+RCC_DIR=resources
 
 QT += qml quick dbus sql
 
