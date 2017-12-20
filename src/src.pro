@@ -3,7 +3,10 @@ TEMPLATE = app
 DESTDIR = ../
 
 QT += qml quick dbus sql
-CONFIG += c++11 systemd
+
+CONFIG += c++11
+
+linux-*: CONFIG += systemd
 
 DEFINES *= QT_USE_QSTRINGBUILDER
 
