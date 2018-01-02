@@ -8,58 +8,99 @@ Item {
     property var imageArray: []
 
     function animationStep() {
-        var lastImage = d.headImageArray[0]
+        var fullyLoaded = true
+        for (var i = globalSettings.columnCount - 1; i >= 0; i--) {
+            var col = d.imageArray[i]
 
-        if (lastImage === undefined || lastImage.y > 0) {
-            globalUtil.itemCount++
-            var newItem = d.pictureDelegate.createObject(root)
-            newItem.y = !!d.headImageArray[0]
-                    ? d.headImageArray[0].y - newItem.height
-                    : - newItem.height
-            imageArray.push(newItem)
-            d.headImageArray[0] = newItem
+            var tailItem = col[col.length-1]
+            var headItem = col[0]
+
+            var fullCanvas = !!tailItem && (tailItem.y <= -tailItem.height)
+            var overloadedCanvas = fullCanvas && (tailItem.y < -headItem.height)
+
+            if ((!d.initialized && !fullCanvas) || (i == 0) && !overloadedCanvas) {
+                globalUtil.itemCount++
+                tailItem = d.pictureDelegate.createObject(root)
+                tailItem.columnIndex = i
+                col.push(tailItem)
+            }
+
+            if (!d.initialized) {
+                fullyLoaded = fullyLoaded  && !fullCanvas
+                continue
+            }
+
+            if (overloadedCanvas || d.animating[i]) {
+                feedTimer.restart()
+                d.animating[i] = true
+                for (var j = 0; j < col.length; j++) {
+                    var item = col[j]
+                    if (item.y > root.height) {
+                        d.animating[i] = false
+                        item = d.imageArray[i].shift()
+                        if (globalSettings.columnCount - i > 1) {
+                            item.columnIndex = i + 1
+                            d.imageArray[i + 1].push(item)
+                        } else {
+                            item.destroy();
+                            globalUtil.itemCount--
+                        }
+                    } else {
+                        item.y += 1
+                    }
+                }
+                return;
+            }
         }
+        if (!d.initialized && fullyLoaded) {
+            settleTimer.start()
+        }
+    }
 
-        imageArray.forEach(function(image) { image.advance() })
+    Timer {
+        id: settleTimer
+        interval: 5000
+        onTriggered: {
+            d.initialized = true
+        }
+    }
+
+    Timer {
+        id: feedTimer
+        interval: globalSettings.interval*100
+        running: d.initialized
+        repeat: true
+        onTriggered: {
+            d.animating[0] = true
+        }
     }
 
     QtObject {
         id: d
-        property real speed: 10
-        property int startingPoint: 0
+        property bool incoming: false
+        property bool initialized: false
         property real t: 0
         property real columnRatio: globalSettings.useGoldenRatio ? globalVars.goldenRatio : globalSettings.lessGoldenRatio
         property var imageArray: []
         property var colWidthArray: []
         property var xposArray: []
-        property var headImageArray: []
+        property var animating: []
 
         property var pictureDelegate: Component {
             ArtImage {
                 property int columnIndex: 0
 
-                function advance() {
-                    if (y > root.height) {
-                        if (globalSettings.columnCount - columnIndex < 1) {
-                            imageArray.shift()
-                            visible = false
-                            destroy();
-                            d.speed = 1
-                        } else {
-                            columnIndex += 1
-                            y = !!d.headImageArray[columnIndex] ? d.headImageArray[columnIndex].y - height : - height
-                            d.headImageArray[columnIndex] = this
-                        }
-                    } else {
-                        y += d.speed
-                    }
+                function considerY() {
+                    var col = d.imageArray[columnIndex]
+                    var originatingHeight = d.initialized ? -height : root.height - height
+                    y = !!col[col.length - 1] ? col[col.length - 1].y - height : originatingHeight
                 }
 
                 width: d.colWidthArray[columnIndex]
                 x: d.xposArray[columnIndex]
 
                 onHeightChanged: {
-                    y = !!d.headImageArray[columnIndex] ? d.headImageArray[columnIndex].y - height : - height
+                    considerY()
                 }
             }
         }
@@ -79,6 +120,8 @@ Item {
                 }
 
                 xposArray.push(i === 0 ? 0 : xposArray[i-1] + colWidthArray[i-1])
+                imageArray[i] = new Array;
+                d.animating[i] = false
             }
         }
     }
