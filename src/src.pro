@@ -29,8 +29,9 @@ contains(QT_CONFIG, static) {
     DEFINES += STATIC_BUILD
     QTPLUGIN += windowplugin \
                 qtquick2plugin \
-                qmlsettingsplugin
-    LIBPATH += $$[QT_INSTALL_QML]/QtQuick.2 $$[QT_INSTALL_QML]/QtQuick/Window.2 $$[QT_INSTALL_QML]/Qt/labs/settings
+                qmlsettingsplugin \
+                qsqlite
+    LIBPATH += $$[QT_INSTALL_QML]/QtQuick.2 $$[QT_INSTALL_QML]/QtQuick/Window.2 $$[QT_INSTALL_QML]/Qt/labs/settings $$[QT_INSTALL_PLUGINS]/sqldrivers
 }
 
 HEADERS += \
