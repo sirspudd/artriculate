@@ -87,7 +87,7 @@ Item {
         property int itemLimit: -1
 
         property string effect: ""
-        property string view: "Reel"
+        property string artView: "Trivial"
         property string backdrop: ""
 
         property bool smoothArt: false
@@ -107,7 +107,7 @@ Item {
         onColumnCountChanged: globalUtil.reset()
 
         Component.onCompleted: {
-            d.setView(view)
+            d.setView(artView)
         }
     }
 
