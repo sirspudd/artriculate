@@ -34,6 +34,20 @@
 #include <QtSql/QSqlDriver>
 
 namespace {
+    QSqlDatabase openDBConnection(const QString &connectionName) {
+        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+        QFileInfo dbFile(QStandardPaths::standardLocations(QStandardPaths::DataLocation).first() + "/" + qApp->applicationName() + ".db");
+        QDir().mkpath(dbFile.absolutePath());
+        db.setDatabaseName(dbFile.absoluteFilePath());
+
+        if (!db.open()) {
+            qDebug() << "Failed to open the database:" << dbFile.absoluteFilePath();
+            qDebug() << "Error:" << db.lastError().text();
+            qApp->exit(-1);
+        }
+
+        return db;
+}
     QString stripDbHostileCharacters(QString path) {
         return path.replace(QString("/"), QString(""));
     }
@@ -96,7 +110,6 @@ public slots:
 signals:
     void countChanged();
 private:
-    QSqlError initDb();
     void dumpTreeToDb();
 
     QStringList extensions;
@@ -193,9 +206,11 @@ void FSNodeTree::populate(bool useDatabaseBackend)
 
 void FSNodeTree::dumpTreeToDb()
 {
-    QSqlError err = initDb();
-    if (err.type() != QSqlError::NoError) {
-        qDebug() << "Failed to init DB with:" << err.text();
+    QSqlDatabase db = openDBConnection("write");
+
+    QSqlQuery q("", db);
+    if (!q.exec(QString("create table %1 (path varchar, width integer, height integer)").arg(::stripDbHostileCharacters(rootDir)))) {
+        qDebug() << "Failed to init DB with:" << q.lastError().text();
         return;
     }
 
@@ -235,8 +250,8 @@ void FSNodeTree::dumpTreeToDb()
 
         insertQuery = insertQuery.replace(insertQuery.length()-1, 1, ";");
 
-        QSqlDatabase::database().transaction();
-        QSqlQuery query;
+        db.transaction();
+        QSqlQuery query("", db);
 
         if (!query.prepare(insertQuery)) {
             qDebug() << "Query preperation failed with" << query.lastError().text();
@@ -252,28 +267,19 @@ void FSNodeTree::dumpTreeToDb()
 
         query.exec();
 
-        if (QSqlDatabase::database().commit()) {
+        if (db.commit()) {
             qDebug() << "SQL transaction succeeded";
         } else {
             qDebug() << "SQL transaction failed";
         }
 
-        err = query.lastError();
+        QSqlError err = query.lastError();
         if (err.type() != QSqlError::NoError) {
             qDebug() << "Database dump of content tree failed with" << err.text();
         } else {
             qDebug() << "Successfully finished adding wave" << wave << "to DB" << rootDir;
         }
     }
-}
-
-QSqlError FSNodeTree::initDb()
-{
-    QSqlQuery q;
-    if (!q.exec(QString("create table %1 (path varchar, width integer, height integer)").arg(::stripDbHostileCharacters(rootDir))))
-        return q.lastError();
-
-    return QSqlError();
 }
 
 class PictureModel::PictureModelPrivate {
@@ -309,29 +315,20 @@ PictureModel::PictureModelPrivate::PictureModelPrivate(PictureModel* p)
     settings.setValue("artPath", artPath);
 
     if (useDatabaseBackend) {
-        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-        QFileInfo dbFile(QStandardPaths::standardLocations(QStandardPaths::DataLocation).first() + "/" + qApp->applicationName() + ".db");
-        QDir().mkpath(dbFile.absolutePath());
-        db.setDatabaseName(dbFile.absoluteFilePath());
+        QSqlDatabase db = openDBConnection("read");
 
-        if (db.open()) {
-            QStringList tables = db.tables();
-            if (tables.contains(::stripDbHostileCharacters(artPath), Qt::CaseInsensitive)) {
-                QString queryString = "SELECT COUNT(*) FROM " % ::stripDbHostileCharacters(artPath) % ";";
-                QSqlQuery query(queryString);
-                query.next();
+        QStringList tables = db.tables();
+        if (tables.contains(::stripDbHostileCharacters(artPath), Qt::CaseInsensitive)) {
+            QString queryString = "SELECT COUNT(*) FROM " % ::stripDbHostileCharacters(artPath) % ";";
+            QSqlQuery query(queryString, db);
+            query.next();
 
-                collectionSize = query.value(0).toInt();
-                QMetaObject::invokeMethod(parent, "countChanged");
-                qDebug() << "Using existing database entry for" << artPath;
-            } else {
-                qDebug() << "No database found; creating file tree" << artPath;
-                createFSTree(artPath);
-            }
+            collectionSize = query.value(0).toInt();
+            QMetaObject::invokeMethod(parent, "countChanged");
+            qDebug() << "Using existing database entry for" << artPath;
         } else {
-            qDebug() << "Failed to open the database:" << dbFile.absoluteFilePath();
-            qDebug() << "Error:" << db.lastError().text();
-            qApp->exit(-1);
+            qDebug() << "No database found; creating file tree" << artPath;
+            createFSTree(artPath);
         }
     } else {
         createFSTree(artPath);
@@ -373,7 +370,8 @@ void PictureModel::PictureModelPrivate::cacheIndex(int index)
 
     QString queryString = "SELECT path, width, height FROM " % ::stripDbHostileCharacters(artPath) % " LIMIT 1 OFFSET " % QString::number(index) % ";";
 
-    QSqlQuery query(queryString);
+    QSqlDatabase db = QSqlDatabase::database("read", true);
+    QSqlQuery query(queryString, db);
 
     query.next();
 
