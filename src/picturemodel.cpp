@@ -481,4 +481,4 @@ QHash<int, QByteArray> PictureModel::roleNames() const
     return roles;
 }
 
-#include "picturemodel.moc"
+#include "moc/picturemodel.moc"
