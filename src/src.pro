@@ -94,15 +94,13 @@ QMLFILES += \
 
 DISTFILES += $${QMLFILES}
 
-for(qml_file, QMLFILES) {
-    QMLCFILES+=$${qml_file}c
-    system(qmlcachegen --target-architecture $$QT_ARCH --target-abi $${QT_BUILDABI} $${qml_file})
-}
-
 compiledResources {
-    RESOURCES += $${DISTFILES} $${QMLCFILES}
+    message(Compiled in resources)
+    CONFIG += qtquickcompiler
+    RESOURCES += $${DISTFILES}
     DEFINES += COMPILED_RESOURCES
 } else {
+    message(External resources)
     qml.path = /usr/share/artriculate/qml
     qml.files = ../qml/*
 
