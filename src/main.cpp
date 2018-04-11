@@ -182,6 +182,13 @@ int main(int argc, char *argv[])
             format.setGreenBufferSize(8);
             format.setBlueBufferSize(8);
             QSurfaceFormat::setDefaultFormat(format);
+        } else if (settings.value("force16bpp", true).toBool()) {
+            QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+            format.setAlphaBufferSize(0);
+            format.setRedBufferSize(5);
+            format.setGreenBufferSize(6);
+            format.setBlueBufferSize(5);
+            QSurfaceFormat::setDefaultFormat(format);
         }
 
         if (settings.value("forceSingleBuffer", false).toBool()) {
