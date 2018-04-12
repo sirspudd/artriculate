@@ -195,7 +195,11 @@ int main(int argc, char *argv[])
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
             format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
             QSurfaceFormat::setDefaultFormat(format);
-        } else if (settings.value("forceDoubleBuffer", false).toBool()) {
+        } else if (settings.value("forceDoubleBuffer", true).toBool()) {
+            QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+            format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+            QSurfaceFormat::setDefaultFormat(format);
+        } else if (settings.value("forceTripleBuffer", true).toBool()) {
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
             format.setSwapBehavior(QSurfaceFormat::TripleBuffer);
             QSurfaceFormat::setDefaultFormat(format);
