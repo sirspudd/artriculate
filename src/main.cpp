@@ -150,6 +150,9 @@ void ArtView::populateScreen(QScreen *screen)
 
 int main(int argc, char *argv[])
 {
+    const char *kms_screen_config_env_var = "QT_QPA_EGLFS_KMS_CONFIG";
+    if(qEnvironmentVariableIsEmpty(kms_screen_config_env_var))
+        qputenv(kms_screen_config_env_var, ":/kms-screen.json");
 #ifdef STATIC_BUILD
     Q_IMPORT_PLUGIN(QmlSettingsPlugin)
     Q_IMPORT_PLUGIN(QtQuick2WindowPlugin)
