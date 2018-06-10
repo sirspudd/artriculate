@@ -1,3 +1,6 @@
+# work around isystem stdlib.h bullshit
+QMAKE_CFLAGS_ISYSTEM = ""
+
 TEMPLATE = app
 
 DESTDIR = ../
