@@ -18,7 +18,7 @@ Item {
             var fullCanvas = !!tailItem && (tailItem.y <= -tailItem.height)
             var overloadedCanvas = fullCanvas && (tailItem.y < -headItem.height)
 
-            if ((!d.initialized && !fullCanvas) || (i == 0) && !overloadedCanvas) {
+            if ((!d.initialized && !fullCanvas) || (i == 0) && !overloadedCanvas && (globalSettings.itemLimit < 0 || (globalUtil.itemCount < globalSettings.itemLimit))) {
                 globalUtil.itemCount++
                 tailItem = d.pictureDelegate.createObject(root)
                 tailItem.columnIndex = i
@@ -78,7 +78,7 @@ Item {
     QtObject {
         id: d
         property bool incoming: false
-        property bool initialized: false
+        property bool initialized: globalSettings.itemLimit > -1 ? true : false
         property real t: 0
         property real columnRatio: globalSettings.useGoldenRatio ? globalVars.goldenRatio : globalSettings.lessGoldenRatio
         property var imageArray: []
