@@ -7,9 +7,15 @@ cmd=${script_dir}/artriculate-bin
 
 args="$@"
 
+#tinkerboard
+echo 524288 > /sys/devices/platform/ffa30000.gpu/mem_pool_max_size
+echo 524288 > /sys/devices/platform/ffa30000.gpu/mem_pool_size
+echo performance > /sys/devices/platform/ffa30000.gpu/devfreq/ffa30000.gpu/governor
+
 if [[ "$QT_QPA_PLATFORM" != "eglfs" ]]; then
     unset QT_QPA_PLATFORM
 fi
 
 echo "Running cmd: $cmd with args: $args"
-$cmd $args
+
+QSG_INFO=1 $cmd $args
