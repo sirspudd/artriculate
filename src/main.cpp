@@ -132,8 +132,15 @@ void ArtView::populateScreen(QScreen *screen)
     } else {
         screen = view->screen();
     }
+    QSettings settings;
     QRect geometry = screen->availableGeometry();
-    view->setColor(Qt::transparent);
+    bool transparentToplevel = settings.value("transparentToplevel", false).toBool();
+    settings.setValue("transparentToplevel", transparentToplevel);
+    if (transparentToplevel) {
+        view->setColor(Qt::transparent);
+    } else {
+        view->setColor(Qt::black);
+    }
     view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->setSource(QUrl(qmlPath + "/main.qml"));
     view->setGeometry(geometry);
