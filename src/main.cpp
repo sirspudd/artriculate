@@ -179,14 +179,14 @@ int main(int argc, char *argv[])
         QQuickWindow::setSceneGraphBackend(QSGRendererInterface::Software);
 #endif
     } else {
-        if (settings.value("force32bpp", true).toBool()) {
+        if (settings.value("force24bpp", false).toBool()) {
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
             format.setAlphaBufferSize(0);
             format.setRedBufferSize(8);
             format.setGreenBufferSize(8);
             format.setBlueBufferSize(8);
             QSurfaceFormat::setDefaultFormat(format);
-        } else if (settings.value("force16bpp", true).toBool()) {
+        } else if (settings.value("force16bpp", false).toBool()) {
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
             format.setAlphaBufferSize(0);
             format.setRedBufferSize(5);
@@ -199,11 +199,11 @@ int main(int argc, char *argv[])
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
             format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
             QSurfaceFormat::setDefaultFormat(format);
-        } else if (settings.value("forceDoubleBuffer", true).toBool()) {
+        } else if (settings.value("forceDoubleBuffer", false).toBool()) {
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
             format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
             QSurfaceFormat::setDefaultFormat(format);
-        } else if (settings.value("forceTripleBuffer", true).toBool()) {
+        } else if (settings.value("forceTripleBuffer", false).toBool()) {
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
             format.setSwapBehavior(QSurfaceFormat::TripleBuffer);
             QSurfaceFormat::setDefaultFormat(format);
