@@ -186,35 +186,41 @@ int main(int argc, char *argv[])
         QQuickWindow::setSceneGraphBackend(QSGRendererInterface::Software);
 #endif
     } else {
-        if (settings.value("force24bpp", false).toBool()) {
-            QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+        QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+
+        bool force24bpp = settings.value("force24bpp", false).toBool();
+        bool force16bpp = settings.value("force16bpp", false).toBool();
+        bool forceSingleBuffer = settings.value("forceSingleBuffer", false).toBool();
+        bool forceDoubleBuffer = settings.value("forceDoubleBuffer", false).toBool();
+        bool forceTripleBuffer = settings.value("forceTripleBuffer", false).toBool();
+
+        if (force24bpp) {
             format.setAlphaBufferSize(0);
             format.setRedBufferSize(8);
             format.setGreenBufferSize(8);
             format.setBlueBufferSize(8);
-            QSurfaceFormat::setDefaultFormat(format);
-        } else if (settings.value("force16bpp", false).toBool()) {
-            QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+        } else if (force16bpp) {
             format.setAlphaBufferSize(0);
             format.setRedBufferSize(5);
             format.setGreenBufferSize(6);
             format.setBlueBufferSize(5);
-            QSurfaceFormat::setDefaultFormat(format);
         }
 
-        if (settings.value("forceSingleBuffer", false).toBool()) {
-            QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+        if (forceSingleBuffer) {
             format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
-            QSurfaceFormat::setDefaultFormat(format);
-        } else if (settings.value("forceDoubleBuffer", false).toBool()) {
-            QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+        } else if (forceDoubleBuffer) {
             format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-            QSurfaceFormat::setDefaultFormat(format);
-        } else if (settings.value("forceTripleBuffer", false).toBool()) {
-            QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+        } else if (forceTripleBuffer) {
             format.setSwapBehavior(QSurfaceFormat::TripleBuffer);
-            QSurfaceFormat::setDefaultFormat(format);
         }
+
+        settings.setValue("force24bpp", force24bpp);
+        settings.setValue("force16bpp", force16bpp);
+        settings.setValue("forceSingleBuffer", forceSingleBuffer);
+        settings.setValue("forceDoubleBuffer", forceDoubleBuffer);
+        settings.setValue("forceTripleBuffer", forceTripleBuffer);
+
+        QSurfaceFormat::setDefaultFormat(format);
     }
 
     // qdbus org.freedesktop.ScreenSaver /org/freedesktop/ScreenSaver Inhibit "artriculate" "media playback"
