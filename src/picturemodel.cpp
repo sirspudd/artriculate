@@ -289,6 +289,7 @@ public:
 
     FSNodeTree *fsTree;
     bool useDatabaseBackend;
+    bool assumeLinearAccess = false;
 
     void cacheIndex(int index);
     void retireCachedIndex(int index);
@@ -387,7 +388,7 @@ void PictureModel::PictureModelPrivate::retireCachedIndex(int index)
 {
     int hashIndex = ::offsetHash(index);
     artwork[hashIndex]->refCount--;
-    if (artwork[hashIndex]->refCount < 1) {
+    if (assumeLinearAccess || artwork[hashIndex]->refCount < 1) {
         delete artwork[hashIndex];
         artwork.remove(hashIndex);
     }
@@ -411,6 +412,9 @@ int PictureModel::rowCount(const QModelIndex &parent) const
 
 QVariant PictureModel::data(const QModelIndex &index, int role) const
 {
+    if (d->assumeLinearAccess) {
+        requestIndex(index.row());
+    }
     // What the fuck; Qt queries item 0 before we substantiate it
     // I get to offset my hash by 1 or loss a piece of art
     if (index.row() <= 0 || index.row() >= d->itemCount()) {
@@ -452,9 +456,11 @@ QVariant PictureModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-int PictureModel::requestIndex()
+int PictureModel::requestIndex(int index) const
 {
-    int index = d->itemCount() == 0 ? 0 : qrand() % d->itemCount();
+    if (index == -1) {
+        index = d->itemCount() == 0 ? 0 : qrand() % d->itemCount();
+    }
 
     if (!d->fsTree) {
         d->cacheIndex(index);
@@ -463,11 +469,16 @@ int PictureModel::requestIndex()
     return index;
 }
 
-void PictureModel::retireIndex(int index)
+void PictureModel::retireIndex(int index) const
 {
     if (!d->fsTree) {
         d->retireCachedIndex(index);
     }
+}
+
+void PictureModel::assumeLinearAccess()
+{
+    d->assumeLinearAccess = true;
 }
 
 QHash<int, QByteArray> PictureModel::roleNames() const

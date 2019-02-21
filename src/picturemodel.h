@@ -41,8 +41,9 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     Q_INVOKABLE QVariant data(const int &row, int role = PathRole) const { return data(index(row, 0), role); }
     QVariant data(const QModelIndex & index, int role = PathRole) const;
-    Q_INVOKABLE int requestIndex();
-    Q_INVOKABLE void retireIndex(int index);
+    Q_INVOKABLE int requestIndex(int index = -1) const;
+    Q_INVOKABLE void retireIndex(int index) const;
+    Q_INVOKABLE void assumeLinearAccess();
 signals:
     void countChanged();
 
