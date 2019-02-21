@@ -12,7 +12,7 @@ Item {
 
     //color: Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0)
 
-    height: width*imageModel.data(modelIndex, PictureModel.SizeRole).height/imageModel.data(modelIndex, PictureModel.SizeRole).width
+    height: width*globalUtil.imageModel.data(modelIndex, PictureModel.SizeRole).height/globalUtil.imageModel.data(modelIndex, PictureModel.SizeRole).width
     width: parent ? parent.width : 0
 
     Image {
@@ -20,8 +20,8 @@ Item {
         cache: false
         opacity: globalSettings.fadeInImages ? 0 : 1.0
 
-        height: globalVars.imageWidthOverride > 0 ? Math.ceil(globalVars.imageWidthOverride*imageModel.data(modelIndex, PictureModel.SizeRole).height/imageModel.data(modelIndex, PictureModel.SizeRole).width) : imageModel.data(modelIndex, PictureModel.SizeRole).height
-        width: globalVars.imageWidthOverride > 0 ? globalVars.imageWidthOverride : imageModel.data(modelIndex, PictureModel.SizeRole).width
+        height: globalVars.imageWidthOverride > 0 ? Math.ceil(globalVars.imageWidthOverride*globalUtil.imageModel.data(modelIndex, PictureModel.SizeRole).height/globalUtil.imageModel.data(modelIndex, PictureModel.SizeRole).width) : globalUtil.imageModel.data(modelIndex, PictureModel.SizeRole).height
+        width: globalVars.imageWidthOverride > 0 ? globalVars.imageWidthOverride : globalUtil.imageModel.data(modelIndex, PictureModel.SizeRole).width
 
         transformOrigin: Item.TopLeft
         scale: root.width/image.width
@@ -29,7 +29,7 @@ Item {
         asynchronous: true
         fillMode: Image.PreserveAspectFit
 
-        source: imageModel.data(modelIndex)
+        source: globalUtil.imageModel.data(modelIndex)
 
         mirror: globalSettings.randomlyMirrorArt && (Math.random() < globalSettings.randomlyMirrorArtFreq)
         smooth: globalSettings.smoothArt
@@ -54,7 +54,7 @@ Item {
     }
 
     Component.onCompleted: {
-        modelIndex = imageModel.requestIndex()
+        modelIndex = globalUtil.imageModel.requestIndex()
         if (globalSettings.effect !== "" && Effects.validate(globalSettings.effect)) {
             var component = Qt.createComponent("VisualEffect.qml");
             component.status !== Component.Ready && console.log('Component failed with:' + component.errorString())
@@ -62,5 +62,5 @@ Item {
         }
     }
 
-    Component.onDestruction: imageModel.retireIndex(modelIndex)
+    Component.onDestruction: globalUtil.imageModel.retireIndex(modelIndex)
 }

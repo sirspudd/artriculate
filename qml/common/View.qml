@@ -1,4 +1,5 @@
 import QtQuick 2.5
+import PictureModel 1.0
 
 Item {
     id: root
@@ -21,5 +22,12 @@ Item {
     Repeater {
         model: globalSettings.columnCount
         delegate: columnComponent
+    }
+
+    PictureModel {
+        id: imageModel
+        Component.onCompleted: {
+            globalUtil.imageModel = imageModel
+        }
     }
 }

@@ -125,7 +125,6 @@ void ArtView::populateScreen(QScreen *screen)
         sharedQmlEngine = view->engine();
         sharedQmlEngine->addImportPath(qmlPath);
         sharedQmlEngine->rootContext()->setContextProperty("nativeUtils", new NativeUtils(sharedQmlEngine));
-        sharedQmlEngine->rootContext()->setContextProperty("imageModel", new PictureModel(sharedQmlEngine));
         QObject::connect(sharedQmlEngine, &QQmlEngine::quit, qApp, &QCoreApplication::quit);
     }
     if (screen) {

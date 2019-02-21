@@ -2,6 +2,8 @@ import QtQuick 2.5
 
 import "../.."
 
+import PictureModel 1.0
+
 Item {
     id: root
 
@@ -129,5 +131,12 @@ Item {
     Connections {
         target: globalSettings
         onColumnCountChanged: console.log('Col count:' + globalSettings.columnCount)
+    }
+
+    PictureModel {
+        id: imageModel
+        Component.onCompleted: {
+            globalUtil.imageModel = imageModel
+        }
     }
 }
