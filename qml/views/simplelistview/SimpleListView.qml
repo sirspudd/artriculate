@@ -6,7 +6,13 @@ import PictureModel 1.0
 import "../.."
 
 ListView {
-    delegate: ArtImage {}
+    anchors.fill: parent
+
+    delegate: ArtImage {
+        source: path
+        height: size.height
+        width: size.width
+    }
     model: globalUtil.imageModel
 
     PictureModel {

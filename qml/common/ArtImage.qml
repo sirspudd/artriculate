@@ -9,6 +9,7 @@ Item {
     property int modelIndex
 
     property alias asynchronous: image.asynchronous
+    property alias source: image.source
 
     //color: Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0)
 
