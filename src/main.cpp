@@ -110,8 +110,7 @@ void ArtView::populateScreen(QScreen *screen)
 #ifdef COMPILED_RESOURCES
     qmlPath = "qrc:/qml";
 #else
-    qmlPath = QCoreApplication::applicationDirPath() % "/qml";
-    if (!QDir(qmlPath).exists()) {
+    if (QCoreApplication::applicationDirPath().startsWith("/usr")) {
         qmlPath = "/usr/share/" % qApp->applicationName() % "/qml";
     }
 #endif
