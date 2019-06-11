@@ -1,5 +1,5 @@
 import QtQuick 2.6
 
 Widget {
-    text: "DB:" + globalUtil.imageModel.count
+    text: "DB:" + nativeUtils.imageCollection.count
 }

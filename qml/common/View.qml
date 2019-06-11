@@ -23,11 +23,4 @@ Item {
         model: globalSettings.columnCount
         delegate: columnComponent
     }
-
-    PictureModel {
-        id: imageModel
-        Component.onCompleted: {
-            globalUtil.imageModel = imageModel
-        }
-    }
 }

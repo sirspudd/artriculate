@@ -164,11 +164,4 @@ Item {
     Component.onCompleted: {
         pictureDelegate.status !== Component.Ready && console.log('Component failed with:' + pictureDelegate.errorString())
     }
-
-    PictureModel {
-        id: imageModel
-        Component.onCompleted: {
-            globalUtil.imageModel = imageModel
-        }
-    }
 }

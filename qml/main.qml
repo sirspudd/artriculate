@@ -25,7 +25,6 @@ Item {
 
     QtObject {
         id: globalUtil
-        property var imageModel
         property int itemCount
         property int currentColumn: 0
         property bool primed: d.primedColumns === globalSettings.columnCount

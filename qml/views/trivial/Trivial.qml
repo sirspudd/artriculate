@@ -132,11 +132,4 @@ Item {
         target: globalSettings
         onColumnCountChanged: console.log('Col count:' + globalSettings.columnCount)
     }
-
-    PictureModel {
-        id: imageModel
-        Component.onCompleted: {
-            globalUtil.imageModel = imageModel
-        }
-    }
 }

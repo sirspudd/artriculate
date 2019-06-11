@@ -18,17 +18,13 @@ ListView {
         height: size.height
         width: size.width
         Component.onDestruction: {
-            d.settled ? globalUtil.imageModel.retireIndex(index) : undefined
+            d.settled ? nativeUtils.imageCollection.retireIndex(index) : undefined
         }
     }
-    model: globalUtil.imageModel
+    model: nativeUtils.imageCollection
 
-    PictureModel {
-        id: imageModel
-        Component.onCompleted: {
-            imageModel.assumeLinearAccess()
-            globalUtil.imageModel = imageModel
-            d.settled = true
-        }
+    Component.onCompleted: {
+        nativeUtils.imageCollection.assumeLinearAccess()
+        d.settled = true
     }
 }

@@ -64,17 +64,20 @@ bool CloseEventFilter::eventFilter(QObject *obj, QEvent *event)
 class NativeUtils : public QObject {
     Q_OBJECT
     Q_PROPERTY(bool rebootRequired MEMBER rebootRequired NOTIFY rebootRequiredChanged)
+    Q_PROPERTY(PictureModel* imageCollection MEMBER imageCollection NOTIFY imageCollectionChanged)
 public:
     NativeUtils(QObject *p);
 
 signals:
     void rebootRequiredChanged();
+    void imageCollectionChanged();
 public slots:
     void monitorRunPath(const QString &path);
 private:
     QString watchFile;
     QFileSystemWatcher runDirWatcher;
     bool rebootRequired;
+    PictureModel *imageCollection;
 };
 
 NativeUtils::NativeUtils(QObject *p)
@@ -82,6 +85,8 @@ NativeUtils::NativeUtils(QObject *p)
       watchFile("/run/reboot-required"),
       rebootRequired(false)
 {
+    imageCollection = new PictureModel(this);
+    connect(imageCollection, &PictureModel::countChanged, this, &NativeUtils::imageCollectionChanged);
     runDirWatcher.addPath(QFileInfo(watchFile).absolutePath());
     connect(&runDirWatcher, &QFileSystemWatcher::directoryChanged, this, &NativeUtils::monitorRunPath);
     monitorRunPath("");

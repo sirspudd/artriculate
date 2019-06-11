@@ -65,7 +65,7 @@ struct ArtPiece {
 struct FSNode {
   FSNode(const QString& rname, const FSNode *pparent = nullptr);
 
-  static QString qualifyNode(const FSNode *node);
+  QString qualify() const;
 
   const QString name;
   const FSNode *parent;
@@ -82,9 +82,10 @@ FSNode::FSNode(const QString& rname, const FSNode *pparent)
 {
 }
 
-QString FSNode::qualifyNode(const FSNode *node) {
+QString FSNode::qualify() const {
     QString qualifiedPath;
 
+    const FSNode *node = this;
     while(node->parent != nullptr) {
         qualifiedPath = "/" + node->name + qualifiedPath;
         node = node->parent;
@@ -146,7 +147,7 @@ FSNodeTree::~FSNodeTree()
 void FSNodeTree::addModelNode(const FSNode* parentNode)
 {
     // TODO: Check for symlink recursion
-    QDir parentDir(FSNode::qualifyNode(parentNode));
+    QDir parentDir(parentNode->qualify());
 
     foreach(const QString &currentDir, parentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
         const FSNode *dir = new FSNode(currentDir, parentNode);
@@ -159,7 +160,7 @@ void FSNodeTree::addModelNode(const FSNode* parentNode)
             continue;
 
         FSLeafNode *file = new FSLeafNode(currentFile, parentNode);
-        const QString fullPath = FSNode::qualifyNode(file);
+        const QString fullPath = file->qualify();
 
         QSize size = QImageReader(fullPath).size();
 
@@ -260,7 +261,7 @@ void FSNodeTree::dumpTreeToDb()
 
         for(int i = wave*itemCountPerWave; i < (wave*itemCountPerWave + itemCount); i++) {
             const FSLeafNode *node = files.at(i);
-            query.addBindValue(node->qualifyNode(node));
+            query.addBindValue(node->qualify());
             query.addBindValue(node->size.width());
             query.addBindValue(node->size.height());
         }
@@ -437,7 +438,7 @@ QVariant PictureModel::data(const QModelIndex &index, int role) const
             return d->fsTree->files.at(index.row())->name;
         case PathRole:
         default:
-            return QUrl::fromLocalFile(FSNode::qualifyNode(d->fsTree->files.at(index.row())));
+            return QUrl::fromLocalFile(d->fsTree->files.at(index.row())->qualify());
         }
     } else {
         int hashIndex = ::offsetHash(index.row());

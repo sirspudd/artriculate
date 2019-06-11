@@ -118,7 +118,7 @@ Item {
 
             density: 1
             height: root.height/conveyorSettings.rowCount
-            width: height/globalUtil.imageModel.data(modelIndex, PictureModel.SizeRole).height*globalUtil.imageModel.data(modelIndex, PictureModel.SizeRole).width
+            width: height/nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).height*nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).width
             bodyType: Body.Dynamic
             fixedRotation: true
 
@@ -212,11 +212,5 @@ Item {
                 gl_FragColor = vec4(tex.rgb, 1.0);
             }
         "
-    }
-    PictureModel {
-        id: imageModel
-        Component.onCompleted: {
-            globalUtil.imageModel = imageModel
-        }
     }
 }
