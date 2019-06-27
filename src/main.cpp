@@ -22,6 +22,7 @@
 #include <systemd/sd-daemon.h>
 #endif
 
+#include <QList>
 #include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQuickView>
@@ -103,10 +104,12 @@ void NativeUtils::monitorRunPath(const QString &path)
 class ArtView {
 public:
     ArtView(QScreen *screen = nullptr);
+    ~ArtView() { delete view; }
+
 private:
     QString localPath;
     QString webPath;
-    QQuickView *view;
+    QQuickView *view = nullptr;
     static QQmlEngine* sharedQmlEngine;
     bool prioritizeRemoteCopy;
 };
@@ -189,6 +192,7 @@ ArtView::ArtView(QScreen *screen)
 
 int main(int argc, char *argv[])
 {
+    QList<ArtView*> artViews;
     const char *kms_screen_config_env_var = "QT_QPA_EGLFS_KMS_CONFIG";
     // Specify an explicit kms configuration rather than respecting fbset
     //if(qEnvironmentVariableIsEmpty(kms_screen_config_env_var))
@@ -272,25 +276,32 @@ int main(int argc, char *argv[])
     QList<QScreen*> screens = QGuiApplication::screens();
 
     if (screenIndex == -2) {
-        new ArtView();
+        artViews << new ArtView();
     } else if (screenIndex == -1) {
         foreach(QScreen *screen, screens) {
-            new ArtView(screen);
+            artViews << new ArtView(screen);
         }
     } else {
         if ((screenIndex >= 0) && (screenIndex < screens.length())) {
-            new ArtView(screens.at(screenIndex));
+            artViews << new ArtView(screens.at(screenIndex));
         } else {
-            new ArtView();
+            artViews << new ArtView();
         }
     }
     settings.setValue("screenIndex", screenIndex);
 
-    QGuiApplication::processEvents();
 #ifdef USING_SYSTEMD
     sd_notify(0, "READY=1");
 #endif
-    return app.exec();
+    int retCode = app.exec();
+
+    for(ArtView *artView: artViews) {
+        qDebug() << "Cleaning up top level windows";
+        delete artView;
+        artView = nullptr;
+    }
+
+    return retCode;
 }
 
 #include "moc/main.moc"
