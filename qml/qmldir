@@ -7,6 +7,7 @@ ArtBoxBody 1.0 physics/ArtBoxBody.qml
 RectangleBoxBody 1.0 physics/RectangleBoxBody.qml
 BoxBody 1.0 physics/BoxBody.qml
 FPS 1.0 widgets/FPS.qml
+Widget 1.0 widgets/Widget.qml
 Clock 1.0 widgets/Clock.qml
 Resolution 1.0 widgets/Resolution.qml
 CollectionSize 1.0 widgets/CollectionSize.qml

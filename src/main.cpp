@@ -102,33 +102,45 @@ void NativeUtils::monitorRunPath(const QString &path)
 
 class ArtView {
 public:
-    static void populateScreen(QScreen *screen = nullptr);
+    ArtView(QScreen *screen = nullptr);
 private:
+    QString localPath;
+    QString webPath;
+    QQuickView *view;
     static QQmlEngine* sharedQmlEngine;
+    bool prioritizeRemoteCopy;
 };
 
 QQmlEngine* ArtView::sharedQmlEngine = nullptr;
 
-void ArtView::populateScreen(QScreen *screen)
+ArtView::ArtView(QScreen *screen)
 {
-    static QString qmlPath;
+    QSettings settings;
+
+    prioritizeRemoteCopy = settings.value("prioritizeRemoteServer", true).toBool();
+
+    // "http://localhost:8000/qml"
+    // "https://raw.githubusercontent.com/sirspudd/artriculate/master/qml";
+    webPath = settings.value("server", "https://raw.githubusercontent.com/sirspudd/artriculate/master/qml").toString();
+
 #ifdef COMPILED_RESOURCES
-    qmlPath = "qrc:/qml";
+    localPath = "qrc:/qml";
 #else
     if (QCoreApplication::applicationDirPath().startsWith("/usr")) {
-        qmlPath = "/usr/share/" % qApp->applicationName() % "/qml";
+        localPath = "/usr/share/" % qApp->applicationName() % "/qml";
     } else {
-        qmlPath = QString("%1%2").arg(ORIGINAL_SOURCE_PATH).arg("/../qml");
+        localPath = QString("%1%2").arg(ORIGINAL_SOURCE_PATH).arg("/../qml");
     }
 #endif
 
-    QQuickView *view;
     if (sharedQmlEngine) {
         view = new QQuickView(sharedQmlEngine, nullptr);
     } else {
         view = new QQuickView();
+
         sharedQmlEngine = view->engine();
-        sharedQmlEngine->addImportPath(qmlPath);
+        // Seems academic given QML files still need to explicitly import ".." the topmost qmldir
+        sharedQmlEngine->addImportPath(webPath);
         sharedQmlEngine->rootContext()->setContextProperty("nativeUtils", new NativeUtils(sharedQmlEngine));
         QObject::connect(sharedQmlEngine, &QQmlEngine::quit, qApp, &QCoreApplication::quit);
     }
@@ -137,7 +149,6 @@ void ArtView::populateScreen(QScreen *screen)
     } else {
         screen = view->screen();
     }
-    QSettings settings;
     QRect geometry = screen->availableGeometry();
     bool transparentToplevel = settings.value("transparentToplevel", false).toBool();
     settings.setValue("transparentToplevel", transparentToplevel);
@@ -147,13 +158,24 @@ void ArtView::populateScreen(QScreen *screen)
         view->setColor(Qt::black);
     }
     view->setResizeMode(QQuickView::SizeRootObjectToView);
-    view->setSource(QUrl(qmlPath + "/main.qml"));
+    view->setSource(QUrl(webPath + "/main.qml"));
+
+    // Does the same thing as showFullScreen for broken backends which dont impl showFS
     view->setGeometry(geometry);
+    // Ideally bypasses compositing
     view->showFullScreen();
 
-    QObject::connect(view, &QQuickView::statusChanged, [](QQuickView::Status status) {
+    QObject::connect(view, &QQuickView::statusChanged, [this](QQuickView::Status status) {
         if (status == QQuickView::Error) {
-            QMetaObject::invokeMethod(qApp, "quit", Qt::QueuedConnection);
+            if (prioritizeRemoteCopy) {
+                prioritizeRemoteCopy = false;
+                qDebug() << "Failed to load qml from:" << webPath;
+                qDebug() << "Attemping local copy!:" << localPath;
+                sharedQmlEngine->addImportPath(localPath);
+                QMetaObject::invokeMethod(view, "setSource", Qt::QueuedConnection, QGenericReturnArgument(), Q_ARG(QUrl, QUrl(localPath + "/main.qml")));
+            } else {
+                QMetaObject::invokeMethod(qApp, "quit", Qt::QueuedConnection);
+            }
         }
     });
 
@@ -245,16 +267,16 @@ int main(int argc, char *argv[])
     QList<QScreen*> screens = QGuiApplication::screens();
 
     if (screenIndex == -2) {
-        ArtView::populateScreen();
+        new ArtView();
     } else if (screenIndex == -1) {
         foreach(QScreen *screen, screens) {
-            ArtView::populateScreen(screen);
+            new ArtView(screen);
         }
     } else {
         if ((screenIndex >= 0) && (screenIndex < screens.length())) {
-            ArtView::populateScreen(screens.at(screenIndex));
+            new ArtView(screens.at(screenIndex));
         } else {
-            ArtView::populateScreen();
+            new ArtView();
         }
     }
     settings.setValue("screenIndex", screenIndex);
