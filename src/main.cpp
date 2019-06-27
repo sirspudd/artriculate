@@ -205,6 +205,7 @@ int main(int argc, char *argv[])
     qsrand(time(NULL));
 
     QGuiApplication app(argc, argv);
+    app.setOverrideCursor(Qt::BlankCursor);
     if (QFontDatabase::addApplicationFont(":/Lato-Regular.ttf") == -1) {
         qDebug() << "Failed to successfully add the application font";
     }
