@@ -118,10 +118,15 @@ ArtView::ArtView(QScreen *screen)
     QSettings settings;
 
     prioritizeRemoteCopy = settings.value("prioritizeRemoteServer", true).toBool();
+    settings.setValue("prioritizeRemoteServer", prioritizeRemoteCopy);
 
     // "http://localhost:8000/qml"
     // "https://raw.githubusercontent.com/sirspudd/artriculate/master/qml";
-    webPath = settings.value("server", "https://raw.githubusercontent.com/sirspudd/artriculate/master/qml").toString();
+    // https://g.chaos-reins.com/sirspudd/artriculate/raw/master/qml/main.qml
+
+    // A word to the wise; establish the latency on github raw content before pursuing loading it from there
+    webPath = settings.value("remoteQMLUrl", "https://g.chaos-reins.com/sirspudd/artriculate/raw/master/qml").toString();
+    settings.setValue("remoteQMLUrl", webPath);
 
 #ifdef COMPILED_RESOURCES
     localPath = "qrc:/qml";
