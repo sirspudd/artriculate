@@ -193,7 +193,7 @@ ArtView::ArtView(QScreen *screen)
 int main(int argc, char *argv[])
 {
     QList<ArtView*> artViews;
-    const char *kms_screen_config_env_var = "QT_QPA_EGLFS_KMS_CONFIG";
+    // const char *kms_screen_config_env_var = "QT_QPA_EGLFS_KMS_CONFIG";
     // Specify an explicit kms configuration rather than respecting fbset
     //if(qEnvironmentVariableIsEmpty(kms_screen_config_env_var))
     //    qputenv(kms_screen_config_env_var, ":/kms-screen.json");
