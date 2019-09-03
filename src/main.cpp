@@ -108,7 +108,7 @@ public:
 
 private:
     QString localPath;
-    QString webPath;
+    QString remotePath;
     QQuickView *view = nullptr;
     static QQmlEngine* sharedQmlEngine;
     bool prioritizeRemoteCopy;
@@ -128,8 +128,14 @@ ArtView::ArtView(QScreen *screen)
     // https://g.chaos-reins.com/sirspudd/artriculate/raw/master/qml/main.qml
 
     // A word to the wise; establish the latency on github raw content before pursuing loading it from there
-    webPath = settings.value("remoteQMLUrl", "https://code.chaos-reins.com/sirspudd/artriculate/raw/master/qml").toString();
-    settings.setValue("remoteQMLUrl", webPath);
+    remotePath = settings.value("remoteQMLUrl", "https://code.chaos-reins.com/sirspudd/artriculate/raw/master/qml").toString();
+    settings.setValue("remoteQMLUrl", remotePath);
+
+    QString qmlDevPath = settings.value("qmlDevPath", "/opt/dev/src/artriculate/qml").toString();
+    settings.setValue("qmlDevPath", qmlDevPath);
+
+    bool qmlDevPathOverride = settings.value("qmlDevPathOverride", false).toBool();
+    settings.setValue("qmlDevPathOverride", qmlDevPathOverride);
 
 #ifdef COMPILED_RESOURCES
     localPath = "qrc:/qml";
@@ -140,6 +146,10 @@ ArtView::ArtView(QScreen *screen)
         localPath = QString("%1%2").arg(ORIGINAL_SOURCE_PATH).arg("/../qml");
     }
 #endif
+    if (QFileInfo::exists(qmlDevPath) && qmlDevPathOverride) {
+        qDebug() << "Explicitly overriding local qml path with:" << qmlDevPath;
+        localPath = qmlDevPath;
+    }
 
     if (sharedQmlEngine) {
         view = new QQuickView(sharedQmlEngine, nullptr);
@@ -148,7 +158,6 @@ ArtView::ArtView(QScreen *screen)
 
         sharedQmlEngine = view->engine();
         // Seems academic given QML files still need to explicitly import ".." the topmost qmldir
-        sharedQmlEngine->addImportPath(webPath);
         sharedQmlEngine->rootContext()->setContextProperty("nativeUtils", new NativeUtils(sharedQmlEngine));
         QObject::connect(sharedQmlEngine, &QQmlEngine::quit, qApp, &QCoreApplication::quit);
     }
@@ -167,7 +176,8 @@ ArtView::ArtView(QScreen *screen)
     }
     view->setResizeMode(QQuickView::SizeRootObjectToView);
     if (prioritizeRemoteCopy) {
-        view->setSource(QUrl(webPath + "/main.qml"));
+        view->engine()->addImportPath(remotePath);
+        view->setSource(QUrl(remotePath + "/main.qml"));
     } else {
         view->setSource(QUrl(localPath + "/main.qml"));
     }
@@ -180,7 +190,7 @@ ArtView::ArtView(QScreen *screen)
         if (status == QQuickView::Error) {
             if (prioritizeRemoteCopy) {
                 prioritizeRemoteCopy = false;
-                qDebug() << "Failed to load qml from:" << webPath;
+                qDebug() << "Failed to load qml from:" << remotePath;
                 qDebug() << "Attemping local copy!:" << localPath;
                 sharedQmlEngine->addImportPath(localPath);
                 QMetaObject::invokeMethod(view, "setSource", Qt::QueuedConnection, QGenericReturnArgument(), Q_ARG(QUrl, QUrl(localPath + "/main.qml")));
