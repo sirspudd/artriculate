@@ -3,7 +3,7 @@ pragma Singleton
 import QtQuick 2.5
 
 Item {
-    property var names: ["Emboss", "Billboard", "GaussianBlur"]
+    property var names: ["Emboss", "Billboard", "GaussianBlur", "Wobble"]
     property var components: []
     property string randomEffectText: "Random"
 
