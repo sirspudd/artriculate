@@ -91,6 +91,7 @@ Item {
         property string artView: "Trivial"
         property string backdrop: "Swirls"
 
+        property bool randomBackdropColor: false
         property bool smoothArt: false
         property bool randomlyMirrorArt: false
         property bool commonFeed: true

@@ -11,7 +11,7 @@ Rectangle {
     property alias asynchronous: image.asynchronous
     property alias source: image.source
 
-    color: Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0)
+    color: globalSettings.randomBackdropColor ? Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0) : "black"
 
     height: width*nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).height/nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).width
     width: parent ? parent.width : 0
