@@ -128,7 +128,7 @@ ArtView::ArtView(QScreen *screen)
     // https://g.chaos-reins.com/sirspudd/artriculate/raw/master/qml/main.qml
 
     // A word to the wise; establish the latency on github raw content before pursuing loading it from there
-    webPath = settings.value("remoteQMLUrl", "https://g.chaos-reins.com/sirspudd/artriculate/raw/master/qml").toString();
+    webPath = settings.value("remoteQMLUrl", "https://code.chaos-reins.com/sirspudd/artriculate/raw/master/qml").toString();
     settings.setValue("remoteQMLUrl", webPath);
 
 #ifdef COMPILED_RESOURCES
