@@ -3,7 +3,7 @@ import PictureModel 1.0
 
 import ".."
 
-Item {
+Rectangle {
     id: root
     property var effect
     property int modelIndex
@@ -11,7 +11,7 @@ Item {
     property alias asynchronous: image.asynchronous
     property alias source: image.source
 
-    //color: Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0)
+    color: Qt.rgba(Math.random(255), Math.random(255), Math.random(255), 1.0)
 
     height: width*nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).height/nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).width
     width: parent ? parent.width : 0
@@ -21,8 +21,15 @@ Item {
         cache: false
         opacity: globalSettings.fadeInImages ? 0 : 1.0
 
-        height: globalVars.imageWidthOverride > 0 ? Math.ceil(globalVars.imageWidthOverride*nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).height/nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).width) : nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).height
-        width: globalVars.imageWidthOverride > 0 ? globalVars.imageWidthOverride : nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).width
+        height: (globalVars.imageWidthOverride > 0
+                 ? Math.ceil(globalVars.imageWidthOverride*nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).height/nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).width)
+                 : nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).height
+                 )
+
+        width: (globalVars.imageWidthOverride > 0
+                ? globalVars.imageWidthOverride
+                : nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).width
+                )
 
         transformOrigin: Item.TopLeft
         scale: root.width/image.width

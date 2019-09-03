@@ -120,7 +120,7 @@ ArtView::ArtView(QScreen *screen)
 {
     QSettings settings;
 
-    prioritizeRemoteCopy = settings.value("prioritizeRemoteServer", true).toBool();
+    prioritizeRemoteCopy = settings.value("prioritizeRemoteServer", false).toBool();
     settings.setValue("prioritizeRemoteServer", prioritizeRemoteCopy);
 
     // "http://localhost:8000/qml"
@@ -166,8 +166,11 @@ ArtView::ArtView(QScreen *screen)
         view->setColor(Qt::black);
     }
     view->setResizeMode(QQuickView::SizeRootObjectToView);
-    view->setSource(QUrl(webPath + "/main.qml"));
-
+    if (prioritizeRemoteCopy) {
+        view->setSource(QUrl(webPath + "/main.qml"));
+    } else {
+        view->setSource(QUrl(localPath + "/main.qml"));
+    }
     // Does the same thing as showFullScreen for broken backends which dont impl showFS
     view->setGeometry(geometry);
     // Ideally bypasses compositing
