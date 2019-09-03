@@ -85,7 +85,7 @@ Item {
         property int columnCount: 8
         property int interval: 5
         property int itemLimit: -1
-        property int artFrameWidth: 1
+        property int artFrameWidth: 2
 
         property string effect: ""
         property string artView: "Trivial"

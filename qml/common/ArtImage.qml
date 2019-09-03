@@ -21,18 +21,21 @@ Rectangle {
         cache: false
         opacity: globalSettings.fadeInImages ? 0 : 1.0
 
+        x: globalSettings.artFrameWidth
+        y: globalSettings.artFrameWidth
+
         height: (globalVars.imageWidthOverride > 0
                  ? Math.ceil(globalVars.imageWidthOverride*nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).height/nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).width)
                  : nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).height
-                 )
+                 ) - 2*globalSettings.artFrameWidth
 
         width: (globalVars.imageWidthOverride > 0
                 ? globalVars.imageWidthOverride
                 : nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).width
-                )
+                ) - 2*globalSettings.artFrameWidth
 
         transformOrigin: Item.TopLeft
-        scale: root.width/image.width
+        scale: (root.width - 2*globalSettings.artFrameWidth)/image.width
 
         asynchronous: true
         fillMode: Image.PreserveAspectFit
