@@ -59,6 +59,11 @@ Item {
         }
     }
 
+    Rectangle {
+        color: "white"
+        anchors.fill: parent
+    }
+
     Timer {
         id: settleTimer
         interval: 5000
