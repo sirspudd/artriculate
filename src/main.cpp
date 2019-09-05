@@ -143,7 +143,7 @@ ArtView::ArtView(QScreen *screen)
     if (QCoreApplication::applicationDirPath().startsWith("/usr")) {
         localPath = "/usr/share/" % qApp->applicationName() % "/qml";
     } else {
-        localPath = QString("%1%2").arg(ORIGINAL_SOURCE_PATH).arg("/../qml");
+        localPath = QString("%1%2").arg(QCoreApplication::applicationDirPath()).arg("/qml");
     }
 #endif
     if (QFileInfo::exists(qmlDevPath) && qmlDevPathOverride) {
