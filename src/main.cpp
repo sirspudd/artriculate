@@ -237,6 +237,7 @@ int main(int argc, char *argv[])
 #endif
     } else {
         QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+        format.setProfile(QSurfaceFormat::CoreProfile);
 
         bool force24bpp = settings.value("force24bpp", false).toBool();
         bool force16bpp = settings.value("force16bpp", false).toBool();
@@ -270,6 +271,7 @@ int main(int argc, char *argv[])
         settings.setValue("forceDoubleBuffer", forceDoubleBuffer);
         settings.setValue("forceTripleBuffer", forceTripleBuffer);
 
+        qDebug() << "Setting format" << format;
         QSurfaceFormat::setDefaultFormat(format);
     }
 
