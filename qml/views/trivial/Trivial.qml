@@ -60,6 +60,7 @@ Item {
     }
 
     Rectangle {
+        id: background
         color: "white"
         anchors.fill: parent
     }
@@ -69,6 +70,7 @@ Item {
         interval: 5000
         onTriggered: {
             d.initialized = true
+            background.color = "black"
         }
     }
 
