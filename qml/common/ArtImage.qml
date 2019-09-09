@@ -21,8 +21,11 @@ Rectangle {
         cache: false
         opacity: globalSettings.fadeInImages ? 0 : 1.0
 
-        height: root.height
-        width: root.width
+        x: globalSettings.artFrameWidth
+        y: globalSettings.artFrameWidth
+
+        height: root.height - 2*globalSettings.artFrameWidth
+        width: root.width - 2*globalSettings.artFrameWidth
 
         asynchronous: true
         fillMode: Image.PreserveAspectFit
