@@ -8,6 +8,7 @@ Rectangle {
     property var effect
     property int modelIndex
 
+    property alias artwork: image
     property alias asynchronous: image.asynchronous
     property alias source: image.source
 
