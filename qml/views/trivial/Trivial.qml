@@ -44,6 +44,7 @@ Item {
                             d.imageArray[i + 1].push(item)
                             d.grainsOfSand = 0
                             d.velocity = 0
+                            return
                         } else {
                             item.destroy();
                             globalUtil.itemCount--
@@ -52,7 +53,7 @@ Item {
                         item.y += d.velocity
                     }
                 }
-                d.grainsOfSand += 0.05
+                d.grainsOfSand += 0.02
                 d.velocity = Math.pow(d.grainsOfSand, 2)
                 return;
             }
