@@ -5,6 +5,9 @@ import ".."
 
 Rectangle {
     id: root
+
+    signal loaded
+
     property var effect
     property int modelIndex
 
@@ -51,6 +54,7 @@ Rectangle {
         onStatusChanged: {
             if (status === Image.Ready) {
                 opacity = globalSettings.artOpacity
+                root.loaded()
             }
         }
     }

@@ -7,10 +7,6 @@ import PictureModel 1.0
 Item {
     id: root
 
-    property var imageArray: []
-    property real velocity: 0
-    property real grainsOfSand: 0
-
     function animationStep() {
         var fullyLoaded = true
         for (var i = globalSettings.columnCount - 1; i >= 0; i--) {
@@ -25,16 +21,17 @@ Item {
             if ((!d.initialized && !fullCanvas) || (i == 0) && !overloadedCanvas && (globalSettings.itemLimit < 0 || (globalUtil.itemCount < globalSettings.itemLimit))) {
                 globalUtil.itemCount++
                 tailItem = d.pictureDelegate.createObject(root)
+                tailItem.loaded.connect(function() { d.loadedImageCount += 1 } )
                 tailItem.columnIndex = i
                 col.push(tailItem)
             }
 
             if (!d.initialized) {
-                fullyLoaded = fullyLoaded  && !fullCanvas
+                fullyLoaded = fullyLoaded  && fullCanvas
                 continue
             }
 
-            if (overloadedCanvas || d.animating[i]) {
+            if (d.imagesLoaded && (overloadedCanvas || d.animating[i])) {
                 feedTimer.restart()
                 d.animating[i] = true
                 for (var j = 0; j < col.length; j++) {
@@ -45,23 +42,25 @@ Item {
                         if (globalSettings.columnCount - i > 1) {
                             item.columnIndex = i + 1
                             d.imageArray[i + 1].push(item)
-                            root.grainsOfSand = 0
-                            root.velocity = 0
+                            d.grainsOfSand = 0
+                            d.velocity = 0
                         } else {
                             item.destroy();
                             globalUtil.itemCount--
                         }
                     } else {
-                        item.y += root.velocity
+                        item.y += d.velocity
                     }
                 }
-                root.grainsOfSand += 0.05
-                root.velocity = Math.pow(root.grainsOfSand, 2)
+                d.grainsOfSand += 0.05
+                d.velocity = Math.pow(d.grainsOfSand, 2)
                 return;
             }
         }
+
         if (!d.initialized && fullyLoaded) {
-            settleTimer.start()
+            d.initialized = true
+            background.color = "black"
         }
     }
 
@@ -69,15 +68,6 @@ Item {
         id: background
         color: "white"
         anchors.fill: parent
-    }
-
-    Timer {
-        id: settleTimer
-        interval: 5000
-        onTriggered: {
-            d.initialized = true
-            background.color = "black"
-        }
     }
 
     Timer {
@@ -92,6 +82,13 @@ Item {
 
     QtObject {
         id: d
+
+        property real velocity: 0
+        property real grainsOfSand: 0
+
+        property int loadedImageCount: 0
+        property bool imagesLoaded: loadedImageCount > 0 && (loadedImageCount >= globalUtil.itemCount)
+
         property bool incoming: false
         property bool initialized: globalSettings.itemLimit > -1 ? true : false
         property real t: 0
