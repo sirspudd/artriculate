@@ -89,7 +89,7 @@ Item {
 
         property string effect: ""
         property string artView: "Trivial"
-        property string backdrop: "Swirls"
+        property string backdrop
 
         property bool randomBackdropColor: false
         property bool smoothArt: false
