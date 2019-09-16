@@ -42,13 +42,14 @@ Item {
                         if (globalSettings.columnCount - i > 1) {
                             item.columnIndex = i + 1
                             d.imageArray[i + 1].push(item)
-                            d.grainsOfSand = 0
-                            d.velocity = 0
-                            return
                         } else {
                             item.destroy();
                             globalUtil.itemCount--
                         }
+                        d.grainsOfSand = 0
+                        d.velocity = 0
+                        d.considerNextMove = false
+                        return
                     } else {
                         item.y += d.velocity
                     }
@@ -62,7 +63,10 @@ Item {
         if (!d.initialized && fullyLoaded) {
             d.initialized = true
             background.color = "black"
+            return
         }
+
+        d.animating[0] = true
     }
 
     Rectangle {
@@ -73,16 +77,18 @@ Item {
 
     Timer {
         id: feedTimer
-        interval: globalSettings.interval*100
-        running: d.initialized
-        repeat: true
+        interval: 2000
+        running: false
+        repeat: false
         onTriggered: {
-            d.animating[0] = true
+            d.considerNextMove = true
         }
     }
 
     QtObject {
         id: d
+
+        property bool considerNextMove: true
 
         property real velocity: 0
         property real grainsOfSand: 0
@@ -94,6 +100,7 @@ Item {
         property bool initialized: globalSettings.itemLimit > -1 ? true : false
         property real t: 0
         property real columnRatio: globalSettings.useGoldenRatio ? globalVars.goldenRatio : globalSettings.lessGoldenRatio
+
         property var imageArray: []
         property var colWidthArray: []
         property var xposArray: []
@@ -144,7 +151,7 @@ Item {
             }
         }
 
-        NumberAnimation on t { from: 0; to: 1; duration: 1000; loops: -1 }
+        NumberAnimation on t { running: d.considerNextMove; from: 0; to: 1; duration: 1000; loops: -1 }
         onTChanged: { root.animationStep(); }
 
         Component.onCompleted: {
