@@ -8,6 +8,8 @@ Item {
     id: root
 
     property var imageArray: []
+    property real velocity: 0
+    property real grainsOfSand: 0
 
     function animationStep() {
         var fullyLoaded = true
@@ -43,14 +45,18 @@ Item {
                         if (globalSettings.columnCount - i > 1) {
                             item.columnIndex = i + 1
                             d.imageArray[i + 1].push(item)
+                            root.grainsOfSand = 0
+                            root.velocity = 0
                         } else {
                             item.destroy();
                             globalUtil.itemCount--
                         }
                     } else {
-                        item.y += 1
+                        item.y += root.velocity
                     }
                 }
+                root.grainsOfSand += 0.05
+                root.velocity = Math.pow(root.grainsOfSand, 2)
                 return;
             }
         }
