@@ -141,7 +141,7 @@ FSNodeTree::~FSNodeTree()
             node = node->parent;
         }
     }
-    qDeleteAll(nodes.toList());
+    qDeleteAll(nodes.values());
 }
 
 void FSNodeTree::addModelNode(const FSNode* parentNode)
