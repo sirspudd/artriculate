@@ -239,13 +239,19 @@ int main(int argc, char *argv[])
         QSurfaceFormat format = QSurfaceFormat::defaultFormat();
         format.setProfile(QSurfaceFormat::CoreProfile);
 
+        bool force32bpp = settings.value("force32bpp", false).toBool();
         bool force24bpp = settings.value("force24bpp", false).toBool();
         bool force16bpp = settings.value("force16bpp", false).toBool();
         bool forceSingleBuffer = settings.value("forceSingleBuffer", false).toBool();
         bool forceDoubleBuffer = settings.value("forceDoubleBuffer", false).toBool();
         bool forceTripleBuffer = settings.value("forceTripleBuffer", false).toBool();
 
-        if (force24bpp) {
+        if (force32bpp) {
+            format.setAlphaBufferSize(8);
+            format.setRedBufferSize(8);
+            format.setGreenBufferSize(8);
+            format.setBlueBufferSize(8);
+        } else if (force24bpp) {
             format.setAlphaBufferSize(0);
             format.setRedBufferSize(8);
             format.setGreenBufferSize(8);
