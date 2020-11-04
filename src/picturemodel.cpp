@@ -18,6 +18,7 @@
 
 #include "picturemodel.h"
 
+#include <QRandomGenerator>
 #include <QDir>
 #include <QDebug>
 #include <QCoreApplication>
@@ -460,7 +461,7 @@ QVariant PictureModel::data(const QModelIndex &index, int role) const
 int PictureModel::requestIndex(int index) const
 {
     if (index == -1) {
-        index = d->itemCount() == 0 ? 0 : qrand() % d->itemCount();
+        index = d->itemCount() == 0 ? 0 : QRandomGenerator::global()->generate() % d->itemCount();
     }
 
     if (!d->fsTree) {
