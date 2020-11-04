@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
 #if QT_VERSION < QT_VERSION_CHECK(5, 8, 0)
         qDebug() << "Trying to use the SG software backend prior to Qt 5.8";
 #else
-        QQuickWindow::setSceneGraphBackend(QSGRendererInterface::Software);
+        QQuickWindow::setSceneGraphBackend("software");
 #endif
     } else {
         QSurfaceFormat format = QSurfaceFormat::defaultFormat();
