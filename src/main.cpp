@@ -215,7 +215,6 @@ int main(int argc, char *argv[])
     Q_IMPORT_PLUGIN(QtQuick2WindowPlugin)
     Q_IMPORT_PLUGIN(QtQuick2Plugin)
 #endif
-    qsrand(time(NULL));
 
     QGuiApplication app(argc, argv);
     app.setOverrideCursor(Qt::BlankCursor);
