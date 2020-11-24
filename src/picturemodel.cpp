@@ -37,7 +37,7 @@
 namespace {
     QSqlDatabase openDBConnection(const QString &connectionName) {
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
-        QFileInfo dbFile(QStandardPaths::standardLocations(QStandardPaths::DataLocation).first() + "/" + qApp->applicationName() + ".db");
+        QFileInfo dbFile(QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).first() + "/" + qApp->applicationName() + ".db");
         QDir().mkpath(dbFile.absolutePath());
         db.setDatabaseName(dbFile.absoluteFilePath());
 
