@@ -149,9 +149,9 @@ View {
 
             Connections {
                 target: root
-                onTogglePause: d.paused = !d.paused
-                onNext: deathTimer.triggered()
-                onToggleChaos: wellSettings.fixedRotation = !wellSettings.fixedRotation
+                function onTogglePause() { d.paused = !d.paused }
+                function onNext() { deathTimer.triggered() }
+                function onToggleChaos() { wellSettings.fixedRotation = !wellSettings.fixedRotation }
             }
 
             Component.onCompleted: {

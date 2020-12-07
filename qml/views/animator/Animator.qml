@@ -130,6 +130,6 @@ Item {
 
     Connections {
         target: globalSettings
-        onColumnCountChanged: console.log('Col count:' + globalSettings.columnCount)
+        function onColumnCountChanged() { console.log('Col count:' + globalSettings.columnCount) }
     }
 }

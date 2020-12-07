@@ -148,8 +148,8 @@ Item {
 
             Connections {
                 target: root
-                onTogglePause: d.paused = !d.paused
-                onNext: deathTimer.triggered()
+                function onTogglePause() { d.paused = !d.paused }
+                function onNext() { deathTimer.triggered() }
             }
 
             Component.onCompleted: {
