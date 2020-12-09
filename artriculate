@@ -22,4 +22,6 @@ echo "Running cmd: $cmd with args: $args"
 #    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH /opt/libmali-gbm/"
 #fi
 
+export QSG_RHI_BACKEND=vulkan
+
 QSG_INFO=1 $cmd $args
