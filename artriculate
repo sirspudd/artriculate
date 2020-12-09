@@ -8,18 +8,18 @@ cmd=${script_dir}/artriculate-bin
 args="$@"
 
 #tinkerboard
-echo 524288 > /sys/devices/platform/ffa30000.gpu/mem_pool_max_size
-echo 524288 > /sys/devices/platform/ffa30000.gpu/mem_pool_size
-echo performance > /sys/devices/platform/ffa30000.gpu/devfreq/ffa30000.gpu/governor
+#echo 524288 > /sys/devices/platform/ffa30000.gpu/mem_pool_max_size
+#echo 524288 > /sys/devices/platform/ffa30000.gpu/mem_pool_size
+#echo performance > /sys/devices/platform/ffa30000.gpu/devfreq/ffa30000.gpu/governor
 
-if [[ "$QT_QPA_PLATFORM" != "eglfs" ]]; then
-    unset QT_QPA_PLATFORM
-fi
+#if [[ "$QT_QPA_PLATFORM" != "eglfs" ]]; then
+#    unset QT_QPA_PLATFORM
+#fi
 
 echo "Running cmd: $cmd with args: $args"
 
-if [[ -d /opt/libmali-gbm/ ]]; then
-    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH /opt/libmali-gbm/"
-fi
+#if [[ -d /opt/libmali-gbm/ ]]; then
+#    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH /opt/libmali-gbm/"
+#fi
 
 QSG_INFO=1 $cmd $args
