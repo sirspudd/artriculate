@@ -71,7 +71,7 @@ Item {
 
     Rectangle {
         id: background
-        color: "white"
+        color: "black"
         anchors.fill: parent
     }
 
