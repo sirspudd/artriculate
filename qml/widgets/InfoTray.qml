@@ -8,6 +8,7 @@ Item {
     height: infoContent.height
 
     clip: false
+    visible: nativeUtils.displayMetadata
 
     QtObject {
         id: d

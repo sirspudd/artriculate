@@ -43,52 +43,48 @@
 #include <QtPlugin>
 #include <QMetaObject>
 
-class EventFilter : public QObject
-{
-    Q_OBJECT
-public:
-    EventFilter(QObject *p) : QObject(p) { /**/ }
-
-protected:
-    bool eventFilter(QObject *obj, QEvent *event);
-
-private:
-    QTimer *hideCursorTimer = nullptr;
-};
-
-bool EventFilter::eventFilter(QObject *obj, QEvent *event)
-{
-    if (event->type() == QEvent::MouseMove) {
-        qApp->setOverrideCursor(Qt::ArrowCursor);
-        if (!hideCursorTimer) {
-            hideCursorTimer = new QTimer(this);
-            hideCursorTimer->setInterval(5000);
-            connect(hideCursorTimer, &QTimer::timeout, []() { qApp->setOverrideCursor(Qt::BlankCursor); } );
-        }
-        hideCursorTimer->start();
-    } else if (event->type() == QEvent::Close) {
-        qApp->quit();
-    }
-
-    return QObject::eventFilter(obj, event);
-}
 
 class NativeUtils : public QObject {
     Q_OBJECT
     Q_PROPERTY(bool rebootRequired MEMBER rebootRequired NOTIFY rebootRequiredChanged)
+    Q_PROPERTY(bool displayMetadata MEMBER displayingMetadata NOTIFY displayMetadataChanged)
     Q_PROPERTY(PictureModel* imageCollection MEMBER imageCollection NOTIFY imageCollectionChanged)
 public:
     NativeUtils(QObject *p);
 
+    void displayMetadata(bool displayMetadata) {
+        if (!hideMetadataTimer) {
+            hideMetadataTimer = new QTimer(this);
+            hideMetadataTimer->setInterval(5000);
+            connect(hideMetadataTimer, &QTimer::timeout, this, &NativeUtils::hideMetadata);
+        }
+
+        if (displayMetadata) {
+            qApp->setOverrideCursor(Qt::ArrowCursor);
+            hideMetadataTimer->start();
+        } else {
+            qApp->setOverrideCursor(Qt::BlankCursor);
+        }
+        displayingMetadata = displayMetadata;
+        emit displayMetadataChanged();
+    }
+
 signals:
     void rebootRequiredChanged();
     void imageCollectionChanged();
+    void displayMetadataChanged();
+
 public slots:
     void monitorRunPath(const QString &path);
+    void hideMetadata() {
+        displayMetadata(false);
+    }
 private:
+    QTimer *hideMetadataTimer = nullptr;
     QString watchFile;
     QFileSystemWatcher runDirWatcher;
     bool rebootRequired;
+    bool displayingMetadata = true;
     PictureModel *imageCollection;
 };
 
@@ -112,6 +108,37 @@ void NativeUtils::monitorRunPath(const QString &path)
     emit rebootRequiredChanged();
 }
 
+class EventFilter : public QObject
+{
+    Q_OBJECT
+public:
+    EventFilter(NativeUtils *p) : QObject(p) {
+        nativeUtils = p;
+    }
+
+public slots:
+
+    void showMetadata() {
+        nativeUtils->displayMetadata(true);
+    }
+protected:
+    bool eventFilter(QObject *obj, QEvent *event);
+
+private:
+    NativeUtils *nativeUtils;
+};
+
+bool EventFilter::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::MouseMove) {
+        showMetadata();
+    } else if (event->type() == QEvent::Close) {
+        qApp->quit();
+    }
+
+    return QObject::eventFilter(obj, event);
+}
+
 class ArtView {
 public:
     ArtView(QScreen *screen = nullptr);
@@ -130,6 +157,20 @@ QQmlEngine* ArtView::sharedQmlEngine = nullptr;
 ArtView::ArtView(QScreen *screen)
 {
     QSettings settings;
+
+    if (sharedQmlEngine) {
+        view = new QQuickView(sharedQmlEngine, nullptr);
+    } else {
+        view = new QQuickView();
+
+        sharedQmlEngine = view->engine();
+        // Seems academic given QML files still need to explicitly import ".." the topmost qmldir
+        NativeUtils *nativeUtils = new NativeUtils(sharedQmlEngine);
+        sharedQmlEngine->rootContext()->setContextProperty("nativeUtils", nativeUtils);
+        QObject::connect(sharedQmlEngine, &QQmlEngine::quit, qApp, &QCoreApplication::quit);
+
+        qApp->installEventFilter(new EventFilter(nativeUtils));
+    }
 
     prioritizeRemoteCopy = settings.value("prioritizeRemoteServer", false).toBool();
     settings.setValue("prioritizeRemoteServer", prioritizeRemoteCopy);
@@ -162,16 +203,6 @@ ArtView::ArtView(QScreen *screen)
         localPath = qmlDevPath;
     }
 
-    if (sharedQmlEngine) {
-        view = new QQuickView(sharedQmlEngine, nullptr);
-    } else {
-        view = new QQuickView();
-
-        sharedQmlEngine = view->engine();
-        // Seems academic given QML files still need to explicitly import ".." the topmost qmldir
-        sharedQmlEngine->rootContext()->setContextProperty("nativeUtils", new NativeUtils(sharedQmlEngine));
-        QObject::connect(sharedQmlEngine, &QQmlEngine::quit, qApp, &QCoreApplication::quit);
-    }
     if (screen) {
         view->setScreen(screen);
     } else {
@@ -235,7 +266,6 @@ int main(int argc, char *argv[])
     app.setFont(QFont("Lato Regular"));
     app.setOrganizationName("Chaos Reins");
     app.setApplicationName("artriculate");
-    app.installEventFilter(new EventFilter(&app));
 
     QSettings settings;
 
