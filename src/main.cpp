@@ -250,10 +250,10 @@ int main(int argc, char *argv[])
         format.setProfile(QSurfaceFormat::CoreProfile);
 
         bool force32bpp = settings.value("force32bpp", false).toBool();
-        bool force24bpp = settings.value("force24bpp", false).toBool();
+        bool force24bpp = settings.value("force24bpp", true).toBool();
         bool force16bpp = settings.value("force16bpp", false).toBool();
         bool forceSingleBuffer = settings.value("forceSingleBuffer", false).toBool();
-        bool forceDoubleBuffer = settings.value("forceDoubleBuffer", false).toBool();
+        bool forceDoubleBuffer = settings.value("forceDoubleBuffer", true).toBool();
         bool forceTripleBuffer = settings.value("forceTripleBuffer", false).toBool();
 
         if (force32bpp) {
@@ -273,12 +273,12 @@ int main(int argc, char *argv[])
             format.setBlueBufferSize(5);
         }
 
-        if (forceSingleBuffer) {
-            format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
+        if (forceTripleBuffer) {
+            format.setSwapBehavior(QSurfaceFormat::TripleBuffer);
         } else if (forceDoubleBuffer) {
             format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-        } else if (forceTripleBuffer) {
-            format.setSwapBehavior(QSurfaceFormat::TripleBuffer);
+        } else if (forceSingleBuffer) {
+            format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
         }
 
         settings.setValue("force24bpp", force24bpp);
