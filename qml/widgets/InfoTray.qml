@@ -10,12 +10,6 @@ Item {
     clip: false
     visible: nativeUtils.displayMetadata
 
-    QtObject {
-        id: d
-        property double floatTravelLimit: 4
-        property double floatTravelInterval: 4000
-    }
-
     Rectangle {
         anchors.fill: parent
         color: "black"
@@ -26,17 +20,6 @@ Item {
         id: infoContent
         width: childrenRect.width
         height: childrenRect.height
-
-        SequentialAnimation on x {
-            loops: Animation.Infinite
-            PropertyAnimation { to: d.floatTravelLimit; duration: d.floatTravelInterval }
-            PropertyAnimation { to: -d.floatTravelLimit; duration: d.floatTravelInterval }
-        }
-        SequentialAnimation on y {
-            loops: Animation.Infinite
-            PropertyAnimation { to: d.floatTravelLimit; duration: d.floatTravelInterval*1.6  }
-            PropertyAnimation { to: -d.floatTravelLimit; duration: d.floatTravelInterval*1.6  }
-        }
 
         Row {
             spacing: 10.0
