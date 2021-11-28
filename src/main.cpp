@@ -43,19 +43,30 @@
 #include <QtPlugin>
 #include <QMetaObject>
 
-class CloseEventFilter : public QObject
+class EventFilter : public QObject
 {
     Q_OBJECT
 public:
-    CloseEventFilter(QObject *p) : QObject(p) { /**/ }
+    EventFilter(QObject *p) : QObject(p) { /**/ }
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
+
+private:
+    QTimer *hideCursorTimer = nullptr;
 };
 
-bool CloseEventFilter::eventFilter(QObject *obj, QEvent *event)
+bool EventFilter::eventFilter(QObject *obj, QEvent *event)
 {
-    if (event->type() == QEvent::Close) {
+    if (event->type() == QEvent::MouseMove) {
+        qApp->setOverrideCursor(Qt::ArrowCursor);
+        if (!hideCursorTimer) {
+            hideCursorTimer = new QTimer(this);
+            hideCursorTimer->setInterval(5000);
+            connect(hideCursorTimer, &QTimer::timeout, []() { qApp->setOverrideCursor(Qt::BlankCursor); } );
+        }
+        hideCursorTimer->start();
+    } else if (event->type() == QEvent::Close) {
         qApp->quit();
     }
 
@@ -224,7 +235,7 @@ int main(int argc, char *argv[])
     app.setFont(QFont("Lato Regular"));
     app.setOrganizationName("Chaos Reins");
     app.setApplicationName("artriculate");
-    app.installEventFilter(new CloseEventFilter(&app));
+    app.installEventFilter(new EventFilter(&app));
 
     QSettings settings;
 
