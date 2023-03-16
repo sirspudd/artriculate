@@ -235,7 +235,7 @@ ArtView::ArtView(QScreen *screen)
                 qDebug() << "Failed to load qml from:" << remotePath;
                 qDebug() << "Attemping local copy!:" << localPath;
                 sharedQmlEngine->addImportPath(localPath);
-                QMetaObject::invokeMethod(view, "setSource", Qt::QueuedConnection, QGenericReturnArgument(), Q_ARG(QUrl, QUrl(localPath + "/main.qml")));
+                QMetaObject::invokeMethod(view, "setSource", Qt::QueuedConnection, Q_ARG(QUrl, QUrl(localPath + "/main.qml")));
             } else {
                 QMetaObject::invokeMethod(qApp, "quit", Qt::QueuedConnection);
             }
