@@ -148,7 +148,7 @@ Item {
     Item {
         id: toplevelhandler
         focus: true
-        Keys.onPressed: {
+        Keys.onPressed: (event)=> {
             switch(event.key) {
             case Qt.Key_Left:
                 globalSettings.columnCount = Math.max(globalSettings.columnCount - 1, 1);
