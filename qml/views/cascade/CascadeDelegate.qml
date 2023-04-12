@@ -1,6 +1,6 @@
 import QtQuick 2.5
 import Box2D 2.0
-import Qt.labs.settings 1.0
+import QtCore
 
 import "../.."
 

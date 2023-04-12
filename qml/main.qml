@@ -1,5 +1,5 @@
 import QtQuick 2.5
-import Qt.labs.settings 1.0
+import QtCore
 
 Item {
     id: appWindow
