@@ -22,9 +22,8 @@ echo "Running cmd: $cmd with args: $args"
 #    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH /opt/libmali-gbm/"
 #fi
 
-# Default to vulkan on X11
-if xhost >& /dev/null ; then
-    export QSG_RHI_BACKEND=vulkan
-fi
+# required to get vulkan doing anything other than segfaulting!
+export DISABLE_LAYER_AMD_SWITCHABLE_GRAPHICS_1=1
+export QSG_RHI_BACKEND=vulkan
 
 QSG_INFO=1 $cmd $args
