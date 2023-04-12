@@ -1,6 +1,6 @@
-import QtQuick 2.5
+import QtQuick
 
-import PictureModel 1.0
+import PictureModel
 
 // Forgive me
 import "../.."

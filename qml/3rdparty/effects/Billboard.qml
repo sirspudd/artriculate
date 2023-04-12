@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
+import QtQuick
 
 Effect {
     property real grid: 15.0

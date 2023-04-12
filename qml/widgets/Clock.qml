@@ -1,4 +1,4 @@
-import QtQuick 2.6
+import QtQuick
 
 // Required for effortless web serving!
 import ".."

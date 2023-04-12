@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
+import QtQuick
 
 Effect {
     fragmentShader: Qt.resolvedUrl("shaders/emboss.fsh")

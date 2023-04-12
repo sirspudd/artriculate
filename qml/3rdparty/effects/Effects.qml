@@ -1,6 +1,6 @@
 pragma Singleton
 
-import QtQuick 2.5
+import QtQuick
 
 Item {
     property var names: ["Emboss", "Billboard", "GaussianBlur", "Wobble"]

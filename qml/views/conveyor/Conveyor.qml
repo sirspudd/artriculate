@@ -1,7 +1,7 @@
-import QtQuick 2.7
-import Box2D 2.0
+import QtQuick
+import Box2D
 import QtCore
-import PictureModel 1.0
+import PictureModel
 
 // Forgive me
 import "../.."

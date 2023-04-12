@@ -1,8 +1,8 @@
-import QtQuick 2.5
+import QtQuick
 
 import "../.."
 
-import PictureModel 1.0
+import PictureModel
 
 Item {
     id: root

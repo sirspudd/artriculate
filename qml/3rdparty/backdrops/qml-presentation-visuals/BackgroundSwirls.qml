@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.5
-import QtQuick.Particles 2.0
+import QtQuick
+import QtQuick.Particles
 
 Item {
     anchors.fill: parent

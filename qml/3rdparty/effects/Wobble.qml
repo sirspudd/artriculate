@@ -1,4 +1,4 @@
-import QtQuick 2.8
+import QtQuick
 
 Effect {
     property real amplitude: 0.04 * 0.01

@@ -1,5 +1,5 @@
-import QtQuick 2.5
-import PictureModel 1.0
+import QtQuick
+import PictureModel
 
 import ".."
 
