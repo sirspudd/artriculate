@@ -12,7 +12,7 @@ QT += qml quick dbus sql
 
 CONFIG += c++11
 
-CONFIG += systemd
+#CONFIG += systemd
 
 DEFINES *= QT_USE_QSTRINGBUILDER ORIGINAL_SOURCE_PATH=\\\"$$PWD\\\"
 
