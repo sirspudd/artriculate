@@ -1,10 +1,8 @@
 import QtQuick
 import Box2D
 import QtCore
-import PictureModel
 
 // Forgive me
-import "../.."
 
 Item {
     id: root
@@ -118,7 +116,6 @@ Item {
 
             density: 1
             height: root.height/conveyorSettings.rowCount
-            width: height/nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).height*nativeUtils.imageCollection.data(modelIndex, PictureModel.SizeRole).width
             bodyType: Body.Dynamic
             fixedRotation: true
 

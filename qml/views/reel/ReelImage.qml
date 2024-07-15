@@ -1,7 +1,5 @@
 import QtQuick
 
-import "../.."
-
 ArtImage {
     id: root
 

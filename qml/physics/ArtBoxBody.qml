@@ -1,8 +1,6 @@
 import QtQuick
 import Box2D
 
-import ".."
-
 ArtImage {
     id: image
 

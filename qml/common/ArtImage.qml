@@ -1,8 +1,6 @@
 import QtQuick
 import PictureModel
 
-import ".."
-
 Rectangle {
     id: root
 

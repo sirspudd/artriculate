@@ -42,7 +42,7 @@
 #include <QFileSystemWatcher>
 #include <QtPlugin>
 #include <QMetaObject>
-
+#include <QDirIterator>
 
 class NativeUtils : public QObject {
     Q_OBJECT
@@ -190,7 +190,7 @@ ArtView::ArtView(QScreen *screen)
     settings.setValue("qmlDevPathOverride", qmlDevPathOverride);
 
 #ifdef COMPILED_RESOURCES
-    localPath = "qrc:/qml";
+    localPath = "qrc:/qt/qml/Chaos/qml";
 #else
     if (QCoreApplication::applicationDirPath().startsWith("/usr")) {
         localPath = "/usr/share/" % qApp->applicationName() % "/qml";
@@ -285,6 +285,42 @@ int main(int argc, char *argv[])
         bool forceSingleBuffer = settings.value("forceSingleBuffer", false).toBool();
         bool forceDoubleBuffer = settings.value("forceDoubleBuffer", true).toBool();
         bool forceTripleBuffer = settings.value("forceTripleBuffer", false).toBool();
+        bool debugResources = settings.value("debugResources", false).toBool();
+        bool debugQtImplicitResources = settings.value("debugQtImplicitResources", false).toBool();
+
+        QStringList qtResourcePaths = { "qt-project.org", "qgradient", "qpdf", "qtquickcontrols2.conf", "kio5", "kf5", "kf6", "kxmlgui5", "org.kde.kcoreaddons", "icons" };
+
+        if (debugResources) {
+            qDebug() << "resource system contents:";
+            QDirIterator it(":", QDirIterator::Subdirectories);
+            while (it.hasNext()) {
+                QString path = it.next();
+                bool dumpPath = true;
+                for (const QString &qtResourcePath : qtResourcePaths) {
+                    if (path.startsWith(":/" + qtResourcePath)) {
+                        dumpPath = false;
+                    }
+                }
+                if (dumpPath) qDebug() << path;
+            }
+            qDebug() << "end: Shaper resource system contents:";
+        }
+
+        if (debugQtImplicitResources) {
+            qDebug() << "Qt implicit resource system contents:";
+            QDirIterator it(":", QDirIterator::Subdirectories);
+            while (it.hasNext()) {
+                QString path = it.next();
+                bool dumpPath = false;
+                for (const QString &qtResourcePath : qtResourcePaths) {
+                    if (path.startsWith(":/" + qtResourcePath)) {
+                        dumpPath = true;
+                    }
+                }
+                if (dumpPath) qDebug() << path;
+            }
+            qDebug() << "end: Qt implicit resource system contents:";
+        }
 
         if (force32bpp) {
             format.setAlphaBufferSize(8);
@@ -311,6 +347,8 @@ int main(int argc, char *argv[])
             format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
         }
 
+        settings.setValue("debugResources", debugResources);
+        settings.setValue("debugQtImplicitResources", debugQtImplicitResources);
         settings.setValue("force24bpp", force24bpp);
         settings.setValue("force16bpp", force16bpp);
         settings.setValue("forceSingleBuffer", forceSingleBuffer);

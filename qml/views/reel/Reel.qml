@@ -2,7 +2,6 @@ import QtQuick
 import QtCore
 
 // Forgive me
-import "../.."
 
 View {
     id: root

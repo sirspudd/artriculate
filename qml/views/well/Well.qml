@@ -3,7 +3,6 @@ import Box2D
 import QtCore
 
 // Forgive me
-import "../.."
 
 View {
     id: root

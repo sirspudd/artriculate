@@ -1,9 +1,6 @@
 import QtQuick
 
-import PictureModel
-
 // Forgive me
-import "../.."
 
 ListView {
     QtObject {

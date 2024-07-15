@@ -1,7 +1,6 @@
 import QtQuick
 
 // Required for effortless web serving!
-import ".."
 
 Widget {
     id: root

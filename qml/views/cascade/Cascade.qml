@@ -1,10 +1,8 @@
 import QtQuick
 import Box2D
 import QtCore
-import PictureModel
 
 // Forgive me
-import "../.."
 
 Item {
     id: root

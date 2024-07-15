@@ -2,8 +2,6 @@ import QtQuick
 import Box2D
 import QtCore
 
-import "../.."
-
 ArtBoxBody {
     signal beyondThePale(var item)
 

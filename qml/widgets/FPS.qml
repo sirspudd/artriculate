@@ -4,7 +4,6 @@ import QtQuick
 // https://github.com/capisce/motionblur/blob/master/main.qml
 
 // Required for effortless web serving!
-import ".."
 
 Widget {
     property real t

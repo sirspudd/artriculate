@@ -1,8 +1,5 @@
 import QtQuick
-
-import "../.."
-
-import PictureModel
+import Chaos
 
 Item {
     id: root

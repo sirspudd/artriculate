@@ -1,5 +1,4 @@
 import QtQuick
-import PictureModel
 
 Item {
     id: root
