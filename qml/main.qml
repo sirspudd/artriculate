@@ -6,6 +6,7 @@ Item {
 
     onWidthChanged: {
         globalUtil.reset()
+        console.log("width:" + width)
     }
 
     QtObject {
@@ -140,7 +141,7 @@ Item {
             }
 
             if (globalSettings.unlicensed) {
-                Qt.createQmlObject('Unlicensed { z: 3 }', root)
+                Qt.createQmlObject('Unlicensed { z: 3; anchors.fill: parent }', root)
             }
         }
     }
