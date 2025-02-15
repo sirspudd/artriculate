@@ -427,7 +427,7 @@ QVariant PictureModel::data(const QModelIndex &index, int role) const
             return "Qt logo";
         case PathRole:
         default:
-            return QString("qrc:///qt_logo_green_rgb.png");
+            return QString("qrc:///wooded_landscape_with_travelers_2020.26.1.jpg");
         }
     }
 

@@ -2,7 +2,7 @@
     <qresource prefix="/">
         <file>Lato-Regular.ttf</file>
         <file>kms-screen.json</file>
-        <file>qt_logo_green_rgb.png</file>
+        <file>wooded_landscape_with_travelers_2020.26.1.jpg</file>
         <file>buuf/Free Your Mind.png</file>
     </qresource>
 </RCC>
